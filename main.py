@@ -53,6 +53,7 @@ class Player(pygame.sprite.Sprite):
             self.pos.y = collides[0].rect.top + 1
             self.vel.y = 0
             self.jumping = False
+            self.rect.midbottom = self.pos
 
     def jump(self):
         collides = pygame.sprite.spritecollide(self, platforms, False)
