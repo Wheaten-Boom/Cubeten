@@ -2,11 +2,12 @@ import json
 import pygame
 from pygame.locals import *
 import objects
+import os
 
 
 class configuration():
     def __init__(self):
-        with open('Cubeten\settings.json') as config_file:
+        with open(os.path.join(os.getcwd(), 'settings.json')) as config_file:
             self.config = json.load(config_file)
     
     def get(self, key):

@@ -27,7 +27,7 @@ class Player(pygame.sprite.Sprite):
 
     def move(self, collision_group):
         # The Y value is 1 to simulate gravity
-        self.acc = pygame.math.Vector2(0, 1)
+        self.acc = pygame.math.Vector2(0, config.get('PHYSICS')['GRAVITY'])
         pressed_keys = pygame.key.get_pressed()
         if pressed_keys[K_LEFT]:
             self.acc.x += -config.get('PHYSICS')['ACCELERATION']
