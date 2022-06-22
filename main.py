@@ -81,7 +81,7 @@ def main():
     FramePerSec = pygame.time.Clock()
 
     displaysurface = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption('Sort Tubes')
+    pygame.display.set_caption('Cubeten')
 
     all_sprites = pygame.sprite.Group()
 
