@@ -7,9 +7,9 @@ import os
 
 class configuration():
     def __init__(self):
-        with open(os.path.join(os.getcwd(), 'settings.json')) as config_file:
+        with open(os.path.join(os.path.dirname(__file__), 'settings.json')) as config_file:
             self.config = json.load(config_file)
-    
+
     def get(self, key):
         return self.config[key]
 
