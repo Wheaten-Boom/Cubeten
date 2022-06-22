@@ -22,7 +22,7 @@ class Player(pygame.sprite.Sprite):
         self.pos = pygame.math.Vector2((400, 500))
         self.vel = pygame.math.Vector2(0, 0)
         self.acc = pygame.math.Vector2(0, 0)
-        self.jumping = False
+        self.is_jumping = False
 
     def move(self):
         # The Y value is 1 to simulate gravity
@@ -52,25 +52,24 @@ class Player(pygame.sprite.Sprite):
             # collides[0] is the first platform that the player collides with
             self.pos.y = collides[0].rect.top + 1
             self.vel.y = 0
-            self.jumping = False
+            self.is_jumping = False
             self.rect.midbottom = self.pos
 
     def jump(self):
         collides = pygame.sprite.spritecollide(self, platforms, False)
         # If the player is on a platform then they can jump
-        if collides and not self.jumping:
+        if collides and not self.is_jumping:
             self.vel.y = -JUMP_POWER
-            self.jumping = True
+            self.is_jumping = True
+
+    def stop_jump(self):
+        if self.vel.y < -SHORT_JUMP_POWER and self.is_jumping:
+            self.vel.y = -SHORT_JUMP_POWER
 
 
 def main():
     pygame.init()
-    global ACCLERATION
-    global JUMP_POWER
-    global SHORT_JUMP_POWER
-    global FRICTION
-    global WIDTH
-    global HEIGHT
+    global ACCLERATION, FRICTION, JUMP_POWER, SHORT_JUMP_POWER, WIDTH, HEIGHT
     ACCLERATION = 1
     JUMP_POWER = 20
     SHORT_JUMP_POWER = 10
@@ -100,6 +99,9 @@ def main():
             if event.type == QUIT:
                 pygame.quit()
                 quit()
+            if event.type == KEYUP:
+                if event.key == K_UP:
+                    player.stop_jump()
 
         displaysurface.fill((0, 0, 0))
 
