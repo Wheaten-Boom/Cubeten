@@ -44,6 +44,10 @@ def main():
                 if event.key == K_UP:
                     player.stop_jump()
 
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    quit()
+
         displaysurface.fill((0, 0, 0))
 
         player.update(platforms)
