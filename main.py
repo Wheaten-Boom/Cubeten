@@ -25,14 +25,17 @@ def main():
     pygame.display.set_caption(config['TITLE'])
 
     all_sprites = pygame.sprite.Group()
+    movable_sprites = pygame.sprite.Group()
 
     global platforms
     platforms = pygame.sprite.Group()
     platforms.add(objects.Platform(400, 600, 800, 100, '0x2c5160'))
-    platforms.add(objects.Platform(400, 350, 300, 25, '0x2c5160'))
+    platforms.add(objects.MovingPlatform(
+        300, 350, 500, 350, 100, 300, 25, '0x2c5160'))
     all_sprites.add(platforms)
 
     player = objects.Player(400, 500, 75, 75, '0xf0e4d2')
+    movable_sprites.add(player)
     all_sprites.add(player)
 
     while True:
@@ -53,6 +56,8 @@ def main():
         player.update(platforms)
 
         for entity in all_sprites:
+            if entity in platforms:
+                entity.update(movable_sprites)
             displaysurface.blit(entity.surf, entity.rect)
 
         player.move(platforms)
