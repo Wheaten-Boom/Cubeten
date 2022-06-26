@@ -1,0 +1,37 @@
+{
+
+    "LEVEL_1_0": {
+
+        "DEFAULT_COLOR": "0xFF0000",
+        
+        "PLATFORM": {
+
+            "POS_X": 10,
+            "POS_Y": 20,
+            "WIDTH": 40,
+            "HEIGHT": 10,
+            "COLOR": "DEFAULT"
+        }
+
+    },
+
+    "LEVEL_1_1": {
+
+        "DEFAULT_COLOR": "0x72B4C9",
+        
+        "PLATFORM": {
+
+            "POS_X": 30,
+            "POS_Y": 40,
+            "WIDTH": 40,
+            "HEIGHT": 10,
+            "COLOR": "DEFAULT"
+        }
+
+    }
+
+
+
+
+
+}
