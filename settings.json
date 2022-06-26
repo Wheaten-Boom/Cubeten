@@ -3,7 +3,6 @@
     "HEIGHT": 1000,
     "FPS": 60,
     "TITLE": "Cubeten",
-
     "PHYSICS": {
         "GRAVITY": 1,
         "ACCELERATION": 1,
@@ -11,5 +10,4 @@
         "SHORT_JUMP_POWER": 10,
         "FRICTION": -0.125
     }
-
 }

@@ -15,14 +15,14 @@ class configuration():
 
 
 def main():
-    config = configuration()
+    config = configuration().config
 
     pygame.init()
     FramePerSec = pygame.time.Clock()
 
     displaysurface = pygame.display.set_mode(
-        (config.get('WIDTH'), config.get('HEIGHT')))
-    pygame.display.set_caption(config.get('TITLE'))
+        (config['WIDTH'], config['HEIGHT']))
+    pygame.display.set_caption(config['TITLE'])
 
     all_sprites = pygame.sprite.Group()
 
@@ -58,7 +58,7 @@ def main():
         player.move(platforms)
 
         pygame.display.update()
-        FramePerSec.tick(config.get('FPS'))
+        FramePerSec.tick(config['FPS'])
 
 
 if __name__ == "__main__":

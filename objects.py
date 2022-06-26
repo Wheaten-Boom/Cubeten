@@ -2,7 +2,8 @@ import pygame
 from pygame.locals import *
 from main import configuration
 
-config = configuration()
+config = configuration().config
+
 
 class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, color):
@@ -12,6 +13,7 @@ class Platform(pygame.sprite.Sprite):
         self.rect = self.surf.get_rect()
         self.pos = pygame.math.Vector2(x, y)
         self.rect.midbottom = self.pos
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, color):
@@ -26,22 +28,21 @@ class Player(pygame.sprite.Sprite):
         self.is_jumping = False
 
     def move(self, collision_group):
-        # The Y value is 1 to simulate gravity
-        self.acc = pygame.math.Vector2(0, config.get('PHYSICS')['GRAVITY'])
+        self.acc = pygame.math.Vector2(0, config['PHYSICS']['GRAVITY'])
         pressed_keys = pygame.key.get_pressed()
         if pressed_keys[K_LEFT]:
-            self.acc.x += -config.get('PHYSICS')['ACCELERATION']
+            self.acc.x += -config['PHYSICS']['ACCELERATION']
         if pressed_keys[K_RIGHT]:
-            self.acc.x += config.get('PHYSICS')['ACCELERATION']
+            self.acc.x += config['PHYSICS']['ACCELERATION']
         if pressed_keys[K_UP]:
             self.jump(collision_group)
 
-        self.acc.x += self.vel.x * config.get('PHYSICS')['FRICTION']
+        self.acc.x += self.vel.x * config['PHYSICS']['FRICTION']
         self.vel += self.acc
-        self.pos += self.vel + config.get('PHYSICS')['FRICTION'] * self.acc
+        self.pos += self.vel + config['PHYSICS']['FRICTION'] * self.acc
 
-        if self.pos.x > config.get('WIDTH') - self.rect.width / 2:
-            self.pos.x = config.get('WIDTH') - self.rect.width / 2
+        if self.pos.x > config['WIDTH'] - self.rect.width / 2:
+            self.pos.x = config['WIDTH'] - self.rect.width / 2
         if self.pos.x < 0 + self.rect.width / 2:
             self.pos.x = 0 + self.rect.width / 2
 
@@ -60,9 +61,9 @@ class Player(pygame.sprite.Sprite):
         collides = pygame.sprite.spritecollide(self, collision_group, False)
         # If the player is on a platform then they can jump
         if collides and not self.is_jumping:
-            self.vel.y = -config.get('PHYSICS')['JUMP_POWER']
+            self.vel.y = -config['PHYSICS']['JUMP_POWER']
             self.is_jumping = True
 
     def stop_jump(self):
-        if self.vel.y < -config.get('PHYSICS')['SHORT_JUMP_POWER'] and self.is_jumping:
-            self.vel.y = -config.get('PHYSICS')['SHORT_JUMP_POWER']
+        if self.vel.y < -config['PHYSICS']['SHORT_JUMP_POWER'] and self.is_jumping:
+            self.vel.y = -config['PHYSICS']['SHORT_JUMP_POWER']
