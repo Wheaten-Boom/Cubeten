@@ -31,6 +31,8 @@ def main():
     platforms = pygame.sprite.Group()
     platforms.add(objects.Platform(400, 600, 800, 100, '0x2c5160'))
     platforms.add(objects.MovingPlatform(
+        825, 200, 825, 350, 100, 300, 25, '0x2c5160'))
+    platforms.add(objects.MovingPlatform(
         300, 350, 500, 350, 100, 300, 25, '0x2c5160'))
     all_sprites.add(platforms)
 
