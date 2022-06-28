@@ -47,6 +47,9 @@ def main():
         for entity in level[0].all_sprites:
             displaysurface.blit(entity.surf, entity.rect)
 
+            for platform in level[0].moving_platforms:
+                platform.update(level[0].movable_sprites)
+
         level[0].player.move(level[0].platforms)
 
         pygame.display.update()

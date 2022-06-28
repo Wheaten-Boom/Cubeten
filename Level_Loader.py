@@ -13,6 +13,8 @@ class Sub_Level():
         self.default_color = 0
         self.all_sprites = pygame.sprite.Group()
         self.platforms = pygame.sprite.Group()
+        self.moving_platforms = pygame.sprite.Group()
+        self.movable_sprites = pygame.sprite.Group()
 
         with open(os.path.join(os.path.dirname(__file__), 'levels', str(self.level_number) + ".json")) as level_file:
             level_file = json.load(level_file)
@@ -31,6 +33,17 @@ class Sub_Level():
                     self.all_sprites.add(new_platform)
                     self.platforms.add(new_platform)
 
+            if (data == "MOVING_PLATFORMS"):
+
+                for platform in level_properties["MOVING_PLATFORMS"]:
+
+                    new_platform = objects.MovingPlatform(platform["X1"], platform["Y1"], platform["X2"], platform["Y2"], platform["SPEED"], platform["WIDTH"],
+                                                          platform["HEIGHT"], platform["COLOR"], platform["IS_ACTIVE"])
+
+                    self.all_sprites.add(new_platform)
+                    self.platforms.add(new_platform)
+                    self.moving_platforms.add(new_platform)
+
             if (data == "PLAYER"):
 
                 player_properties = level_properties["PLAYER"]
@@ -39,6 +52,7 @@ class Sub_Level():
                                              player_properties["HEIGHT"], player_properties["COLOR"])
 
                 self.all_sprites.add(self.player)
+                self.movable_sprites.add(self.player)
 
 
 def Load(level_number):

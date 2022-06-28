@@ -30,6 +30,7 @@ class MovingPlatform(pygame.sprite.Sprite):
         self.isActive = isActive
 
     def update(self, collision_group):
+
         if self.isActive:
             self.pos.x += self.direction * \
                 abs(self.end_pos.x - self.start_pos.x) / self.speed
