@@ -16,7 +16,7 @@ class Platform(pygame.sprite.Sprite):
 
 
 class MovingPlatform(pygame.sprite.Sprite):
-    def __init__(self, x1, y1, x2, y2, speed, width, height, color):
+    def __init__(self, x1, y1, x2, y2, speed, width, height, color, active=True):
         super().__init__()
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
@@ -27,30 +27,33 @@ class MovingPlatform(pygame.sprite.Sprite):
         self.rect.midbottom = self.pos
         self.speed = speed
         self.direction = 1
+        self.active = True
 
     def update(self, collision_group):
-        self.pos.x += self.direction * \
-            abs(self.end_pos.x - self.start_pos.x) / self.speed
-        self.pos.y += self.direction * \
-            abs(self.end_pos.y - self.start_pos.y) / self.speed
+        if self.active:
+            self.pos.x += self.direction * \
+                abs(self.end_pos.x - self.start_pos.x) / self.speed
+            self.pos.y += self.direction * \
+                abs(self.end_pos.y - self.start_pos.y) / self.speed
 
-        # move all entities on the platform along with it
-        collides = pygame.sprite.spritecollide(self, collision_group, False)
-        for entity in collides:
-            if entity.rect.bottom == self.rect.top + 1:
-                entity.pos.x += self.direction * \
-                    abs(self.end_pos.x - self.start_pos.x) / self.speed
-                entity.pos.y += self.direction * \
-                    abs(self.end_pos.y - self.start_pos.y) / self.speed
-                entity.rect.midbottom = entity.pos
+            # move all entities on the platform along with it
+            collides = pygame.sprite.spritecollide(
+                self, collision_group, False)
+            for entity in collides:
+                if entity.rect.bottom == self.rect.top + 1:
+                    entity.pos.x += self.direction * \
+                        abs(self.end_pos.x - self.start_pos.x) / self.speed
+                    entity.pos.y += self.direction * \
+                        abs(self.end_pos.y - self.start_pos.y) / self.speed
+                    entity.rect.midbottom = entity.pos
 
-        if self.direction == 1:
-            if self.pos.x >= self.end_pos.x and self.pos.y >= self.end_pos.y:
-                self.direction = -1
-        else:
-            if self.pos.x <= self.start_pos.x and self.pos.y <= self.start_pos.y:
-                self.direction = 1
-        self.rect.midbottom = self.pos
+            if self.direction == 1:
+                if self.pos.x >= self.end_pos.x and self.pos.y >= self.end_pos.y:
+                    self.direction = -1
+            else:
+                if self.pos.x <= self.start_pos.x and self.pos.y <= self.start_pos.y:
+                    self.direction = 1
+            self.rect.midbottom = self.pos
 
 
 class Player(pygame.sprite.Sprite):
