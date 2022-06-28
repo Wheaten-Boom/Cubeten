@@ -1,0 +1,42 @@
+{
+    "SUB_LEVELS": [
+        "LEVEL_1_0"
+    ],
+
+    "LEVEL_1_0": {
+
+        "PLATFORMS": [
+            {
+                "POS_X": 400,
+                "POS_Y": 600,
+                "WIDTH": 800,
+                "HEIGHT": 100,
+                "COLOR": "0x2c5160"
+            }
+        ],
+
+        "MOVING_PLATFORMS": [
+            {
+                "X1": 250,
+                "Y1": 350,
+                "X2": 550,
+                "Y2": 350,
+                "SPEED": 200,
+                "WIDTH": 300,
+                "HEIGHT": 25,
+                "COLOR": "0x2c5160",
+                "IS_ACTIVE": true
+            }
+        ],
+
+        "PLAYER": {
+            "POS_X": 400,
+            "POS_Y": 500,
+            "WIDTH": 75,
+            "HEIGHT": 75,
+            "COLOR": "0xf0e4d2"
+        }
+
+
+    }
+}
