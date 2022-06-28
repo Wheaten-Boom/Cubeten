@@ -1,39 +1,35 @@
 {
-
-    "SUB_LEVELS": ["LEVEL_1_0", "LEVEL_1_1"],
+    "SUB_LEVELS": [
+        "LEVEL_1_0"
+    ],
 
     "LEVEL_1_0": {
 
-        "DEFAULT_COLOR": "0xFF0000",
-        
-        "PLATFORM": {
+        "PLATFORMS": [
+            {
+                "POS_X": 400,
+                "POS_Y": 600,
+                "WIDTH": 800,
+                "HEIGHT": 100,
+                "COLOR": "0x2c5160"
+            },
+            {
+                "POS_X": 400,
+                "POS_Y": 350,
+                "WIDTH": 300,
+                "HEIGHT": 25,
+                "COLOR": "0x2c5160"
+            }
+        ],
 
-            "POS_X": 10,
-            "POS_Y": 20,
-            "WIDTH": 40,
-            "HEIGHT": 10,
-            "COLOR": "DEFAULT"
+        "PLAYER": {
+            "POS_X": 400,
+            "POS_Y": 500,
+            "WIDTH": 75,
+            "HEIGHT": 75,
+            "COLOR": "0xf0e4d2"
         }
 
-    },
-
-    "LEVEL_1_1": {
-
-        "DEFAULT_COLOR": "0x72B4C9",
-        
-        "PLATFORM": {
-
-            "POS_X": 30,
-            "POS_Y": 40,
-            "WIDTH": 40,
-            "HEIGHT": 10,
-            "COLOR": "DEFAULT"
-        }
 
     }
-
-
-
-
-
 }

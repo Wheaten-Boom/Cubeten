@@ -3,6 +3,7 @@ import pygame
 from pygame.locals import *
 import objects
 import os
+import Level_Loader
 
 
 class configuration():
@@ -24,16 +25,7 @@ def main():
         (config['WIDTH'], config['HEIGHT']))
     pygame.display.set_caption(config['TITLE'])
 
-    all_sprites = pygame.sprite.Group()
-
-    global platforms
-    platforms = pygame.sprite.Group()
-    platforms.add(objects.Platform(400, 600, 800, 100, '0x2c5160'))
-    platforms.add(objects.Platform(400, 350, 300, 25, '0x2c5160'))
-    all_sprites.add(platforms)
-
-    player = objects.Player(400, 500, 75, 75, '0xf0e4d2')
-    all_sprites.add(player)
+    level = Level_Loader.Load("LEVEL_1")
 
     while True:
         for event in pygame.event.get():
@@ -42,7 +34,7 @@ def main():
                 quit()
             if event.type == KEYUP:
                 if event.key == K_UP:
-                    player.stop_jump()
+                    level[0].player.stop_jump()
 
                 if event.key == K_ESCAPE:
                     pygame.quit()
@@ -50,12 +42,12 @@ def main():
 
         displaysurface.fill((0, 0, 0))
 
-        player.update(platforms)
+        level[0].player.update(level[0].platforms)
 
-        for entity in all_sprites:
+        for entity in level[0].all_sprites:
             displaysurface.blit(entity.surf, entity.rect)
 
-        player.move(platforms)
+        level[0].player.move(level[0].platforms)
 
         pygame.display.update()
         FramePerSec.tick(config['FPS'])

@@ -19,18 +19,26 @@ class Sub_Level():
 
         level_properties = level_file[self.sub_level_number]
 
-        for sprite in level_properties:
-            
-            if (sprite == "DEFAULT_COLOR"):
-                self.default_color = level_properties["DEFAULT_COLOR"]
+        for data in level_properties:
 
-            if (sprite == "PLATFORM"):
-                sprite_properties = level_properties[sprite]
-                new_platform = objects.Platform(sprite_properties["POS_X"], sprite_properties["POS_Y"], sprite_properties["WIDTH"],
-                                                sprite_properties["HEIGHT"], 0xFF0000)
+            if (data == "PLATFORMS"):
 
-                self.all_sprites.add(new_platform)
-                self.platforms.add(new_platform)
+                for platform in level_properties["PLATFORMS"]:
+
+                    new_platform = objects.Platform(platform["POS_X"], platform["POS_Y"], platform["WIDTH"],
+                                                    platform["HEIGHT"], platform["COLOR"])
+
+                    self.all_sprites.add(new_platform)
+                    self.platforms.add(new_platform)
+
+            if (data == "PLAYER"):
+
+                player_properties = level_properties["PLAYER"]
+
+                self.player = objects.Player(player_properties["POS_X"], player_properties["POS_Y"], player_properties["WIDTH"],
+                                             player_properties["HEIGHT"], player_properties["COLOR"])
+
+                self.all_sprites.add(self.player)
 
 
 def Load(level_number):
