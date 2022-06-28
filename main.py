@@ -11,9 +11,6 @@ class configuration():
         with open(os.path.join(os.path.dirname(__file__), 'settings.json')) as config_file:
             self.config = json.load(config_file)
 
-    def get(self, key):
-        return self.config[key]
-
 
 def main():
     config = configuration().config
