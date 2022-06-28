@@ -1,5 +1,7 @@
 {
 
+    "SUB_LEVELS": ["LEVEL_1_0", "LEVEL_1_1"],
+
     "LEVEL_1_0": {
 
         "DEFAULT_COLOR": "0xFF0000",
