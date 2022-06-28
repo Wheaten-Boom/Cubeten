@@ -15,6 +15,47 @@ class Platform(pygame.sprite.Sprite):
         self.rect.midbottom = self.pos
 
 
+class MovingPlatform(pygame.sprite.Sprite):
+    def __init__(self, x1, y1, x2, y2, speed, width, height, color, isActive=True):
+        super().__init__()
+        self.surf = pygame.Surface((width, height))
+        self.surf.fill(color)
+        self.rect = self.surf.get_rect()
+        self.start_pos = pygame.math.Vector2(min(x1, x2), min(y1, y2))
+        self.end_pos = pygame.math.Vector2(max(x1, x2), max(y1, y2))
+        self.pos = pygame.math.Vector2(x1, y1)
+        self.rect.midbottom = self.pos
+        self.speed = speed
+        self.direction = 1
+        self.isActive = isActive
+
+    def update(self, collision_group):
+        if self.isActive:
+            self.pos.x += self.direction * \
+                abs(self.end_pos.x - self.start_pos.x) / self.speed
+            self.pos.y += self.direction * \
+                abs(self.end_pos.y - self.start_pos.y) / self.speed
+
+            # move all entities on the platform along with it
+            collides = pygame.sprite.spritecollide(
+                self, collision_group, False)
+            for entity in collides:
+                if entity.rect.bottom == self.rect.top + 1:
+                    entity.pos.x += self.direction * \
+                        abs(self.end_pos.x - self.start_pos.x) / self.speed
+                    entity.pos.y += self.direction * \
+                        abs(self.end_pos.y - self.start_pos.y) / self.speed
+                    entity.rect.midbottom = entity.pos
+
+            if self.direction == 1:
+                if self.pos.x >= self.end_pos.x and self.pos.y >= self.end_pos.y:
+                    self.direction = -1
+            else:
+                if self.pos.x <= self.start_pos.x and self.pos.y <= self.start_pos.y:
+                    self.direction = 1
+            self.rect.midbottom = self.pos
+
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, color):
         super().__init__()
