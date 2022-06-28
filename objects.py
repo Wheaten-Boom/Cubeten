@@ -16,7 +16,7 @@ class Platform(pygame.sprite.Sprite):
 
 
 class MovingPlatform(pygame.sprite.Sprite):
-    def __init__(self, x1, y1, x2, y2, speed, width, height, color, active=True):
+    def __init__(self, x1, y1, x2, y2, speed, width, height, color, isActive=True):
         super().__init__()
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
@@ -27,10 +27,10 @@ class MovingPlatform(pygame.sprite.Sprite):
         self.rect.midbottom = self.pos
         self.speed = speed
         self.direction = 1
-        self.active = True
+        self.isActive = isActive
 
     def update(self, collision_group):
-        if self.active:
+        if self.isActive:
             self.pos.x += self.direction * \
                 abs(self.end_pos.x - self.start_pos.x) / self.speed
             self.pos.y += self.direction * \
