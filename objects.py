@@ -153,11 +153,25 @@ class Player(pygame.sprite.Sprite):
 
     def update(self, collision_group):
         collides = pygame.sprite.spritecollide(self, collision_group, False)
-        if collides and self.pos.y < collides[0].rect.bottom and self.vel.y > 0:
-            # collides[0] is the first platform that the player collides with
-            self.pos.y = collides[0].rect.top + 1
-            self.vel.y = 0
-            self.is_jumping = False
+        for entity in collides:
+            delta_x = entity.rect.centerx - self.rect.centerx
+            gap_x = abs(delta_x) - self.rect.width / 2 - entity.rect.width / 2
+            delta_y = entity.rect.centery - self.rect.centery
+            gap_y = abs(delta_y) - self.rect.height / 2 - entity.rect.height / 2
+
+            if abs(gap_x) > abs(gap_y):
+                self.vel.y = 0
+                if delta_y < 0:
+                    self.pos.y = entity.rect.bottom + self.rect.height
+                else:
+                    self.pos.y = entity.rect.top + 1
+                    self.is_jumping = False
+            else:
+                self.vel.x = 0
+                if delta_x < 0:
+                    self.pos.x = entity.rect.right + self.rect.width / 2
+                else:
+                    self.pos.x = entity.rect.left - self.rect.width / 2
             self.rect.midbottom = self.pos
 
     def jump(self, collision_group):
