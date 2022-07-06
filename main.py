@@ -42,10 +42,13 @@ def main():
         level[0].player.update(level[0].platforms)
 
         for entity in level[0].all_sprites:
-            displaysurface.blit(entity.surf, entity.rect)
+            if entity.__class__.__name__ == "Button":
+                entity.update(level[0].movable_sprites, level[0].all_sprites)
 
-            for platform in level[0].moving_platforms:
-                platform.update(level[0].movable_sprites)
+            if entity.__class__.__name__ == "MovingPlatform":
+                entity.update(level[0].movable_sprites)
+
+            displaysurface.blit(entity.surf, entity.rect)
 
         level[0].player.move(level[0].platforms)
 
