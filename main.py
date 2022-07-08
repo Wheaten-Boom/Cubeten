@@ -1,7 +1,6 @@
 import json
 import pygame
 from pygame.locals import *
-import objects
 import os
 import Level_Loader
 
