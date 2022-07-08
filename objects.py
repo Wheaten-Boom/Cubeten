@@ -1,8 +1,8 @@
 import pygame
 from pygame.locals import *
-from main import configuration
+from main import *
 
-config = configuration().config
+config = load_configuration()
 
 
 class Platform(pygame.sprite.Sprite):
@@ -137,8 +137,6 @@ class Player(pygame.sprite.Sprite):
             self.acc.x += -config['PHYSICS']['ACCELERATION']
         if pressed_keys[K_RIGHT]:
             self.acc.x += config['PHYSICS']['ACCELERATION']
-        if pressed_keys[K_UP]:
-            self.jump(collision_group)
 
         self.acc.x += self.vel.x * config['PHYSICS']['FRICTION']
         self.vel += self.acc
@@ -157,7 +155,8 @@ class Player(pygame.sprite.Sprite):
             delta_x = entity.rect.centerx - self.rect.centerx
             gap_x = abs(delta_x) - self.rect.width / 2 - entity.rect.width / 2
             delta_y = entity.rect.centery - self.rect.centery
-            gap_y = abs(delta_y) - self.rect.height / 2 - entity.rect.height / 2
+            gap_y = abs(delta_y) - self.rect.height / \
+                2 - entity.rect.height / 2
 
             if abs(gap_x) > abs(gap_y):
                 self.vel.y = 0

@@ -6,14 +6,14 @@ import os
 import Level_Loader
 
 
-class configuration():
-    def __init__(self):
-        with open(os.path.join(os.path.dirname(__file__), 'settings.json')) as config_file:
-            self.config = json.load(config_file)
+def load_configuration():
+    with open(os.path.join(os.path.dirname(__file__), 'settings.json')) as config_file:
+        config = json.load(config_file)
+    return config
 
 
 def main():
-    config = configuration().config
+    config = load_configuration()
 
     pygame.init()
     FramePerSec = pygame.time.Clock()
@@ -25,21 +25,26 @@ def main():
     level = Level_Loader.Load("LEVEL_1")
 
     while True:
+        pressed_keys = pygame.key.get_pressed()
+        if pressed_keys[K_UP]:
+            level[0].player.jump(level[0].platforms)
+
+        if pressed_keys[K_ESCAPE]:
+            pygame.quit()
+            quit()
+
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 quit()
+
             if event.type == KEYUP:
                 if event.key == K_UP:
                     level[0].player.stop_jump()
 
-                if event.key == K_ESCAPE:
-                    pygame.quit()
-                    quit()
-
         displaysurface.fill((0, 0, 0))
 
-        level[0].player.update(level[0].platforms)
+        level[0].player.move(level[0].platforms)
 
         for entity in level[0].all_sprites:
             if entity.__class__.__name__ == "Button":
@@ -48,9 +53,10 @@ def main():
             if entity.__class__.__name__ == "MovingPlatform":
                 entity.update(level[0].movable_sprites)
 
-            displaysurface.blit(entity.surf, entity.rect)
+            if entity.__class__.__name__ == "Player":
+                entity.update(level[0].platforms)
 
-        level[0].player.move(level[0].platforms)
+            displaysurface.blit(entity.surf, entity.rect)
 
         pygame.display.update()
         FramePerSec.tick(config['FPS'])
