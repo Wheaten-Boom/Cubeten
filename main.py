@@ -27,7 +27,7 @@ def main():
     while True:
         pressed_keys = pygame.key.get_pressed()
         if pressed_keys[K_UP]:
-            level[0].player.jump(level[0].platforms)
+            level[0].player.jump(level[0].all_sprites)
 
         if pressed_keys[K_ESCAPE]:
             pygame.quit()
@@ -44,16 +44,20 @@ def main():
 
         displaysurface.fill((0, 0, 0))
 
-        level[0].player.move(level[0].platforms)
+        level[0].player.move()
+        for entity in level[0].cubes:
+            entity.move(level[0].movable_sprites)
 
         for entity in level[0].all_sprites:
-            if entity.__class__.__name__ == "Button":
-                entity.update(level[0].movable_sprites, level[0].all_sprites)
-
             if entity.__class__.__name__ == "MovingPlatform":
                 entity.update(level[0].movable_sprites)
 
             if entity.__class__.__name__ == "Player":
+                entity.update(level[0].movable_sprites)
+                entity.update(level[0].platforms)
+
+            if entity.__class__.__name__ == "Cube":
+                entity.update(level[0].movable_sprites)
                 entity.update(level[0].platforms)
 
             displaysurface.blit(entity.surf, entity.rect)
