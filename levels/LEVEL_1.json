@@ -27,20 +27,13 @@
                 "ID": 2
             }
         ],
-        "BUTTONS": [
+        "CUBES": [
             {
-                "POS_X": 550,
-                "POS_Y": 500,
-                "WIDTH": 100,
-                "HEIGHT": 20,
-                "COLOR": "0x512c60",
-                "ACTIVATE_ACTION": [
-                    "ACTIVATE_OBJECT", 2
-                ],
-                "DEACTIVATE_ACTION": [
-                    "DEACTIVATE_OBJECT", 2
-                ],
-                "IS_ACTIVE": false,
+                "POS_X": 300,
+                "POS_Y": 475,
+                "WIDTH": 50,
+                "HEIGHT": 50,
+                "COLOR": "0x6052c1",
                 "ID": 3
             }
         ],

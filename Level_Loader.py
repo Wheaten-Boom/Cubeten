@@ -13,7 +13,7 @@ class Sub_Level():
         self.all_sprites = pygame.sprite.Group()
         self.platforms = pygame.sprite.Group()
         self.moving_platforms = pygame.sprite.Group()
-        self.buttons = pygame.sprite.Group()
+        self.cubes = pygame.sprite.Group()
         self.movable_sprites = pygame.sprite.Group()
 
         with open(os.path.join(os.path.dirname(__file__), 'levels', str(self.level_number) + ".json")) as level_file:
@@ -44,14 +44,14 @@ class Sub_Level():
                     self.platforms.add(new_platform)
                     self.moving_platforms.add(new_platform)
 
-            if (data == "BUTTONS"):
-                for button in level_properties["BUTTONS"]:
-                    new_button = objects.Button(button["POS_X"], button["POS_Y"], button["WIDTH"],
-                                                button["HEIGHT"], button["COLOR"], button["ACTIVATE_ACTION"], button["DEACTIVATE_ACTION"], button["ID"], button["IS_ACTIVE"])
+            if (data == "CUBES"):
+                for cube in level_properties["CUBES"]:
+                    new_cube = objects.Cube(cube["POS_X"], cube["POS_Y"], cube["WIDTH"],
+                                            cube["HEIGHT"], cube["COLOR"], cube["ID"])
 
-                    self.all_sprites.add(new_button)
-                    self.platforms.add(new_button)
-                    self.buttons.add(new_button)
+                    self.all_sprites.add(new_cube)
+                    self.cubes.add(new_cube)
+                    self.movable_sprites.add(new_cube)
 
             if (data == "PLAYER"):
 
