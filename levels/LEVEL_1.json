@@ -2,19 +2,17 @@
     "SUB_LEVELS": [
         "LEVEL_1_0"
     ],
-
     "LEVEL_1_0": {
-
         "PLATFORMS": [
             {
                 "POS_X": 400,
                 "POS_Y": 600,
                 "WIDTH": 800,
                 "HEIGHT": 100,
-                "COLOR": "0x2c5160"
+                "COLOR": "0x2c5160",
+                "ID": 1
             }
         ],
-
         "MOVING_PLATFORMS": [
             {
                 "X1": 250,
@@ -25,18 +23,34 @@
                 "WIDTH": 300,
                 "HEIGHT": 25,
                 "COLOR": "0x2c5160",
-                "IS_ACTIVE": true
+                "IS_ACTIVE": false,
+                "ID": 2
             }
         ],
-
+        "BUTTONS": [
+            {
+                "POS_X": 550,
+                "POS_Y": 500,
+                "WIDTH": 100,
+                "HEIGHT": 20,
+                "COLOR": "0x512c60",
+                "ACTIVATE_ACTION": [
+                    "ACTIVATE_OBJECT", 2
+                ],
+                "DEACTIVATE_ACTION": [
+                    "DEACTIVATE_OBJECT", 2
+                ],
+                "IS_ACTIVE": false,
+                "ID": 3
+            }
+        ],
         "PLAYER": {
             "POS_X": 400,
             "POS_Y": 500,
             "WIDTH": 75,
             "HEIGHT": 75,
-            "COLOR": "0xf0e4d2"
+            "COLOR": "0xf0e4d2",
+            "ID": 0
         }
-
-
     }
 }

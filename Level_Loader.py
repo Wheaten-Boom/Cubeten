@@ -6,7 +6,6 @@ import os
 
 
 class Sub_Level():
-
     def __init__(self, level_number, sub_level_number) -> None:
         self.level_number = level_number
         self.sub_level_number = sub_level_number
@@ -14,6 +13,7 @@ class Sub_Level():
         self.all_sprites = pygame.sprite.Group()
         self.platforms = pygame.sprite.Group()
         self.moving_platforms = pygame.sprite.Group()
+        self.buttons = pygame.sprite.Group()
         self.movable_sprites = pygame.sprite.Group()
 
         with open(os.path.join(os.path.dirname(__file__), 'levels', str(self.level_number) + ".json")) as level_file:
@@ -28,7 +28,7 @@ class Sub_Level():
                 for platform in level_properties["PLATFORMS"]:
 
                     new_platform = objects.Platform(platform["POS_X"], platform["POS_Y"], platform["WIDTH"],
-                                                    platform["HEIGHT"], platform["COLOR"])
+                                                    platform["HEIGHT"], platform["COLOR"], platform["ID"])
 
                     self.all_sprites.add(new_platform)
                     self.platforms.add(new_platform)
@@ -38,11 +38,20 @@ class Sub_Level():
                 for platform in level_properties["MOVING_PLATFORMS"]:
 
                     new_platform = objects.MovingPlatform(platform["X1"], platform["Y1"], platform["X2"], platform["Y2"], platform["SPEED"], platform["WIDTH"],
-                                                          platform["HEIGHT"], platform["COLOR"], platform["IS_ACTIVE"])
+                                                          platform["HEIGHT"], platform["COLOR"], platform["ID"], platform["IS_ACTIVE"])
 
                     self.all_sprites.add(new_platform)
                     self.platforms.add(new_platform)
                     self.moving_platforms.add(new_platform)
+
+            if (data == "BUTTONS"):
+                for button in level_properties["BUTTONS"]:
+                    new_button = objects.Button(button["POS_X"], button["POS_Y"], button["WIDTH"],
+                                                button["HEIGHT"], button["COLOR"], button["ACTIVATE_ACTION"], button["DEACTIVATE_ACTION"], button["ID"], button["IS_ACTIVE"])
+
+                    self.all_sprites.add(new_button)
+                    self.platforms.add(new_button)
+                    self.buttons.add(new_button)
 
             if (data == "PLAYER"):
 
