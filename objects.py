@@ -98,7 +98,7 @@ class Button(pygame.sprite.Sprite):
                         break
             if do == "DEACTIVATE_OBJECT":
                 for entity in activation_group:
-                    if entity.ID == self.deactivate_actions[index + 1]:
+                    if entity.ID == self.activate_actions[index + 1]:
                         entity.isActive = False
                         break
 
@@ -108,7 +108,7 @@ class Button(pygame.sprite.Sprite):
                 continue
             if do == "ACTIVATE_OBJECT":
                 for entity in activation_group:
-                    if entity.ID == self.activate_actions[index + 1]:
+                    if entity.ID == self.deactivate_actions[index + 1]:
                         entity.isActive = True
                         break
             if do == "DEACTIVATE_OBJECT":
