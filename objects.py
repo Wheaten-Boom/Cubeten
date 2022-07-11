@@ -6,19 +6,22 @@ config = load_configuration()
 
 
 class Platform(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height, color, ID):
+    def __init__(self, x, y, width, height, color, ID, draw_layer):
         super().__init__()
+        self.image = None
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
         self.rect = self.surf.get_rect()
         self.pos = pygame.math.Vector2(x, y)
         self.ID = ID
+        self.draw_layer = draw_layer
         self.rect.midbottom = self.pos
 
 
 class MovingPlatform(pygame.sprite.Sprite):
-    def __init__(self, x1, y1, x2, y2, speed, width, height, color, ID, isActive=True):
+    def __init__(self, x1, y1, x2, y2, speed, width, height, color, ID, draw_layer, isActive=True):
         super().__init__()
+        self.image = None
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
         self.rect = self.surf.get_rect()
@@ -30,6 +33,7 @@ class MovingPlatform(pygame.sprite.Sprite):
         self.direction = 1
         self.isActive = isActive
         self.ID = ID
+        self.draw_layer = draw_layer
 
     def update(self, collision_group):
         if self.isActive:
@@ -59,8 +63,9 @@ class MovingPlatform(pygame.sprite.Sprite):
 
 
 class Cube(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height, color, ID):
+    def __init__(self, x, y, width, height, color, ID, draw_layer):
         super().__init__()
+        self.image = None
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
         self.rect = self.surf.get_rect()
@@ -69,6 +74,7 @@ class Cube(pygame.sprite.Sprite):
         self.acc = pygame.math.Vector2(0, 0)
         self.is_held = False
         self.ID = ID
+        self.draw_layer = draw_layer
         self.rect.midbottom = self.pos
 
     def move(self, collision_group):
@@ -91,35 +97,38 @@ class Cube(pygame.sprite.Sprite):
         self.rect.midbottom = self.pos
 
     def update(self, collision_group):
-        collides = pygame.sprite.spritecollide(self, collision_group, False)
-        for entity in collides:
-            if entity is not self:
-                delta_x = entity.rect.centerx - self.rect.centerx
-                gap_x = abs(delta_x) - self.rect.width / \
-                    2 - entity.rect.width / 2
-                delta_y = entity.rect.centery - self.rect.centery
-                gap_y = abs(delta_y) - self.rect.height / \
-                    2 - entity.rect.height / 2
+        if not self.is_held:
+            collides = pygame.sprite.spritecollide(
+                self, collision_group, False)
+            for entity in collides:
+                if entity is not self:
+                    delta_x = entity.rect.centerx - self.rect.centerx
+                    gap_x = abs(delta_x) - self.rect.width / \
+                        2 - entity.rect.width / 2
+                    delta_y = entity.rect.centery - self.rect.centery
+                    gap_y = abs(delta_y) - self.rect.height / \
+                        2 - entity.rect.height / 2
 
-                if abs(gap_x) > abs(gap_y):
-                    self.vel.y = 0
-                    if delta_y < 0:
-                        self.pos.y = entity.rect.bottom + self.rect.height
+                    if abs(gap_x) > abs(gap_y):
+                        self.vel.y = 0
+                        if delta_y < 0:
+                            self.pos.y = entity.rect.bottom + self.rect.height
+                        else:
+                            self.pos.y = entity.rect.top + 1
+                            self.is_jumping = False
                     else:
-                        self.pos.y = entity.rect.top + 1
-                        self.is_jumping = False
-                else:
-                    self.vel.x = 0
-                    if delta_x < 0:
-                        self.pos.x = entity.rect.right + self.rect.width / 2
-                    else:
-                        self.pos.x = entity.rect.left - self.rect.width / 2
-                self.rect.midbottom = self.pos
+                        self.vel.x = 0
+                        if delta_x < 0:
+                            self.pos.x = entity.rect.right + self.rect.width / 2
+                        else:
+                            self.pos.x = entity.rect.left - self.rect.width / 2
+                    self.rect.midbottom = self.pos
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height, color):
+    def __init__(self, x, y, width, height, color, ID, draw_layer):
         super().__init__()
+        self.image = None
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
         self.rect = self.surf.get_rect()
@@ -127,6 +136,11 @@ class Player(pygame.sprite.Sprite):
         self.vel = pygame.math.Vector2(0, 0)
         self.acc = pygame.math.Vector2(0, 0)
         self.is_jumping = False
+        self.direction = 1
+        self.is_holding = False
+        self.held_object = None
+        self.ID = ID
+        self.draw_layer = draw_layer
         self.rect.midbottom = self.pos
 
     def move(self):
@@ -173,6 +187,15 @@ class Player(pygame.sprite.Sprite):
                     else:
                         self.pos.x = entity.rect.left - self.rect.width / 2
                 self.rect.midbottom = self.pos
+        if self.vel.x > 0:
+            self.direction = 1
+        elif self.vel.x < 0:
+            self.direction = -1
+
+        if self.is_holding:
+            self.held_object.pos.x = self.pos.x
+            self.held_object.pos.y = self.pos.y
+            self.held_object.rect.center = self.rect.center
 
     def jump(self, collision_group):
         collides = pygame.sprite.spritecollide(self, collision_group, False)
@@ -185,3 +208,44 @@ class Player(pygame.sprite.Sprite):
     def stop_jump(self):
         if self.vel.y < -config['PHYSICS']['SHORT_JUMP_POWER'] and self.is_jumping:
             self.vel.y = -config['PHYSICS']['SHORT_JUMP_POWER']
+
+    def hold_object(self, all_sprites_group, holdable_group):
+        if self.is_holding:
+            collision_sprite = pygame.sprite.Sprite()
+            collision_sprite.rect = self.held_object.rect.copy()
+            collision_sprite.rect.x += self.rect.width * self.direction
+            if pygame.sprite.spritecollide(collision_sprite, all_sprites_group, False):
+                collision_sprite.rect.x -= self.rect.width * self.direction * 2
+                if pygame.sprite.spritecollide(collision_sprite, all_sprites_group, False):
+                    return False
+                else:
+                    self.held_object.pos = collision_sprite.rect.midbottom
+                    self.held_object.rect.midbottom = self.held_object.pos
+                    self.is_holding = False
+                    self.held_object.is_held = False
+                    return True
+            else:
+                self.held_object.pos = collision_sprite.rect.midbottom
+                self.held_object.rect.midbottom = self.held_object.pos
+                self.is_holding = False
+                self.held_object.is_held = False
+                return True
+
+        else:
+            proximity_sprite = pygame.sprite.Sprite()
+            proximity_sprite.rect = pygame.Rect(self.rect.left - self.rect.width, self.rect.top -
+                                                self.rect.height, self.rect.width * 3, self.rect.height * 3)
+            holdable_objects = pygame.sprite.spritecollide(
+                proximity_sprite, holdable_group, False)
+            for entity in holdable_objects:
+                if entity is not self:
+                    self.held_object = entity
+                    self.is_holding = True
+                    self.held_object.vel = pygame.Vector2(0, 0)
+                    self.held_object.acc = pygame.Vector2(0, 0)
+                    self.held_object.pos.x = self.rect.left
+                    self.held_object.pos.y = self.rect.top
+                    self.held_object.rect.topleft = self.held_object.pos
+                    self.held_object.is_held = True
+                    return True
+            return False

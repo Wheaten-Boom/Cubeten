@@ -10,7 +10,8 @@
                 "WIDTH": 800,
                 "HEIGHT": 100,
                 "COLOR": "0x2c5160",
-                "ID": 1
+                "ID": 0,
+                "DRAW_LAYER": 0
             }
         ],
         "MOVING_PLATFORMS": [
@@ -24,7 +25,8 @@
                 "HEIGHT": 25,
                 "COLOR": "0x2c5160",
                 "IS_ACTIVE": false,
-                "ID": 2
+                "ID": 1,
+                "DRAW_LAYER": 0
             }
         ],
         "CUBES": [
@@ -34,7 +36,8 @@
                 "WIDTH": 50,
                 "HEIGHT": 50,
                 "COLOR": "0x6052c1",
-                "ID": 3
+                "ID": 2,
+                "DRAW_LAYER": 2
             }
         ],
         "PLAYER": {
@@ -43,7 +46,8 @@
             "WIDTH": 75,
             "HEIGHT": 75,
             "COLOR": "0xf0e4d2",
-            "ID": 0
+            "ID": 3,
+            "DRAW_LAYER": 1
         }
     }
 }

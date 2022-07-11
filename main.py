@@ -40,6 +40,19 @@ def main():
             if event.type == KEYUP:
                 if event.key == K_UP:
                     level[0].player.stop_jump()
+            if event.type == KEYDOWN:
+                if event.key == K_SPACE:
+                    success = level[0].player.hold_object(
+                        level[0].all_sprites, level[0].movable_sprites)
+                    if success == True:
+                        if level[0].player.is_holding:
+                            groups = level[0].player.held_object.groups()
+                            level[0].player.held_object.kill()
+                            level[0].player.held_object.add(
+                                level[0].all_sprites)
+                        else:
+                            level[0].player.held_object.add(groups)
+                            level[0].player.held_object = None
 
         displaysurface.fill((0, 0, 0))
 
@@ -47,7 +60,7 @@ def main():
         for entity in level[0].cubes:
             entity.move(level[0].movable_sprites)
 
-        for entity in level[0].all_sprites:
+        for entity in sorted(level[0].all_sprites, key=lambda x: x.ID):
             if entity.__class__.__name__ == "MovingPlatform":
                 entity.update(level[0].movable_sprites)
 
@@ -59,6 +72,7 @@ def main():
                 entity.update(level[0].movable_sprites)
                 entity.update(level[0].platforms)
 
+        for entity in sorted(level[0].all_sprites, key=lambda x: x.draw_layer):
             displaysurface.blit(entity.surf, entity.rect)
 
         pygame.display.update()
