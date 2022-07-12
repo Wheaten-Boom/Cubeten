@@ -1,3 +1,4 @@
+import math
 import pygame
 from pygame.locals import *
 from main import *
@@ -117,6 +118,21 @@ class Button(pygame.sprite.Sprite):
                         entity.isActive = False
                         break
 
+
+class Switching_Panel(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height, color, ID, level_ID):
+        super().__init__()
+        self.surf = pygame.Surface((width, height))
+        self.surf.fill(color)
+        self.rect = self.surf.get_rect()
+        self.pos = pygame.math.Vector2(x, y)
+        self.ID = ID
+        self.rect.midbottom = self.pos
+        self.level_ID = level_ID
+
+    def Switch_Level(self, player, level):
+        if (self.pos.x - 50 < player.pos.x and player.pos.x < self.pos.x + 50 and player.pos.y >= self.pos.y and player.pos.y < self.pos.y + 50):
+            level[-1] = self.level_ID
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, color):

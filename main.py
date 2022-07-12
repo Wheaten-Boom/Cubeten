@@ -13,6 +13,7 @@ def load_configuration():
 
 
 def main():
+
     config = load_configuration()
 
     pygame.init()
@@ -23,11 +24,12 @@ def main():
     pygame.display.set_caption(config['TITLE'])
 
     level = Level_Loader.Load("LEVEL_1")
+    current_sublevel = 0
 
     while True:
         pressed_keys = pygame.key.get_pressed()
         if pressed_keys[K_UP]:
-            level[0].player.jump(level[0].platforms)
+            level[current_sublevel].player.jump(level[current_sublevel].platforms)
 
         if pressed_keys[K_ESCAPE]:
             pygame.quit()
@@ -40,26 +42,33 @@ def main():
 
             if event.type == KEYUP:
                 if event.key == K_UP:
-                    level[0].player.stop_jump()
+                    level[current_sublevel].player.stop_jump()
+
+            if event.type == KEYDOWN:
+                if event.key == K_SPACE:
+                    for switching_panel in level[current_sublevel].switching_panels:
+                        switching_panel.Switch_Level(level[current_sublevel].player, level)
 
         displaysurface.fill((0, 0, 0))
 
-        level[0].player.move(level[0].platforms)
+        level[current_sublevel].player.move(level[current_sublevel].platforms)
 
-        for entity in level[0].all_sprites:
+        for entity in level[current_sublevel].all_sprites:
             if entity.__class__.__name__ == "Button":
-                entity.update(level[0].movable_sprites, level[0].all_sprites)
+                entity.update(
+                    level[current_sublevel].movable_sprites, level[current_sublevel].all_sprites)
 
-            if entity.__class__.__name__ == "MovingPlatform":
-                entity.update(level[0].movable_sprites)
+            if entity.__class__.__name__ == "MovingPlatform":  
+                entity.update(level[current_sublevel].movable_sprites)
 
             if entity.__class__.__name__ == "Player":
-                entity.update(level[0].platforms)
+                entity.update(level[current_sublevel].platforms)
 
             displaysurface.blit(entity.surf, entity.rect)
 
         pygame.display.update()
         FramePerSec.tick(config['FPS'])
+        current_sublevel = level[-1]
 
 
 if __name__ == "__main__":

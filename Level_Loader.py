@@ -14,6 +14,7 @@ class Sub_Level():
         self.platforms = pygame.sprite.Group()
         self.moving_platforms = pygame.sprite.Group()
         self.buttons = pygame.sprite.Group()
+        self.switching_panels = pygame.sprite.Group()
         self.movable_sprites = pygame.sprite.Group()
 
         with open(os.path.join(os.path.dirname(__file__), 'levels', str(self.level_number) + ".json")) as level_file:
@@ -53,6 +54,16 @@ class Sub_Level():
                     self.platforms.add(new_button)
                     self.buttons.add(new_button)
 
+            if (data == "SWITCHING_PANELS"):
+
+                for panel in level_properties["SWITCHING_PANELS"]:
+
+                    new_panel = objects.Switching_Panel(panel["POS_X"], panel["POS_Y"], panel["WIDTH"],
+                                                    panel["HEIGHT"], panel["COLOR"], panel["ID"], panel["LEVEL_ID"])
+
+                    self.all_sprites.add(new_panel)
+                    self.switching_panels.add(new_panel)
+
             if (data == "PLAYER"):
 
                 player_properties = level_properties["PLAYER"]
@@ -74,5 +85,7 @@ def Load(level_number):
 
     for sub_level in level_file["SUB_LEVELS"]:
         sub_levels.append(Sub_Level(level_number, sub_level))
+
+    sub_levels.append(0)
 
     return sub_levels
