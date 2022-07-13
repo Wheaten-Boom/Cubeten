@@ -131,7 +131,7 @@ class Switching_Panel(pygame.sprite.Sprite):
         self.level_ID = level_ID
 
     def Switch_Level(self, player, level):
-        if (self.pos.x - 50 < player.pos.x and player.pos.x < self.pos.x + 50 and player.pos.y >= self.pos.y and player.pos.y < self.pos.y + 50):
+        if (self.pos.x - 50 < player.pos.x and player.pos.x < self.pos.x + 50 and player.pos.y >= self.pos.y and player.pos.y < self.pos.y + 75):
             level[-1] = self.level_ID
 
 class Player(pygame.sprite.Sprite):
