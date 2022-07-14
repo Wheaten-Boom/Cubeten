@@ -1,3 +1,4 @@
+from distutils.command.build import build
 import json
 import pygame
 from pygame.locals import *
@@ -48,6 +49,10 @@ def main():
                 if event.key == K_SPACE:
                     for switching_panel in level[current_sublevel].switching_panels:
                         switching_panel.Switch_Level(level[current_sublevel].player, level)
+                    
+                    for button in level[current_sublevel].buttons:
+                        button.update(level[current_sublevel].movable_sprites, level[current_sublevel].all_sprites, level[current_sublevel].player)
+
 
         displaysurface.fill((0, 0, 0))
 
@@ -55,8 +60,9 @@ def main():
 
         for entity in level[current_sublevel].all_sprites:
             if entity.__class__.__name__ == "Button":
-                entity.update(
-                    level[current_sublevel].movable_sprites, level[current_sublevel].all_sprites)
+                if entity.mode == "BUTTON":
+                    entity.update(
+                        level[current_sublevel].movable_sprites, level[current_sublevel].all_sprites,level[current_sublevel].player)
 
             if entity.__class__.__name__ == "MovingPlatform":  
                 entity.update(level[current_sublevel].movable_sprites)

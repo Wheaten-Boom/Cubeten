@@ -23,8 +23,9 @@
                 "WIDTH": 300,
                 "HEIGHT": 25,
                 "COLOR": "0x2c5160",
-                "IS_ACTIVE": false,
-                "ID": 2
+                "ID": 2,
+                "MODE": "BUTTON",
+                "IS_ACTIVE": false
             }
         ],
         "BUTTONS": [
@@ -41,6 +42,7 @@
                     "DEACTIVATE_OBJECT", 2
                 ],
                 "IS_ACTIVE": false,
+                "MODE": "BUTTON",
                 "ID": 3
             }
         ],
@@ -96,9 +98,9 @@
             {
                 "POS_X": 550,
                 "POS_Y": 500,
-                "WIDTH": 100,
-                "HEIGHT": 20,
-                "COLOR": "0x512c60",
+                "WIDTH": 20,
+                "HEIGHT": 100,
+                "COLOR": "0xD83232",
                 "ACTIVATE_ACTION": [
                     "ACTIVATE_OBJECT", 2
                 ],
@@ -106,6 +108,7 @@
                     "DEACTIVATE_OBJECT", 2
                 ],
                 "IS_ACTIVE": false,
+                "MODE": "SWITCH",
                 "ID": 3
             }
         ],
