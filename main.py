@@ -64,11 +64,14 @@ def main():
             if entity.__class__.__name__ == "MovingPlatform":
                 entity.update(level[0].movable_sprites)
 
-            if entity.__class__.__name__ == "Player":
+            if entity.__class__.__name__ == "Button":
+                entity.update(level[0].movable_sprites, level[0].all_sprites)
+
+            if entity.__class__.__name__ == "Cube":
                 entity.update(level[0].movable_sprites)
                 entity.update(level[0].platforms)
 
-            if entity.__class__.__name__ == "Cube":
+            if entity.__class__.__name__ == "Player":
                 entity.update(level[0].movable_sprites)
                 entity.update(level[0].platforms)
 

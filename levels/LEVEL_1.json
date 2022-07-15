@@ -29,6 +29,24 @@
                 "DRAW_LAYER": 0
             }
         ],
+        "BUTTONS": [
+            {
+                "POS_X": 550,
+                "POS_Y": 500,
+                "WIDTH": 100,
+                "HEIGHT": 20,
+                "COLOR": "0x512c60",
+                "ACTIVATE_ACTION": [
+                    "ACTIVATE_OBJECT", 1
+                ],
+                "DEACTIVATE_ACTION": [
+                    "DEACTIVATE_OBJECT", 1
+                ],
+                "IS_ACTIVE": false,
+                "ID": 2,
+                "DRAW_LAYER": 0
+            }
+        ],
         "CUBES": [
             {
                 "POS_X": 300,
@@ -36,7 +54,7 @@
                 "WIDTH": 50,
                 "HEIGHT": 50,
                 "COLOR": "0x6052c1",
-                "ID": 2,
+                "ID": 3,
                 "DRAW_LAYER": 2
             }
         ],
@@ -46,7 +64,7 @@
             "WIDTH": 75,
             "HEIGHT": 75,
             "COLOR": "0xf0e4d2",
-            "ID": 3,
+            "ID": 4,
             "DRAW_LAYER": 1
         }
     }

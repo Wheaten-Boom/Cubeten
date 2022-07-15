@@ -8,7 +8,6 @@ config = load_configuration()
 class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, color, ID, draw_layer):
         super().__init__()
-        self.image = None
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
         self.rect = self.surf.get_rect()
@@ -21,7 +20,6 @@ class Platform(pygame.sprite.Sprite):
 class MovingPlatform(pygame.sprite.Sprite):
     def __init__(self, x1, y1, x2, y2, speed, width, height, color, ID, draw_layer, isActive=True):
         super().__init__()
-        self.image = None
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
         self.rect = self.surf.get_rect()
@@ -62,10 +60,70 @@ class MovingPlatform(pygame.sprite.Sprite):
             self.rect.midbottom = self.pos
 
 
+class Button(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height, color, activate_actions, deactivate_actions, ID, draw_layer, isActive=False):
+        super().__init__()
+        self.surf = pygame.Surface((width, height))
+        self.surf.fill(color)
+        self.rect = self.surf.get_rect()
+        self.pos = pygame.math.Vector2(x, y)
+        self.isActive = isActive
+        self.activate_actions = activate_actions
+        self.deactivate_actions = deactivate_actions
+        self.ID = ID
+        self.draw_layer = draw_layer
+        self.rect.midbottom = self.pos
+
+    def update(self, collision_group, activation_group):
+        if not self.isActive:
+            collides = pygame.sprite.spritecollide(
+                self, collision_group, False)
+            for entity in collides:
+                if entity.rect.bottom == self.rect.top + 1:
+                    self.isActive = True
+                    self.activate_button(activation_group)
+                    break
+        else:
+            collides = pygame.sprite.spritecollide(
+                self, collision_group, False)
+            if not collides:
+                self.isActive = False
+                self.deactivate_button(activation_group)
+
+    def activate_button(self, activation_group):
+        for index, do in enumerate(self.activate_actions):
+            if type(do) != str:
+                continue
+            if do == "ACTIVATE_OBJECT":
+                for entity in activation_group:
+                    if entity.ID == self.activate_actions[index + 1]:
+                        entity.isActive = True
+                        break
+            if do == "DEACTIVATE_OBJECT":
+                for entity in activation_group:
+                    if entity.ID == self.deactivate_actions[index + 1]:
+                        entity.isActive = False
+                        break
+
+    def deactivate_button(self, activation_group):
+        for index, do in enumerate(self.deactivate_actions):
+            if type(do) != str:
+                continue
+            if do == "ACTIVATE_OBJECT":
+                for entity in activation_group:
+                    if entity.ID == self.activate_actions[index + 1]:
+                        entity.isActive = True
+                        break
+            if do == "DEACTIVATE_OBJECT":
+                for entity in activation_group:
+                    if entity.ID == self.deactivate_actions[index + 1]:
+                        entity.isActive = False
+                        break
+
+
 class Cube(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, color, ID, draw_layer):
         super().__init__()
-        self.image = None
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
         self.rect = self.surf.get_rect()
@@ -128,7 +186,6 @@ class Cube(pygame.sprite.Sprite):
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, color, ID, draw_layer):
         super().__init__()
-        self.image = None
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
         self.rect = self.surf.get_rect()
