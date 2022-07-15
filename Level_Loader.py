@@ -15,6 +15,7 @@ class Sub_Level():
         self.moving_platforms = pygame.sprite.Group()
         self.buttons = pygame.sprite.Group()
         self.cubes = pygame.sprite.Group()
+        self.switching_panels = pygame.sprite.Group()
         self.movable_sprites = pygame.sprite.Group()
 
         with open(os.path.join(os.path.dirname(__file__), 'levels', str(self.level_number) + ".json")) as level_file:
@@ -48,11 +49,23 @@ class Sub_Level():
             if (data == "BUTTONS"):
                 for button in level_properties["BUTTONS"]:
                     new_button = objects.Button(button["POS_X"], button["POS_Y"], button["WIDTH"],
-                                                button["HEIGHT"], button["COLOR"], button["ACTIVATE_ACTION"], button["DEACTIVATE_ACTION"], button["ID"], button["DRAW_LAYER"], button["IS_ACTIVE"])
+                                                button["HEIGHT"], button["COLOR"], button["ACTIVATE_ACTION"], button["DEACTIVATE_ACTION"], button["MODE"], button["ID"], button["DRAW_LAYER"], button["IS_ACTIVE"])
 
                     self.all_sprites.add(new_button)
-                    self.platforms.add(new_button)
                     self.buttons.add(new_button)
+
+                    if new_button.mode == "BUTTON":
+                        self.platforms.add(new_button)
+
+            if (data == "SWITCHING_PANELS"):
+
+                for panel in level_properties["SWITCHING_PANELS"]:
+
+                    new_panel = objects.SwitchingPanel(panel["POS_X"], panel["POS_Y"], panel["WIDTH"],
+                                                    panel["HEIGHT"], panel["COLOR"], panel["LEVEL_ID"], panel["ID"], panel["DRAW_LAYER"])
+
+                    self.all_sprites.add(new_panel)
+                    self.switching_panels.add(new_panel)
 
             if (data == "CUBES"):
                 for cube in level_properties["CUBES"]:
@@ -84,5 +97,7 @@ def Load(level_number):
 
     for sub_level in level_file["SUB_LEVELS"]:
         sub_levels.append(Sub_Level(level_number, sub_level))
+
+    sub_levels.append(0)
 
     return sub_levels

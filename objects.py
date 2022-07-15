@@ -1,3 +1,4 @@
+import math
 import pygame
 from pygame.locals import *
 from main import *
@@ -61,7 +62,7 @@ class MovingPlatform(pygame.sprite.Sprite):
 
 
 class Button(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height, color, activate_actions, deactivate_actions, ID, draw_layer, isActive=False):
+    def __init__(self, x, y, width, height, color, activate_actions, deactivate_actions, mode, ID, draw_layer, isActive=False):
         super().__init__()
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
@@ -70,25 +71,40 @@ class Button(pygame.sprite.Sprite):
         self.isActive = isActive
         self.activate_actions = activate_actions
         self.deactivate_actions = deactivate_actions
+        self.mode = mode
         self.ID = ID
         self.draw_layer = draw_layer
         self.rect.midbottom = self.pos
 
-    def update(self, collision_group, activation_group):
-        if not self.isActive:
-            collides = pygame.sprite.spritecollide(
-                self, collision_group, False)
-            for entity in collides:
-                if entity.rect.bottom == self.rect.top + 1:
+    def update(self, collision_group, activation_group, player):
+        if self.mode == "BUTTON":
+            if not self.isActive:
+                collides = pygame.sprite.spritecollide(
+                    self, collision_group, False)
+                for entity in collides:
+                    if entity.rect.bottom == self.rect.top + 1:
+                        self.isActive = True
+                        self.activate_button(activation_group)
+                        break
+            else:
+                collides = pygame.sprite.spritecollide(
+                    self, collision_group, False)
+                if not collides:
+                    self.isActive = False
+                    self.deactivate_button(activation_group)
+
+        elif self.mode == "SWITCH":
+            if not self.isActive:
+                if (self.pos.x - player.rect.width < player.pos.x and player.pos.x < self.pos.x + player.rect.width
+                        and player.pos.y >= self.pos.y and player.pos.y < self.pos.y + player.rect.height):
                     self.isActive = True
                     self.activate_button(activation_group)
-                    break
-        else:
-            collides = pygame.sprite.spritecollide(
-                self, collision_group, False)
-            if not collides:
-                self.isActive = False
-                self.deactivate_button(activation_group)
+
+            else:
+                if (self.pos.x - player.rect.width < player.pos.x and player.pos.x < self.pos.x + player.rect.width
+                        and player.pos.y >= self.pos.y and player.pos.y < self.pos.y + player.rect.height):
+                    self.isActive = False
+                    self.deactivate_button(activation_group)
 
     def activate_button(self, activation_group):
         for index, do in enumerate(self.activate_actions):
@@ -101,7 +117,7 @@ class Button(pygame.sprite.Sprite):
                         break
             if do == "DEACTIVATE_OBJECT":
                 for entity in activation_group:
-                    if entity.ID == self.deactivate_actions[index + 1]:
+                    if entity.ID == self.activate_actions[index + 1]:
                         entity.isActive = False
                         break
 
@@ -111,7 +127,7 @@ class Button(pygame.sprite.Sprite):
                 continue
             if do == "ACTIVATE_OBJECT":
                 for entity in activation_group:
-                    if entity.ID == self.activate_actions[index + 1]:
+                    if entity.ID == self.deactivate_actions[index + 1]:
                         entity.isActive = True
                         break
             if do == "DEACTIVATE_OBJECT":
@@ -119,6 +135,24 @@ class Button(pygame.sprite.Sprite):
                     if entity.ID == self.deactivate_actions[index + 1]:
                         entity.isActive = False
                         break
+
+
+class SwitchingPanel(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height, color, level_ID, ID, draw_layer):
+        super().__init__()
+        self.surf = pygame.Surface((width, height))
+        self.surf.fill(color)
+        self.rect = self.surf.get_rect()
+        self.pos = pygame.math.Vector2(x, y)
+        self.ID = ID
+        self.draw_layer = draw_layer
+        self.rect.midbottom = self.pos
+        self.level_ID = level_ID
+
+    def switch_level(self, player, level):
+        if (self.pos.x - player.rect.width < player.pos.x and player.pos.x < self.pos.x + player.rect.width
+                and player.pos.y >= self.pos.y and player.pos.y < self.pos.y + player.rect.height):
+            level[-1] = self.level_ID
 
 
 class Cube(pygame.sprite.Sprite):
