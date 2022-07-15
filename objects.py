@@ -221,12 +221,16 @@ class Player(pygame.sprite.Sprite):
                 else:
                     self.held_object.pos = collision_sprite.rect.midbottom
                     self.held_object.rect.midbottom = self.held_object.pos
+                    self.held_object.vel = self.vel.copy()
+                    self.held_object.acc = self.acc.copy()
                     self.is_holding = False
                     self.held_object.is_held = False
                     return True
             else:
                 self.held_object.pos = collision_sprite.rect.midbottom
                 self.held_object.rect.midbottom = self.held_object.pos
+                self.held_object.vel = self.vel.copy()
+                self.held_object.acc = self.acc.copy()
                 self.is_holding = False
                 self.held_object.is_held = False
                 return True
