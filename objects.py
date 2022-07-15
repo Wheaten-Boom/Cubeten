@@ -90,14 +90,16 @@ class Button(pygame.sprite.Sprite):
                     self.isActive = False
                     self.deactivate_button(activation_group)
 
-        if self.mode == "SWITCH":
+        elif self.mode == "SWITCH":
             if not self.isActive:
-                if (self.pos.x - 50 < player.pos.x and player.pos.x < self.pos.x + 50 and player.pos.y >= self.pos.y and player.pos.y < self.pos.y + 75):
+                if (self.pos.x - player.rect.width < player.pos.x and player.pos.x < self.pos.x + player.rect.width
+                        and player.pos.y >= self.pos.y and player.pos.y < self.pos.y + player.rect.height):
                     self.isActive = True
                     self.activate_button(activation_group)
 
             else:
-                if (self.pos.x - 50 < player.pos.x and player.pos.x < self.pos.x + 50 and player.pos.y >= self.pos.y and player.pos.y < self.pos.y + 75):
+                if (self.pos.x - player.rect.width < player.pos.x and player.pos.x < self.pos.x + player.rect.width
+                        and player.pos.y >= self.pos.y and player.pos.y < self.pos.y + player.rect.height):
                     self.isActive = False
                     self.deactivate_button(activation_group)
 
@@ -132,7 +134,7 @@ class Button(pygame.sprite.Sprite):
                         break
 
 
-class Switching_Panel(pygame.sprite.Sprite):
+class SwitchingPanel(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, color, ID, level_ID):
         super().__init__()
         self.surf = pygame.Surface((width, height))
@@ -143,8 +145,9 @@ class Switching_Panel(pygame.sprite.Sprite):
         self.rect.midbottom = self.pos
         self.level_ID = level_ID
 
-    def Switch_Level(self, player, level):
-        if (self.pos.x - 50 < player.pos.x and player.pos.x < self.pos.x + 50 and player.pos.y >= self.pos.y and player.pos.y < self.pos.y + 75):
+    def switch_level(self, player, level):
+        if (self.pos.x - player.rect.width < player.pos.x and player.pos.x < self.pos.x + player.rect.width
+                and player.pos.y >= self.pos.y and player.pos.y < self.pos.y + player.rect.height):
             level[-1] = self.level_ID
 
 

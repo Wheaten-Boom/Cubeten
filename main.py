@@ -1,8 +1,6 @@
-from distutils.command.build import build
 import json
 import pygame
 from pygame.locals import *
-import objects
 import os
 import Level_Loader
 
@@ -30,7 +28,8 @@ def main():
     while True:
         pressed_keys = pygame.key.get_pressed()
         if pressed_keys[K_UP]:
-            level[current_sublevel].player.jump(level[current_sublevel].platforms)
+            level[current_sublevel].player.jump(
+                level[current_sublevel].platforms)
 
         if pressed_keys[K_ESCAPE]:
             pygame.quit()
@@ -48,11 +47,12 @@ def main():
             if event.type == KEYDOWN:
                 if event.key == K_SPACE:
                     for switching_panel in level[current_sublevel].switching_panels:
-                        switching_panel.Switch_Level(level[current_sublevel].player, level)
-                    
-                    for button in level[current_sublevel].buttons:
-                        button.update(level[current_sublevel].movable_sprites, level[current_sublevel].all_sprites, level[current_sublevel].player)
+                        switching_panel.switch_level(
+                            level[current_sublevel].player, level)
 
+                    for button in level[current_sublevel].buttons:
+                        button.update(level[current_sublevel].movable_sprites,
+                                      level[current_sublevel].all_sprites, level[current_sublevel].player)
 
         displaysurface.fill((0, 0, 0))
 
@@ -62,9 +62,9 @@ def main():
             if entity.__class__.__name__ == "Button":
                 if entity.mode == "BUTTON":
                     entity.update(
-                        level[current_sublevel].movable_sprites, level[current_sublevel].all_sprites,level[current_sublevel].player)
+                        level[current_sublevel].movable_sprites, level[current_sublevel].all_sprites, level[current_sublevel].player)
 
-            if entity.__class__.__name__ == "MovingPlatform":  
+            if entity.__class__.__name__ == "MovingPlatform":
                 entity.update(level[current_sublevel].movable_sprites)
 
             if entity.__class__.__name__ == "Player":

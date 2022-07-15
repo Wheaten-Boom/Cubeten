@@ -60,7 +60,7 @@ class Sub_Level():
 
                 for panel in level_properties["SWITCHING_PANELS"]:
 
-                    new_panel = objects.Switching_Panel(panel["POS_X"], panel["POS_Y"], panel["WIDTH"],
+                    new_panel = objects.SwitchingPanel(panel["POS_X"], panel["POS_Y"], panel["WIDTH"],
                                                     panel["HEIGHT"], panel["COLOR"], panel["ID"], panel["LEVEL_ID"])
 
                     self.all_sprites.add(new_panel)
