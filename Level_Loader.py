@@ -14,6 +14,7 @@ class Sub_Level():
         self.platforms = pygame.sprite.Group()
         self.moving_platforms = pygame.sprite.Group()
         self.buttons = pygame.sprite.Group()
+        self.cubes = pygame.sprite.Group()
         self.switching_panels = pygame.sprite.Group()
         self.movable_sprites = pygame.sprite.Group()
 
@@ -29,7 +30,7 @@ class Sub_Level():
                 for platform in level_properties["PLATFORMS"]:
 
                     new_platform = objects.Platform(platform["POS_X"], platform["POS_Y"], platform["WIDTH"],
-                                                    platform["HEIGHT"], platform["COLOR"], platform["ID"])
+                                                    platform["HEIGHT"], platform["COLOR"], platform["ID"], platform["DRAW_LAYER"])
 
                     self.all_sprites.add(new_platform)
                     self.platforms.add(new_platform)
@@ -39,7 +40,7 @@ class Sub_Level():
                 for platform in level_properties["MOVING_PLATFORMS"]:
 
                     new_platform = objects.MovingPlatform(platform["X1"], platform["Y1"], platform["X2"], platform["Y2"], platform["SPEED"], platform["WIDTH"],
-                                                          platform["HEIGHT"], platform["COLOR"], platform["ID"], platform["IS_ACTIVE"])
+                                                          platform["HEIGHT"], platform["COLOR"], platform["ID"], platform["DRAW_LAYER"], platform["IS_ACTIVE"])
 
                     self.all_sprites.add(new_platform)
                     self.platforms.add(new_platform)
@@ -48,7 +49,7 @@ class Sub_Level():
             if (data == "BUTTONS"):
                 for button in level_properties["BUTTONS"]:
                     new_button = objects.Button(button["POS_X"], button["POS_Y"], button["WIDTH"],
-                                                button["HEIGHT"], button["COLOR"], button["ACTIVATE_ACTION"], button["DEACTIVATE_ACTION"], button["ID"], button["MODE"], button["IS_ACTIVE"])
+                                                button["HEIGHT"], button["COLOR"], button["ACTIVATE_ACTION"], button["DEACTIVATE_ACTION"], button["MODE"], button["ID"], button["DRAW_LAYER"], button["IS_ACTIVE"])
 
                     self.all_sprites.add(new_button)
                     self.buttons.add(new_button)
@@ -61,17 +62,26 @@ class Sub_Level():
                 for panel in level_properties["SWITCHING_PANELS"]:
 
                     new_panel = objects.SwitchingPanel(panel["POS_X"], panel["POS_Y"], panel["WIDTH"],
-                                                    panel["HEIGHT"], panel["COLOR"], panel["ID"], panel["LEVEL_ID"])
+                                                    panel["HEIGHT"], panel["COLOR"], panel["LEVEL_ID"], panel["ID"], panel["DRAW_LAYER"])
 
                     self.all_sprites.add(new_panel)
                     self.switching_panels.add(new_panel)
+
+            if (data == "CUBES"):
+                for cube in level_properties["CUBES"]:
+                    new_cube = objects.Cube(cube["POS_X"], cube["POS_Y"], cube["WIDTH"],
+                                            cube["HEIGHT"], cube["COLOR"], cube["ID"], cube["DRAW_LAYER"])
+
+                    self.all_sprites.add(new_cube)
+                    self.cubes.add(new_cube)
+                    self.movable_sprites.add(new_cube)
 
             if (data == "PLAYER"):
 
                 player_properties = level_properties["PLAYER"]
 
                 self.player = objects.Player(player_properties["POS_X"], player_properties["POS_Y"], player_properties["WIDTH"],
-                                             player_properties["HEIGHT"], player_properties["COLOR"])
+                                             player_properties["HEIGHT"], player_properties["COLOR"], player_properties["ID"], player_properties["DRAW_LAYER"])
 
                 self.all_sprites.add(self.player)
                 self.movable_sprites.add(self.player)
