@@ -1,0 +1,373 @@
+{
+    "SUB_LEVELS": [
+        "LEVEL_1_0", "LEVEL_1_1", "LEVEL_1_2"
+    ],
+    "LEVEL_1_0": {
+        "PLATFORMS": [
+            {
+                "POS_X": 500,
+                "POS_Y": 800,
+                "WIDTH": 1000,
+                "HEIGHT": 100,
+                "COLOR": "0x2c5160",
+                "ID": 1
+            },
+            {
+                "POS_X": 500,
+                "POS_Y": 735,
+                "WIDTH": 200,
+                "HEIGHT": 100,
+                "COLOR": "0x2c5160",
+                "ID": 1
+            },
+            {
+                "POS_X": 150,
+                "POS_Y": 550,
+                "WIDTH": 200,
+                "HEIGHT": 25,
+                "COLOR": "0x2c5160",
+                "ID": 1
+            },
+            {
+                "POS_X": 150,
+                "POS_Y": 275,
+                "WIDTH": 200,
+                "HEIGHT": 25,
+                "COLOR": "0x2c5160",
+                "ID": 1
+            },
+            {
+                "POS_X": 960,
+                "POS_Y": 225,
+                "WIDTH": 200,
+                "HEIGHT": 25,
+                "COLOR": "0x2c5160",
+                "ID": 1
+            },
+            {
+                "POS_X": 925,
+                "POS_Y": 600,
+                "WIDTH": 175,
+                "HEIGHT": 25,
+                "COLOR": "0x2c5160",
+                "ID": 1
+            }
+        ],
+        "MOVING_PLATFORMS": [
+            {
+                "X1": 500,
+                "Y1": 425,
+                "X2": 500,
+                "Y2": 275,
+                "SPEED": 200,
+                "WIDTH": 200,
+                "HEIGHT": 25,
+                "COLOR": "0xB52222",
+                "IS_ACTIVE": false,
+                "ID": 1
+            },
+            {
+                "X1": 850,
+                "Y1": 700,
+                "X2": 850,
+                "Y2": 600,
+                "SPEED": 200,
+                "WIDTH": 25,
+                "HEIGHT": 100,
+                "COLOR": "0x62E159",
+                "IS_ACTIVE": false,
+                "ID": 2
+            }
+        ],
+
+        "SWITCHING_PANELS": [
+            {
+                "POS_X": 935,
+                "POS_Y": 200,
+                "WIDTH": 20,
+                "HEIGHT": 60,
+                "COLOR": "0xF3FC77",
+                "ID": 1,
+                "LEVEL_ID": 2
+            },
+            {
+                "POS_X": 150,
+                "POS_Y": 250,
+                "WIDTH": 20,
+                "HEIGHT": 60,
+                "COLOR": "0xF3FC77",
+                "ID": 1,
+                "LEVEL_ID": 1
+            }
+        ],
+
+        "PLAYER": {
+            "POS_X": 37,
+            "POS_Y": 700,
+            "WIDTH": 75,
+            "HEIGHT": 75,
+            "COLOR": "0xf0e4d2",
+            "ID": 0
+        }
+    },
+
+    "LEVEL_1_1": {
+        "PLATFORMS": [
+            {
+                "POS_X": 500,
+                "POS_Y": 1000,
+                "WIDTH": 1000,
+                "HEIGHT": 100,
+                "COLOR": "0x77FC77",
+                "ID": 1
+            },
+            {
+                "POS_X": 300,
+                "POS_Y": 800,
+                "WIDTH": 200,
+                "HEIGHT": 25,
+                "COLOR": "0x77FC77",
+                "ID": 1
+            },
+            {
+                "POS_X": 700,
+                "POS_Y": 700,
+                "WIDTH": 200,
+                "HEIGHT": 25,
+                "COLOR": "0x77FC77",
+                "ID": 1
+            },
+            {
+                "POS_X": 300,
+                "POS_Y": 550,
+                "WIDTH": 200,
+                "HEIGHT": 25,
+                "COLOR": "0x77FC77",
+                "ID": 1
+            },
+            {
+                "POS_X": 700,
+                "POS_Y": 400,
+                "WIDTH": 200,
+                "HEIGHT": 25,
+                "COLOR": "0x77FC77",
+                "ID": 1
+            },
+            {
+                "POS_X": 350,
+                "POS_Y": 150,
+                "WIDTH": 900,
+                "HEIGHT": 25,
+                "COLOR": "0x77FC77",
+                "ID": 1
+            }
+        ],
+        "MOVING_PLATFORMS": [
+            {
+                "X1": 950,
+                "Y1": 400,
+                "X2": 950,
+                "Y2": 150,
+                "SPEED": 200,
+                "WIDTH": 200,
+                "HEIGHT": 25,
+                "COLOR": "0x77FC77",
+                "IS_ACTIVE": true,
+                "ID": 3
+            }
+        ],
+
+        "SWITCHING_PANELS": [
+            {
+                "POS_X": 100,
+                "POS_Y": 900,
+                "WIDTH": 20,
+                "HEIGHT": 60,
+                "COLOR": "0xF3FC77",
+                "ID": 1,
+                "LEVEL_ID": 0
+            }
+        ],
+
+        "BUTTONS": [
+            {
+                "POS_X": 50,
+                "POS_Y": 125,
+                "WIDTH": 25,
+                "HEIGHT": 75,
+                "COLOR": "0xB52222",
+                "ACTIVATE_ACTION": [
+                    "ACTIVATE_OBJECT", 1
+                ],
+                "DEACTIVATE_ACTION": [
+                    "DEACTIVATE_OBJECT", 1
+                ],
+                "IS_ACTIVE": false,
+                "MODE": "SWITCH",
+                "ID": 1
+            }
+        ],
+
+        "PLAYER": {
+            "POS_X": 100,
+            "POS_Y": 900,
+            "WIDTH": 75,
+            "HEIGHT": 75,
+            "COLOR": "0xf0e4d2",
+            "ID": 0
+        }
+    },
+
+    "LEVEL_1_2": {
+        "PLATFORMS": [
+            {
+                "POS_X": 500,
+                "POS_Y": 1000,
+                "WIDTH": 1000,
+                "HEIGHT": 100,
+                "COLOR": "0xA63969",
+                "ID": 1
+            },
+            {
+                "POS_X": 725,
+                "POS_Y": 700,
+                "WIDTH": 150,
+                "HEIGHT": 25,
+                "COLOR": "0xA63969",
+                "ID": 1
+            },
+            {
+                "POS_X": 725,
+                "POS_Y": 500,
+                "WIDTH": 150,
+                "HEIGHT": 25,
+                "COLOR": "0xA63969",
+                "ID": 1
+            },
+            {
+                "POS_X": 725,
+                "POS_Y": 300,
+                "WIDTH": 150,
+                "HEIGHT": 25,
+                "COLOR": "0xA63969",
+                "ID": 1
+            }
+            
+        ],
+
+        "MOVING_PLATFORMS": [
+            {
+                "X1": 900,
+                "Y1": 850,
+                "X2": 900,
+                "Y2": 700,
+                "SPEED": 150,
+                "WIDTH": 100,
+                "HEIGHT": 25,
+                "COLOR": "0x78D0F0",
+                "IS_ACTIVE": true,
+                "ID": 4
+            },
+            { 
+             "X1": 900, 
+             "Y1": 850, 
+             "X2": 900, 
+             "Y2": 700, 
+             "SPEED": 150, 
+             "WIDTH": 100, 
+             "HEIGHT": 25, 
+             "COLOR": "0x78D0F0", 
+             "IS_ACTIVE": true, 
+             "ID": 5 
+             },
+             { 
+              "X1": 575, 
+              "Y1": 700, 
+              "X2": 200, 
+              "Y2": 700, 
+              "SPEED": 150, 
+              "WIDTH": 100, 
+              "HEIGHT": 25, 
+              "COLOR": "0x78D0F0", 
+              "IS_ACTIVE": true, 
+              "ID": 6
+              },
+              {
+                "X1": 100,
+                "Y1": 700,
+                "X2": 100,
+                "Y2": 500,
+                "SPEED": 150,
+                "WIDTH": 100,
+                "HEIGHT": 25,
+                "COLOR": "0x78D0F0",
+                "IS_ACTIVE": true,
+                "ID": 7
+              },
+              {
+                "X1": 200,
+                "Y1": 500,
+                "X2": 500,
+                "Y2": 500,
+                "SPEED": 150,
+                "WIDTH": 100,
+                "HEIGHT": 25,
+                "COLOR": "0x78D0F0",
+                "IS_ACTIVE": true,
+                "ID": 8
+              },
+              {
+                "X1": 900,
+                "Y1": 500,
+                "X2": 900,
+                "Y2": 300,
+                "SPEED": 150,
+                "WIDTH": 100,
+                "HEIGHT": 25,
+                "COLOR": "0x78D0F0",
+                "IS_ACTIVE": true,
+                "ID": 9
+              }
+        ],
+
+        "SWITCHING_PANELS": [
+            {
+                "POS_X": 100,
+                "POS_Y": 900,
+                "WIDTH": 20,
+                "HEIGHT": 60,
+                "COLOR": "0xF3FC77",
+                "ID": 1,
+                "LEVEL_ID": 0
+            }
+        ],
+
+        "BUTTONS":[
+            {
+                "POS_X": 725,
+                "POS_Y": 275,
+                "WIDTH": 25,
+                "HEIGHT": 75,
+                "COLOR": "0x62E159",
+                "ACTIVATE_ACTION": [
+                    "ACTIVATE_OBJECT", 2
+                ],
+                "DEACTIVATE_ACTION": [
+                    "DEACTIVATE_OBJECT", 2
+                ],
+                "IS_ACTIVE": false,
+                "MODE": "SWITCH",
+                "ID": 3
+            }
+        ],
+
+        "PLAYER": {
+            "POS_X": 100,
+            "POS_Y": 900,
+            "WIDTH": 75,
+            "HEIGHT": 75,
+            "COLOR": "0xf0e4d2",
+            "ID": 0
+        }
+    }
+}
