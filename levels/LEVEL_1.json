@@ -37,6 +37,7 @@
                 "WIDTH": 100,
                 "HEIGHT": 20,
                 "COLOR": "0x512c60",
+                "ACTIVATE_COLOR": "0x51602c",
                 "ACTIVATE_ACTION": [
                     "ACTIVATE_OBJECT",
                     1
@@ -118,6 +119,7 @@
                 "WIDTH": 20,
                 "HEIGHT": 100,
                 "COLOR": "0xD83232",
+                "ACTIVATE_COLOR": "0x3232D8",
                 "ACTIVATE_ACTION": [
                     "ACTIVATE_OBJECT",
                     1

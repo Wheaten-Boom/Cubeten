@@ -49,7 +49,7 @@ class Sub_Level():
             if (data == "BUTTONS"):
                 for button in level_properties["BUTTONS"]:
                     new_button = objects.Button(button["POS_X"], button["POS_Y"], button["WIDTH"],
-                                                button["HEIGHT"], button["COLOR"], button["ACTIVATE_ACTION"], button["DEACTIVATE_ACTION"], button["MODE"], button["ID"], button["DRAW_LAYER"], button["IS_ACTIVE"])
+                                                button["HEIGHT"], button["COLOR"], button["ACTIVATE_COLOR"], button["ACTIVATE_ACTION"], button["DEACTIVATE_ACTION"], button["MODE"], button["ID"], button["DRAW_LAYER"], button["IS_ACTIVE"])
 
                     self.all_sprites.add(new_button)
                     self.buttons.add(new_button)
@@ -62,7 +62,7 @@ class Sub_Level():
                 for panel in level_properties["SWITCHING_PANELS"]:
 
                     new_panel = objects.SwitchingPanel(panel["POS_X"], panel["POS_Y"], panel["WIDTH"],
-                                                    panel["HEIGHT"], panel["COLOR"], panel["LEVEL_ID"], panel["ID"], panel["DRAW_LAYER"])
+                                                       panel["HEIGHT"], panel["COLOR"], panel["LEVEL_ID"], panel["ID"], panel["DRAW_LAYER"])
 
                     self.all_sprites.add(new_panel)
                     self.switching_panels.add(new_panel)

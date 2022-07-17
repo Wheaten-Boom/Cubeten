@@ -62,11 +62,13 @@ class MovingPlatform(pygame.sprite.Sprite):
 
 
 class Button(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height, color, activate_actions, deactivate_actions, mode, ID, draw_layer, isActive=False):
+    def __init__(self, x, y, width, height, color, activate_color, activate_actions, deactivate_actions, mode, ID, draw_layer, isActive=False):
         super().__init__()
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
         self.rect = self.surf.get_rect()
+        self.color = color
+        self.activate_color = activate_color
         self.pos = pygame.math.Vector2(x, y)
         self.isActive = isActive
         self.activate_actions = activate_actions
@@ -84,6 +86,7 @@ class Button(pygame.sprite.Sprite):
                 for entity in collides:
                     if entity.rect.bottom == self.rect.top + 1:
                         self.isActive = True
+                        self.surf.fill(self.activate_color)
                         self.activate_button(activation_group)
                         break
             else:
@@ -91,6 +94,7 @@ class Button(pygame.sprite.Sprite):
                     self, collision_group, False)
                 if not collides:
                     self.isActive = False
+                    self.surf.fill(self.color)
                     self.deactivate_button(activation_group)
 
         elif self.mode == "SWITCH":
@@ -98,12 +102,14 @@ class Button(pygame.sprite.Sprite):
                 if (self.pos.x - player.rect.width < player.pos.x and player.pos.x < self.pos.x + player.rect.width
                         and player.pos.y >= self.pos.y and player.pos.y < self.pos.y + player.rect.height):
                     self.isActive = True
+                    self.surf.fill(self.activate_color)
                     self.activate_button(activation_group)
 
             else:
                 if (self.pos.x - player.rect.width < player.pos.x and player.pos.x < self.pos.x + player.rect.width
                         and player.pos.y >= self.pos.y and player.pos.y < self.pos.y + player.rect.height):
                     self.isActive = False
+                    self.surf.fill(self.color)
                     self.deactivate_button(activation_group)
 
     def activate_button(self, activation_group):
