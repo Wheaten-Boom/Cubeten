@@ -22,7 +22,7 @@ def main():
         (config['WIDTH'], config['HEIGHT']))
     pygame.display.set_caption(config['TITLE'])
 
-    level = Level_Loader.Load("LEVEL_1")
+    level = Level_Loader.Load("Demo")
     current_sublevel = 0
 
     while True:
@@ -61,16 +61,16 @@ def main():
                                 level[current_sublevel].player.held_object.add(
                                     groups)
                                 level[current_sublevel].player.held_object = None
-                        else:
-                            # Switch a sublevel
-                            for switching_panel in level[current_sublevel].switching_panels:
-                                switching_panel.switch_level(
-                                    level[current_sublevel].player, level)
 
-                            # Activate a switch
-                            for button in level[current_sublevel].buttons:
-                                button.update(level[current_sublevel].movable_sprites,
-                                              level[current_sublevel].all_sprites, level[current_sublevel].player)
+                        # Switch a sublevel
+                        for switching_panel in level[current_sublevel].switching_panels:
+                            switching_panel.switch_level(
+                                level[current_sublevel].player, level)
+
+                        # Activate a switch
+                        for button in level[current_sublevel].buttons:
+                            button.update(level[current_sublevel].movable_sprites,
+                                          level, level[current_sublevel].player)
 
         displaysurface.fill((0, 0, 0))
 
@@ -84,8 +84,7 @@ def main():
 
             if entity.__class__.__name__ == "Button":
                 if entity.mode == "BUTTON":
-                    entity.update(level[current_sublevel].movable_sprites,
-                                  level[current_sublevel].all_sprites, level[current_sublevel].player)
+                    entity.update(level[current_sublevel].movable_sprites, level[current_sublevel].all_sprites, level[current_sublevel].player)
 
             elif entity.__class__.__name__ == "Cube":
                 entity.update(level[current_sublevel].movable_sprites)

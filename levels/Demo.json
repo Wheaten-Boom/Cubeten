@@ -10,7 +10,8 @@
                 "WIDTH": 1000,
                 "HEIGHT": 100,
                 "COLOR": "0x2c5160",
-                "ID": 1
+                "ID": 1,
+                "DRAW_LAYER": 0
             },
             {
                 "POS_X": 500,
@@ -18,7 +19,8 @@
                 "WIDTH": 200,
                 "HEIGHT": 100,
                 "COLOR": "0x2c5160",
-                "ID": 1
+                "ID": 2,
+                "DRAW_LAYER": 0
             },
             {
                 "POS_X": 150,
@@ -26,7 +28,8 @@
                 "WIDTH": 200,
                 "HEIGHT": 25,
                 "COLOR": "0x2c5160",
-                "ID": 1
+                "ID": 3,
+                "DRAW_LAYER": 0
             },
             {
                 "POS_X": 150,
@@ -34,7 +37,8 @@
                 "WIDTH": 200,
                 "HEIGHT": 25,
                 "COLOR": "0x2c5160",
-                "ID": 1
+                "ID": 4,
+                "DRAW_LAYER": 0
             },
             {
                 "POS_X": 960,
@@ -42,7 +46,8 @@
                 "WIDTH": 200,
                 "HEIGHT": 25,
                 "COLOR": "0x2c5160",
-                "ID": 1
+                "ID": 5,
+                "DRAW_LAYER": 0
             },
             {
                 "POS_X": 925,
@@ -50,7 +55,8 @@
                 "WIDTH": 175,
                 "HEIGHT": 25,
                 "COLOR": "0x2c5160",
-                "ID": 1
+                "ID": 6,
+                "DRAW_LAYER": 0
             }
         ],
         "MOVING_PLATFORMS": [
@@ -64,7 +70,8 @@
                 "HEIGHT": 25,
                 "COLOR": "0xB52222",
                 "IS_ACTIVE": false,
-                "ID": 1
+                "ID": 7,
+                "DRAW_LAYER": 0
             },
             {
                 "X1": 850,
@@ -76,7 +83,8 @@
                 "HEIGHT": 100,
                 "COLOR": "0x62E159",
                 "IS_ACTIVE": false,
-                "ID": 2
+                "ID": 8,
+                "DRAW_LAYER": 0
             }
         ],
 
@@ -87,8 +95,10 @@
                 "WIDTH": 20,
                 "HEIGHT": 60,
                 "COLOR": "0xF3FC77",
-                "ID": 1,
-                "LEVEL_ID": 2
+                "LEVEL_ID": 2,
+                "ID": 9,
+                "DRAW_LAYER": 0
+                
             },
             {
                 "POS_X": 150,
@@ -96,8 +106,9 @@
                 "WIDTH": 20,
                 "HEIGHT": 60,
                 "COLOR": "0xF3FC77",
-                "ID": 1,
-                "LEVEL_ID": 1
+                "LEVEL_ID": 1,
+                "ID": 10,
+                "DRAW_LAYER": 0
             }
         ],
 
@@ -107,7 +118,8 @@
             "WIDTH": 75,
             "HEIGHT": 75,
             "COLOR": "0xf0e4d2",
-            "ID": 0
+            "ID": 0,
+            "DRAW_LAYER": 1
         }
     },
 
@@ -119,7 +131,8 @@
                 "WIDTH": 1000,
                 "HEIGHT": 100,
                 "COLOR": "0x77FC77",
-                "ID": 1
+                "ID": 1,
+                "DRAW_LAYER": 0
             },
             {
                 "POS_X": 300,
@@ -127,15 +140,17 @@
                 "WIDTH": 200,
                 "HEIGHT": 25,
                 "COLOR": "0x77FC77",
-                "ID": 1
+                "ID": 2,
+                "DRAW_LAYER": 0
             },
-            {
+            {    
                 "POS_X": 700,
                 "POS_Y": 700,
                 "WIDTH": 200,
                 "HEIGHT": 25,
                 "COLOR": "0x77FC77",
-                "ID": 1
+                "ID": 3,
+                "DRAW_LAYER": 0
             },
             {
                 "POS_X": 300,
@@ -143,7 +158,8 @@
                 "WIDTH": 200,
                 "HEIGHT": 25,
                 "COLOR": "0x77FC77",
-                "ID": 1
+                "ID": 4,
+                "DRAW_LAYER": 0
             },
             {
                 "POS_X": 700,
@@ -151,7 +167,8 @@
                 "WIDTH": 200,
                 "HEIGHT": 25,
                 "COLOR": "0x77FC77",
-                "ID": 1
+                "ID": 5,
+                "DRAW_LAYER": 0
             },
             {
                 "POS_X": 350,
@@ -159,7 +176,8 @@
                 "WIDTH": 900,
                 "HEIGHT": 25,
                 "COLOR": "0x77FC77",
-                "ID": 1
+                "ID": 6,
+                "DRAW_LAYER": 0
             }
         ],
         "MOVING_PLATFORMS": [
@@ -173,7 +191,8 @@
                 "HEIGHT": 25,
                 "COLOR": "0x77FC77",
                 "IS_ACTIVE": true,
-                "ID": 3
+                "ID": 7,
+                "DRAW_LAYER": 0
             }
         ],
 
@@ -184,8 +203,9 @@
                 "WIDTH": 20,
                 "HEIGHT": 60,
                 "COLOR": "0xF3FC77",
-                "ID": 1,
-                "LEVEL_ID": 0
+                "LEVEL_ID": 0,
+                "ID": 8,
+                "DRAW_LAYER": 0
             }
         ],
 
@@ -196,15 +216,17 @@
                 "WIDTH": 25,
                 "HEIGHT": 75,
                 "COLOR": "0xB52222",
+                "ACTIVATE_COLOR": "0x701010",
                 "ACTIVATE_ACTION": [
-                    "ACTIVATE_OBJECT", 1
+                    "ACTIVATE_OBJECT", 0, 7
                 ],
                 "DEACTIVATE_ACTION": [
-                    "DEACTIVATE_OBJECT", 1
+                    "DEACTIVATE_OBJECT", 0, 7
                 ],
                 "IS_ACTIVE": false,
                 "MODE": "SWITCH",
-                "ID": 1
+                "ID": 9,
+                "DRAW_LAYER": 0
             }
         ],
 
@@ -214,7 +236,8 @@
             "WIDTH": 75,
             "HEIGHT": 75,
             "COLOR": "0xf0e4d2",
-            "ID": 0
+            "ID": 10,
+            "DRAW_LAYER": 1
         }
     },
 
@@ -226,7 +249,8 @@
                 "WIDTH": 1000,
                 "HEIGHT": 100,
                 "COLOR": "0xA63969",
-                "ID": 1
+                "ID": 1,
+                "DRAW_LAYER": 0
             },
             {
                 "POS_X": 725,
@@ -234,7 +258,8 @@
                 "WIDTH": 150,
                 "HEIGHT": 25,
                 "COLOR": "0xA63969",
-                "ID": 1
+                "ID": 2,
+                "DRAW_LAYER": 0
             },
             {
                 "POS_X": 725,
@@ -242,7 +267,8 @@
                 "WIDTH": 150,
                 "HEIGHT": 25,
                 "COLOR": "0xA63969",
-                "ID": 1
+                "ID": 3,
+                "DRAW_LAYER": 0
             },
             {
                 "POS_X": 725,
@@ -250,7 +276,8 @@
                 "WIDTH": 150,
                 "HEIGHT": 25,
                 "COLOR": "0xA63969",
-                "ID": 1
+                "ID": 4,
+                "DRAW_LAYER": 0
             }
             
         ],
@@ -266,7 +293,8 @@
                 "HEIGHT": 25,
                 "COLOR": "0x78D0F0",
                 "IS_ACTIVE": true,
-                "ID": 4
+                "ID": 5,
+                "DRAW_LAYER": 0
             },
             { 
              "X1": 900, 
@@ -278,7 +306,8 @@
              "HEIGHT": 25, 
              "COLOR": "0x78D0F0", 
              "IS_ACTIVE": true, 
-             "ID": 5 
+             "ID": 6,
+             "DRAW_LAYER": 0 
              },
              { 
               "X1": 575, 
@@ -290,7 +319,8 @@
               "HEIGHT": 25, 
               "COLOR": "0x78D0F0", 
               "IS_ACTIVE": true, 
-              "ID": 6
+              "ID": 7,
+              "DRAW_LAYER": 0
               },
               {
                 "X1": 100,
@@ -302,7 +332,8 @@
                 "HEIGHT": 25,
                 "COLOR": "0x78D0F0",
                 "IS_ACTIVE": true,
-                "ID": 7
+                "ID": 8,
+                "DRAW_LAYER": 0
               },
               {
                 "X1": 200,
@@ -314,7 +345,8 @@
                 "HEIGHT": 25,
                 "COLOR": "0x78D0F0",
                 "IS_ACTIVE": true,
-                "ID": 8
+                "ID": 9,
+                "DRAW_LAYER": 0
               },
               {
                 "X1": 900,
@@ -326,7 +358,8 @@
                 "HEIGHT": 25,
                 "COLOR": "0x78D0F0",
                 "IS_ACTIVE": true,
-                "ID": 9
+                "ID": 10,
+                "DRAW_LAYER": 0
               }
         ],
 
@@ -337,8 +370,9 @@
                 "WIDTH": 20,
                 "HEIGHT": 60,
                 "COLOR": "0xF3FC77",
-                "ID": 1,
-                "LEVEL_ID": 0
+                "LEVEL_ID": 0,
+                "ID": 11,
+                "DRAW_LAYER": 0
             }
         ],
 
@@ -349,15 +383,17 @@
                 "WIDTH": 25,
                 "HEIGHT": 75,
                 "COLOR": "0x62E159",
+                "ACTIVATE_COLOR": "0x41913C",
                 "ACTIVATE_ACTION": [
-                    "ACTIVATE_OBJECT", 2
+                    "ACTIVATE_OBJECT", 0, 8
                 ],
                 "DEACTIVATE_ACTION": [
-                    "DEACTIVATE_OBJECT", 2
+                    "DEACTIVATE_OBJECT", 0, 8
                 ],
                 "IS_ACTIVE": false,
                 "MODE": "SWITCH",
-                "ID": 3
+                "ID": 12,
+                "DRAW_LAYER": 0
             }
         ],
 
@@ -367,7 +403,8 @@
             "WIDTH": 75,
             "HEIGHT": 75,
             "COLOR": "0xf0e4d2",
-            "ID": 0
+            "ID": 0,
+            "DRAW_LAYER": 1
         }
     }
 }

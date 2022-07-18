@@ -78,7 +78,7 @@ class Button(pygame.sprite.Sprite):
         self.draw_layer = draw_layer
         self.rect.midbottom = self.pos
 
-    def update(self, collision_group, activation_group, player):
+    def update(self, collision_group, level, player):
         if self.mode == "BUTTON":
             if not self.isActive:
                 collides = pygame.sprite.spritecollide(
@@ -87,7 +87,7 @@ class Button(pygame.sprite.Sprite):
                     if entity.rect.bottom == self.rect.top + 1:
                         self.isActive = True
                         self.surf.fill(self.activate_color)
-                        self.activate_button(activation_group)
+                        self.activate_button(level)
                         break
             else:
                 collides = pygame.sprite.spritecollide(
@@ -95,7 +95,7 @@ class Button(pygame.sprite.Sprite):
                 if not collides:
                     self.isActive = False
                     self.surf.fill(self.color)
-                    self.deactivate_button(activation_group)
+                    self.deactivate_button(level)
 
         elif self.mode == "SWITCH":
             if not self.isActive:
@@ -103,42 +103,45 @@ class Button(pygame.sprite.Sprite):
                         and player.pos.y >= self.pos.y and player.pos.y < self.pos.y + player.rect.height):
                     self.isActive = True
                     self.surf.fill(self.activate_color)
-                    self.activate_button(activation_group)
+                    self.activate_button(level)
 
             else:
                 if (self.pos.x - player.rect.width < player.pos.x and player.pos.x < self.pos.x + player.rect.width
                         and player.pos.y >= self.pos.y and player.pos.y < self.pos.y + player.rect.height):
                     self.isActive = False
                     self.surf.fill(self.color)
-                    self.deactivate_button(activation_group)
+                    self.deactivate_button(level)
 
-    def activate_button(self, activation_group):
+    def activate_button(self, level):
         for index, do in enumerate(self.activate_actions):
             if type(do) != str:
                 continue
             if do == "ACTIVATE_OBJECT":
-                for entity in activation_group:
-                    if entity.ID == self.activate_actions[index + 1]:
+                for entity in level[self.activate_actions[index + 1]].all_sprites:
+                    if entity.ID == self.activate_actions[index + 2]:
                         entity.isActive = True
                         break
+                        
             if do == "DEACTIVATE_OBJECT":
-                for entity in activation_group:
-                    if entity.ID == self.activate_actions[index + 1]:
+                for entity in level[self.activate_actions[index + 1]].all_sprites:
+                    if entity.ID == self.activate_actions[index + 2]:
                         entity.isActive = False
                         break
+                        
 
-    def deactivate_button(self, activation_group):
+    def deactivate_button(self, level):
         for index, do in enumerate(self.deactivate_actions):
             if type(do) != str:
                 continue
             if do == "ACTIVATE_OBJECT":
-                for entity in activation_group:
-                    if entity.ID == self.deactivate_actions[index + 1]:
+                for entity in level[self.deactivate_actions[index + 1]].all_sprites:
+                    if entity.ID == self.deactivate_actions[index + 2]:
                         entity.isActive = True
                         break
+                    
             if do == "DEACTIVATE_OBJECT":
-                for entity in activation_group:
-                    if entity.ID == self.deactivate_actions[index + 1]:
+                for entity in level[self.deactivate_actions[index + 1]].all_sprites:
+                    if entity.ID == self.deactivate_actions[index + 2]:
                         entity.isActive = False
                         break
 
