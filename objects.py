@@ -11,6 +11,7 @@ class Platform(pygame.sprite.Sprite):
         super().__init__()
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
+        self.color = color
         self.rect = self.surf.get_rect()
         self.pos = pygame.math.Vector2(x, y)
         self.ID = ID
