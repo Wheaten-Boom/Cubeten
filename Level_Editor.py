@@ -1,6 +1,7 @@
-import pygame
-from pygame.locals import *
+import File_Handler
 from objects import *
+from pygame.locals import *
+import pygame
 
 
 def update_sprite(mouse_x, mouse_y, original_x, original_y, sprite):
@@ -8,7 +9,7 @@ def update_sprite(mouse_x, mouse_y, original_x, original_y, sprite):
         (abs(mouse_x - sprite.pos.x), abs(mouse_y - sprite.pos.y)))
     sprite.surf.fill(sprite.color)
     sprite.rect.topleft = (min(original_x, mouse_x), min(original_y, mouse_y))
-
+    
 
 def main():
 
@@ -27,6 +28,10 @@ def main():
             pygame.quit()
             quit()
 
+        if pressed_keys[K_e]:
+            data = File_Handler.Data_Assembler(all_sprits)
+            File_Handler.Create_Level_File(data, "TEST.json")
+
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -37,7 +42,7 @@ def main():
             if create_new_sprite == True:
 
                 new_sprite = Platform(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[
-                                      1], 0, 0, (255, 255, 255), 2, 1)
+                                      1], 0, 0, "0x2c5160", 2, 1)
                 all_sprits.add(new_sprite)
                 recent_sprites.append(
                     (pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]))

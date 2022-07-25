@@ -10,6 +10,8 @@ class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height, color, ID, draw_layer):
         super().__init__()
         self.surf = pygame.Surface((width, height))
+        self.width = width
+        self.height = height
         self.surf.fill(color)
         self.color = color
         self.rect = self.surf.get_rect()
