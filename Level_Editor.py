@@ -9,7 +9,8 @@ def update_sprite(mouse_x, mouse_y, original_x, original_y, sprite):
         (abs(mouse_x - sprite.pos.x), abs(mouse_y - sprite.pos.y)))
     sprite.surf.fill(sprite.color)
     sprite.rect.topleft = (min(original_x, mouse_x), min(original_y, mouse_y))
-    
+    sprite.width = abs(mouse_x - sprite.pos.x)
+    sprite.height = abs(mouse_y - sprite.pos.y)
 
 def main():
 
