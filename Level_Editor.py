@@ -1,25 +1,14 @@
-from doctest import FAIL_FAST
-from platform import platform
-import py
 import pygame
 from pygame.locals import *
 from objects import *
 
 
-def update_sprite(mouse_x, mouse_y, sprite):
-    sprite.surf = pygame.Surface((abs(mouse_x - sprite.pos.x), abs(mouse_y - sprite.pos.y)))
-
-    if (mouse_x - sprite.rect.topleft[0] < 0):
-        sprite.rect.bottomleft = pygame.mouse.get_pos()
-
-    if (mouse_x - sprite.rect.topleft[0] >= 0):
-        sprite.rect.bottomright = (((sprite.rect.topright[0]) + (mouse_x - sprite.rect.topleft[0])), mouse_y - sprite.pos.y)
-
-    # if (sprite.pos.y - mouse_y < 0):
-    #     sprite.pos.y -= 1
-    #     sprite.rect.midbottom = sprite.pos
-
+def update_sprite(mouse_x, mouse_y, original_x, original_y, sprite):
+    sprite.surf = pygame.Surface(
+        (abs(mouse_x - sprite.pos.x), abs(mouse_y - sprite.pos.y)))
     sprite.surf.fill(sprite.color)
+    sprite.rect.topleft = (min(original_x, mouse_x), min(original_y, mouse_y))
+
 
 def main():
 
@@ -43,22 +32,24 @@ def main():
                 pygame.quit()
                 quit()
 
-       
-        if pygame.mouse.get_pressed(num_buttons=3)[0] == True:    
+        if pygame.mouse.get_pressed(num_buttons=3)[0] == True:
 
             if create_new_sprite == True:
 
-                new_sprite = Platform(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 0, 0, (255,255,255), 2, 1)
+                new_sprite = Platform(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[
+                                      1], 0, 0, (255, 255, 255), 2, 1)
                 all_sprits.add(new_sprite)
+                recent_sprites.append(
+                    (pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]))
                 recent_sprites.append(new_sprite)
-                create_new_sprite =  False
+                create_new_sprite = False
 
             else:
-                update_sprite(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], recent_sprites[-1])
+                update_sprite(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[
+                              1], recent_sprites[-2][0], recent_sprites[-2][1], recent_sprites[-1])
 
         else:
             create_new_sprite = True
-
 
         displaysurface.fill((0, 0, 0))
         for entity in all_sprits:
@@ -70,4 +61,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
