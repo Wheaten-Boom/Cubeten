@@ -22,7 +22,7 @@ def main():
         (config['WIDTH'], config['HEIGHT']))
     pygame.display.set_caption(config['TITLE'])
 
-    level = Level_Loader.Load("Demo")
+    level = Level_Loader.Load("DEMO")
     current_sublevel = 0
 
     while True:
