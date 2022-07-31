@@ -124,13 +124,12 @@ class Button(pygame.sprite.Sprite):
                     if entity.ID == self.activate_actions[index + 2]:
                         entity.isActive = True
                         break
-                        
+
             if do == "DEACTIVATE_OBJECT":
                 for entity in level[self.activate_actions[index + 1]].all_sprites:
                     if entity.ID == self.activate_actions[index + 2]:
                         entity.isActive = False
                         break
-                        
 
     def deactivate_button(self, level):
         for index, do in enumerate(self.deactivate_actions):
@@ -141,7 +140,7 @@ class Button(pygame.sprite.Sprite):
                     if entity.ID == self.deactivate_actions[index + 2]:
                         entity.isActive = True
                         break
-                    
+
             if do == "DEACTIVATE_OBJECT":
                 for entity in level[self.deactivate_actions[index + 1]].all_sprites:
                     if entity.ID == self.deactivate_actions[index + 2]:
