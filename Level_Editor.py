@@ -14,7 +14,7 @@ def Data_Assembler(all_sprites):
     data = {"SUB_LEVELS": ["SUBLEVEL_0"], "SUBLEVEL_0": {"PLATFORMS": []}}
     for sprite in all_sprites:
         if type(sprite) == Platform:
-            new_platform = {"POS_X": int(sprite.rect.x), "POS_Y": int(sprite.rect.y), "WIDTH": int(sprite.width),
+            new_platform = {"POS_X": int(sprite.rect.left), "POS_Y": int(sprite.rect.top), "WIDTH": int(sprite.width),
                             "HEIGHT": int(sprite.height), "COLOR": sprite.color, "ID": sprite.ID, "DRAW_LAYER": sprite.draw_layer}
 
             data["SUBLEVEL_0"]["PLATFORMS"].append(new_platform)
