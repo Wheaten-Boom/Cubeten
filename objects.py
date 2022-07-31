@@ -18,7 +18,7 @@ class Platform(pygame.sprite.Sprite):
         self.pos = pygame.math.Vector2(x, y)
         self.ID = ID
         self.draw_layer = draw_layer
-        self.rect.midbottom = self.pos
+        self.rect.topleft = self.pos
 
 
 class MovingPlatform(pygame.sprite.Sprite):
