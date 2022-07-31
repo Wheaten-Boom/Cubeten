@@ -1,11 +1,17 @@
+import os
 import json
 import pygame
 from pygame.locals import *
-import os
 import Level_Loader
 
 
-def load_configuration():
+def load_configuration() -> dict:
+    """
+    Loads the configuration file into a dictionary.
+
+    Returns:
+        dict: The configuration dictionary.
+    """
     with open(os.path.join(os.path.dirname(__file__), 'settings.json')) as config_file:
         config = json.load(config_file)
     return config
@@ -22,7 +28,8 @@ def main():
         (config['WIDTH'], config['HEIGHT']))
     pygame.display.set_caption(config['TITLE'])
 
-    level = Level_Loader.Load("DEMO")
+    level = Level_Loader.Load("Demo")
+    # current_sublevel is the index of the sublevel being played in the sublevel list.
     current_sublevel = 0
 
     while True:
@@ -82,9 +89,10 @@ def main():
             if entity.__class__.__name__ == "MovingPlatform":
                 entity.update(level[current_sublevel].movable_sprites)
 
-            if entity.__class__.__name__ == "Button":
+            elif entity.__class__.__name__ == "Button":
                 if entity.mode == "BUTTON":
-                    entity.update(level[current_sublevel].movable_sprites, level[current_sublevel].all_sprites, level[current_sublevel].player)
+                    entity.update(level[current_sublevel].movable_sprites,
+                                  level[current_sublevel].all_sprites, level[current_sublevel].player)
 
             elif entity.__class__.__name__ == "Cube":
                 entity.update(level[current_sublevel].movable_sprites)

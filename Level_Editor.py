@@ -1,7 +1,25 @@
-import File_Handler
-from objects import *
-from pygame.locals import *
+import os
+import json
 import pygame
+from pygame.locals import *
+from objects import *
+
+
+def Create_Level_File(data, filename):
+    with open(os.path.join(os.path.dirname(__file__), 'levels', filename), "w") as file:
+        json.dump(data, file, indent=4)
+
+
+def Data_Assembler(all_sprites):
+    data = {"SUB_LEVELS": ["SUBLEVEL_0"], "SUBLEVEL_0": {"PLATFORMS": []}}
+    for sprite in all_sprites:
+        if type(sprite) == Platform:
+            new_platform = {"POS_X": int(sprite.pos.x), "POS_Y": int(sprite.pos.y), "WIDTH": int(sprite.width),
+                            "HEIGHT": int(sprite.height), "COLOR": sprite.color, "ID": sprite.ID, "DRAW_LAYER": sprite.draw_layer}
+
+            data["SUBLEVEL_0"]["PLATFORMS"].append(new_platform)
+
+    return data
 
 
 def update_sprite(mouse_x, mouse_y, original_x, original_y, sprite):
@@ -11,6 +29,7 @@ def update_sprite(mouse_x, mouse_y, original_x, original_y, sprite):
     sprite.rect.topleft = (min(original_x, mouse_x), min(original_y, mouse_y))
     sprite.width = abs(mouse_x - sprite.pos.x)
     sprite.height = abs(mouse_y - sprite.pos.y)
+
 
 def main():
 
@@ -30,8 +49,8 @@ def main():
             quit()
 
         if pressed_keys[K_e]:
-            data = File_Handler.Data_Assembler(all_sprits)
-            File_Handler.Create_Level_File(data, "TEST.json")
+            data = Data_Assembler(all_sprits)
+            Create_Level_File(data, "TEST.json")
 
         for event in pygame.event.get():
             if event.type == QUIT:

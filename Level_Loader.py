@@ -1,15 +1,27 @@
+import os
 import json
 import pygame
 from pygame.locals import *
 import objects
-import os
 
 
 class Sub_Level():
-    def __init__(self, level_number, sub_level_number) -> None:
-        self.level_number = level_number
-        self.sub_level_number = sub_level_number
-        self.default_color = 0
+    """
+    A class that represents a sublevel.
+
+    Used to contain details about a sublevel, such as the objects, groups, etc.
+    """
+
+    def __init__(self, level_name, sub_level_name):
+        """
+        Sub_Level constructor.
+
+        Parameters:
+            level_name (str): The name of the level.
+            sub_level_name (str): The name of the sublevel.
+        """
+        self.level_name = level_name
+        self.sub_level_name = sub_level_name
         self.all_sprites = pygame.sprite.Group()
         self.platforms = pygame.sprite.Group()
         self.moving_platforms = pygame.sprite.Group()
@@ -18,11 +30,12 @@ class Sub_Level():
         self.switching_panels = pygame.sprite.Group()
         self.movable_sprites = pygame.sprite.Group()
 
-        with open(os.path.join(os.path.dirname(__file__), 'levels', str(self.level_number) + ".json")) as level_file:
+        with open(os.path.join(os.path.dirname(__file__), 'levels', str(self.level_name) + ".json")) as level_file:
             level_file = json.load(level_file)
 
-        level_properties = level_file[self.sub_level_number]
+        level_properties = level_file[self.sub_level_name]
 
+        # Goes through the level properties and creates the objects and adds them to the appropriate groups.
         for data in level_properties:
 
             if (data == "PLATFORMS"):
@@ -87,16 +100,21 @@ class Sub_Level():
                 self.movable_sprites.add(self.player)
 
 
-def Load(level_number):
+def Load(level_name) -> dict:
+    """
+    Reads the level file and returns a dictionary of all the sublevels in the level.
 
-    level_number = level_number
+    Parameters:
+        level_name (str): The name of the level file.
+    """
     sub_levels = []
 
-    with open(os.path.join(os.path.dirname(__file__), 'levels', str(level_number) + ".json")) as level_file:
+    with open(os.path.join(os.path.dirname(__file__), 'levels', str(level_name) + ".json")) as level_file:
         level_file = json.load(level_file)
 
+    # Runs through a lookup table of all the sublevel's names so the sub_level constructor can find their properties.
     for sub_level in level_file["SUB_LEVELS"]:
-        sub_levels.append(Sub_Level(level_number, sub_level))
+        sub_levels.append(Sub_Level(level_name, sub_level))
 
     sub_levels.append(0)
 
