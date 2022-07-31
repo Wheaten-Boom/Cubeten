@@ -1,6 +1,8 @@
 {
     "SUB_LEVELS": [
-        "LEVEL_1_0", "LEVEL_1_1", "LEVEL_1_2"
+        "LEVEL_1_0",
+        "LEVEL_1_1",
+        "LEVEL_1_2"
     ],
     "LEVEL_1_0": {
         "PLATFORMS": [
@@ -87,7 +89,6 @@
                 "DRAW_LAYER": 0
             }
         ],
-
         "SWITCHING_PANELS": [
             {
                 "POS_X": 935,
@@ -98,7 +99,6 @@
                 "LEVEL_ID": 2,
                 "ID": 9,
                 "DRAW_LAYER": 0
-                
             },
             {
                 "POS_X": 150,
@@ -111,7 +111,6 @@
                 "DRAW_LAYER": 0
             }
         ],
-
         "PLAYER": {
             "POS_X": 37,
             "POS_Y": 700,
@@ -122,7 +121,6 @@
             "DRAW_LAYER": 1
         }
     },
-
     "LEVEL_1_1": {
         "PLATFORMS": [
             {
@@ -143,7 +141,7 @@
                 "ID": 2,
                 "DRAW_LAYER": 0
             },
-            {    
+            {
                 "POS_X": 700,
                 "POS_Y": 700,
                 "WIDTH": 200,
@@ -195,7 +193,6 @@
                 "DRAW_LAYER": 0
             }
         ],
-
         "SWITCHING_PANELS": [
             {
                 "POS_X": 100,
@@ -208,7 +205,6 @@
                 "DRAW_LAYER": 0
             }
         ],
-
         "BUTTONS": [
             {
                 "POS_X": 50,
@@ -218,10 +214,14 @@
                 "COLOR": "0xB52222",
                 "ACTIVATE_COLOR": "0x701010",
                 "ACTIVATE_ACTION": [
-                    "ACTIVATE_OBJECT", 0, 7
+                    "ACTIVATE_OBJECT",
+                    0,
+                    7
                 ],
                 "DEACTIVATE_ACTION": [
-                    "DEACTIVATE_OBJECT", 0, 7
+                    "DEACTIVATE_OBJECT",
+                    0,
+                    7
                 ],
                 "IS_ACTIVE": false,
                 "MODE": "SWITCH",
@@ -229,7 +229,6 @@
                 "DRAW_LAYER": 0
             }
         ],
-
         "PLAYER": {
             "POS_X": 100,
             "POS_Y": 900,
@@ -240,7 +239,6 @@
             "DRAW_LAYER": 1
         }
     },
-
     "LEVEL_1_2": {
         "PLATFORMS": [
             {
@@ -279,9 +277,7 @@
                 "ID": 4,
                 "DRAW_LAYER": 0
             }
-            
         ],
-
         "MOVING_PLATFORMS": [
             {
                 "X1": 900,
@@ -296,33 +292,33 @@
                 "ID": 5,
                 "DRAW_LAYER": 0
             },
-            { 
-             "X1": 900, 
-             "Y1": 850, 
-             "X2": 900, 
-             "Y2": 700, 
-             "SPEED": 150, 
-             "WIDTH": 100, 
-             "HEIGHT": 25, 
-             "COLOR": "0x78D0F0", 
-             "IS_ACTIVE": true, 
-             "ID": 6,
-             "DRAW_LAYER": 0 
-             },
-             { 
-              "X1": 575, 
-              "Y1": 700, 
-              "X2": 200, 
-              "Y2": 700, 
-              "SPEED": 150, 
-              "WIDTH": 100, 
-              "HEIGHT": 25, 
-              "COLOR": "0x78D0F0", 
-              "IS_ACTIVE": true, 
-              "ID": 7,
-              "DRAW_LAYER": 0
-              },
-              {
+            {
+                "X1": 900,
+                "Y1": 850,
+                "X2": 900,
+                "Y2": 700,
+                "SPEED": 150,
+                "WIDTH": 100,
+                "HEIGHT": 25,
+                "COLOR": "0x78D0F0",
+                "IS_ACTIVE": true,
+                "ID": 6,
+                "DRAW_LAYER": 0
+            },
+            {
+                "X1": 575,
+                "Y1": 700,
+                "X2": 200,
+                "Y2": 700,
+                "SPEED": 150,
+                "WIDTH": 100,
+                "HEIGHT": 25,
+                "COLOR": "0x78D0F0",
+                "IS_ACTIVE": true,
+                "ID": 7,
+                "DRAW_LAYER": 0
+            },
+            {
                 "X1": 100,
                 "Y1": 700,
                 "X2": 100,
@@ -334,8 +330,8 @@
                 "IS_ACTIVE": true,
                 "ID": 8,
                 "DRAW_LAYER": 0
-              },
-              {
+            },
+            {
                 "X1": 200,
                 "Y1": 500,
                 "X2": 500,
@@ -347,8 +343,8 @@
                 "IS_ACTIVE": true,
                 "ID": 9,
                 "DRAW_LAYER": 0
-              },
-              {
+            },
+            {
                 "X1": 900,
                 "Y1": 500,
                 "X2": 900,
@@ -360,9 +356,8 @@
                 "IS_ACTIVE": true,
                 "ID": 10,
                 "DRAW_LAYER": 0
-              }
+            }
         ],
-
         "SWITCHING_PANELS": [
             {
                 "POS_X": 100,
@@ -375,8 +370,7 @@
                 "DRAW_LAYER": 0
             }
         ],
-
-        "BUTTONS":[
+        "BUTTONS": [
             {
                 "POS_X": 725,
                 "POS_Y": 275,
@@ -385,10 +379,14 @@
                 "COLOR": "0x62E159",
                 "ACTIVATE_COLOR": "0x41913C",
                 "ACTIVATE_ACTION": [
-                    "ACTIVATE_OBJECT", 0, 8
+                    "ACTIVATE_OBJECT",
+                    0,
+                    8
                 ],
                 "DEACTIVATE_ACTION": [
-                    "DEACTIVATE_OBJECT", 0, 8
+                    "DEACTIVATE_OBJECT",
+                    0,
+                    8
                 ],
                 "IS_ACTIVE": false,
                 "MODE": "SWITCH",
@@ -396,7 +394,6 @@
                 "DRAW_LAYER": 0
             }
         ],
-
         "PLAYER": {
             "POS_X": 100,
             "POS_Y": 900,
