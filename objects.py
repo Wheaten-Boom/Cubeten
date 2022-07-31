@@ -28,6 +28,7 @@ class Platform(pygame.sprite.Sprite):
         super().__init__()
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
+        self.color = color
         self.rect = self.surf.get_rect()
         self.pos = pygame.math.Vector2(x, y)
         self.ID = ID
@@ -62,6 +63,7 @@ class MovingPlatform(pygame.sprite.Sprite):
         super().__init__()
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
+        self.color = color
         self.rect = self.surf.get_rect()
         self.start_pos = pygame.math.Vector2(min(x1, x2), min(y1, y2))
         self.end_pos = pygame.math.Vector2(max(x1, x2), max(y1, y2))
@@ -138,6 +140,7 @@ class Button(pygame.sprite.Sprite):
         super().__init__()
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
+        self.color = color
         self.rect = self.surf.get_rect()
         self.color = color
         self.activate_color = activate_color
@@ -279,6 +282,7 @@ class SwitchingPanel(pygame.sprite.Sprite):
         super().__init__()
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
+        self.color = color
         self.rect = self.surf.get_rect()
         self.pos = pygame.math.Vector2(x, y)
         self.ID = ID
@@ -322,6 +326,7 @@ class Cube(pygame.sprite.Sprite):
         super().__init__()
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
+        self.color = color
         self.rect = self.surf.get_rect()
         self.pos = pygame.math.Vector2(x, y)
         self.vel = pygame.math.Vector2(0, 0)
@@ -421,6 +426,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
+        self.color = color
         self.rect = self.surf.get_rect()
         self.pos = pygame.math.Vector2(x, y)
         self.vel = pygame.math.Vector2(0, 0)
