@@ -76,8 +76,8 @@ def main():
 
                         # Activate a switch
                         for button in level[current_sublevel].buttons:
-                            button.update(level[current_sublevel].movable_sprites,
-                                          level, level[current_sublevel].player)
+                            button.update(
+                                level[current_sublevel].movable_sprites, level[current_sublevel].player, level)
 
         displaysurface.fill((0, 0, 0))
 
@@ -91,8 +91,8 @@ def main():
 
             elif entity.__class__.__name__ == "Button":
                 if entity.mode == "BUTTON":
-                    entity.update(level[current_sublevel].movable_sprites,
-                                  level[current_sublevel].all_sprites, level[current_sublevel].player)
+                    entity.update(
+                        level[current_sublevel].movable_sprites, level[current_sublevel].player, level)
 
             elif entity.__class__.__name__ == "Cube":
                 entity.update(level[current_sublevel].movable_sprites)
