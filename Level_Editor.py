@@ -1,9 +1,9 @@
 import os
 import json
-from select import select
 import pygame
 from pygame.locals import *
 import pygame_gui
+from pygame_gui import *
 from objects import *
 
 
@@ -48,11 +48,8 @@ def main():
     clock = pygame.time.Clock()
 
     displaysurface = pygame.display.set_mode((1600, 1000))
-    manager = pygame_gui.UIManager((1600, 1000))
-    manager.get_theme().load_theme(os.path.join(os.path.dirname(__file__),
-                                                "assets",
-                                                "themes",
-                                                "editor_theme.json"))
+    manager = pygame_gui.UIManager((1600, 1000), PackageResource(
+        "assets.themes", "editor_theme.json"))
 
     left_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(0, 0, 300, 1000),
                                              starting_layer_height=0,
@@ -136,11 +133,12 @@ def main():
                     if is_mouse_on_sprite(all_sprites, mouse_pos):
                         for sprite in all_sprites:
                             if sprite.rect.collidepoint(mouse_pos):
+                                if sprite is selected_sprite:
+                                    break
                                 selected_sprite = sprite
                                 Red_Slider.set_current_value(sprite.color[0])
                                 Green_Slider.set_current_value(sprite.color[1])
                                 Blue_Slider.set_current_value(sprite.color[2])
-                                break
                     else:
                         creating_sprite = True
                         selected_sprite = None
