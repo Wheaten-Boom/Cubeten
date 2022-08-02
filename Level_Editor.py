@@ -1,12 +1,14 @@
+from datetime import datetime
 import os
 import json
 import pygame
 from pygame.locals import *
+import pygame_gui
 from objects import *
 
 
 def Create_Level_File(data, filename):
-    with open(os.path.join(os.path.dirname(__file__), 'levels', filename), "w") as file:
+    with open(os.path.join(os.path.dirname(__file__), "levels", filename), "w") as file:
         json.dump(data, file, indent=4)
 
 
@@ -14,8 +16,13 @@ def Data_Assembler(all_sprites):
     data = {"SUB_LEVELS": ["SUBLEVEL_0"], "SUBLEVEL_0": {"PLATFORMS": []}}
     for sprite in all_sprites:
         if type(sprite) == Platform:
-            new_platform = {"POS_X": int(sprite.rect.left), "POS_Y": int(sprite.rect.top), "WIDTH": int(sprite.width),
-                            "HEIGHT": int(sprite.height), "COLOR": sprite.color, "ID": sprite.ID, "DRAW_LAYER": sprite.draw_layer}
+            new_platform = {"POS_X": int(sprite.rect.left) - 200,
+                            "POS_Y": int(sprite.rect.top),
+                            "WIDTH": int(sprite.width),
+                            "HEIGHT": int(sprite.height),
+                            "COLOR": sprite.color,
+                            "ID": sprite.ID,
+                            "DRAW_LAYER": sprite.draw_layer}
 
             data["SUBLEVEL_0"]["PLATFORMS"].append(new_platform)
 
@@ -34,54 +41,91 @@ def update_sprite(mouse_x, mouse_y, original_x, original_y, sprite):
 def main():
 
     pygame.init()
-    FramePerSec = pygame.time.Clock()
+    clock = pygame.time.Clock()
 
-    displaysurface = pygame.display.set_mode((1000, 1000))
-    all_sprits = pygame.sprite.Group()
+    displaysurface = pygame.display.set_mode((1600, 1000))
+    manager = pygame_gui.UIManager((1600, 1000))
+    manager.get_theme().load_theme(os.path.join(os.path.dirname(__file__),
+                                                "assets",
+                                                "themes",
+                                                "buttons_theme.json"))
+
+    left_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(0, 0, 300, 1000),
+                                             starting_layer_height=0,
+                                             manager=manager)
+
+    right_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(1300, 0, 300, 1000),
+                                              starting_layer_height=0,
+                                              manager=manager)
+
+    clear_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(15, 900, 125, 75),
+                                                text="CLEAR",
+                                                manager=manager,
+                                                container=right_panel,
+                                                object_id="#CLEAR_BUTTON")
+
+    save_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(155, 900, 125, 75),
+                                               text="SAVE",
+                                               manager=manager,
+                                               container=right_panel,
+                                               object_id="#SAVE_BUTTON")
+
+    all_sprites = pygame.sprite.Group()
     recent_sprites = []
     create_new_sprite = True
 
     while True:
-
         pressed_keys = pygame.key.get_pressed()
         if pressed_keys[K_ESCAPE]:
             pygame.quit()
             quit()
-
-        if pressed_keys[K_e]:
-            data = Data_Assembler(all_sprits)
-            Create_Level_File(data, "TEST.json")
 
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 quit()
 
+            if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                if event.ui_element == clear_button:
+                    all_sprites.empty()
+                    recent_sprites.clear()
+                    create_new_sprite = True
+                if event.ui_element == save_button:
+                    data = Data_Assembler(all_sprites)
+                    Create_Level_File(data, "TEST.json")
+
+            manager.process_events(event)
+
         if pygame.mouse.get_pressed(num_buttons=3)[0] == True:
+            if pygame.mouse.get_pos()[0] > 300 and pygame.mouse.get_pos()[0] < 1300 and pygame.mouse.get_pos()[1] > 0 and pygame.mouse.get_pos()[1] < 1000:
+                if create_new_sprite == True:
 
-            if create_new_sprite == True:
+                    new_sprite = Platform(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1],
+                                          0, 0, "0x2c5160", 2, 1)
+                    all_sprites.add(new_sprite)
+                    recent_sprites.append(
+                        (pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]))
+                    recent_sprites.append(new_sprite)
+                    create_new_sprite = False
 
-                new_sprite = Platform(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[
-                                      1], 0, 0, "0x2c5160", 2, 1)
-                all_sprits.add(new_sprite)
-                recent_sprites.append(
-                    (pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]))
-                recent_sprites.append(new_sprite)
-                create_new_sprite = False
-
-            else:
-                update_sprite(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[
-                              1], recent_sprites[-2][0], recent_sprites[-2][1], recent_sprites[-1])
+                else:
+                    update_sprite(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1],
+                                  recent_sprites[-2][0], recent_sprites[-2][1], recent_sprites[-1])
 
         else:
             create_new_sprite = True
 
-        displaysurface.fill((0, 0, 0))
-        for entity in all_sprits:
+        manager.update(clock.get_time())
+
+        displaysurface.fill("0xAFDEEF")
+
+        for entity in all_sprites:
             displaysurface.blit(entity.surf, entity.rect)
 
+        manager.draw_ui(displaysurface)
+
         pygame.display.update()
-        FramePerSec.tick(60)
+        clock.tick(60)
 
 
 if __name__ == "__main__":
