@@ -5,6 +5,28 @@
             "normal_border": "#000000"
         }
     },
+    "horizontal_slider": {
+        "colours": {
+            "dark_bg": "#1c3d4a",
+            "hovered_bg": "#032331",
+            "disabled_bg": "#25292e",
+            "selected_bg": "#1c3d4a",
+            "active_bg": "#1c3d4a"
+        }
+    },
+    "horizontal_slider.button": {
+        "colours": {
+            "active_bg": "#032736"
+        },
+        "misc": {
+            "border_width": "1"
+        }
+    },
+    "horizontal_slider.#sliding_button": {
+        "colours": {
+            "normal_bg": "#032736"
+        }
+    },
     "button": {
         "colours": {
             "normal_bg": "#032736",

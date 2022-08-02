@@ -49,6 +49,10 @@ def main():
 
     displaysurface = pygame.display.set_mode((1600, 1000))
     manager = pygame_gui.UIManager((1600, 1000))
+    manager.get_theme().load_theme(os.path.join(os.path.dirname(__file__),
+                                                "assets",
+                                                "themes",
+                                                "editor_theme.json"))
 
     left_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(0, 0, 300, 1000),
                                              starting_layer_height=0,
@@ -71,29 +75,25 @@ def main():
                                                object_id="#SAVE_BUTTON")
 
     Red_Slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect(40, 25, 250, 30),
-                                                        start_value=0,
-                                                        value_range=(0,255),
+                                                        start_value=255,
+                                                        value_range=(0, 255),
                                                         manager=manager,
                                                         container=right_panel,
                                                         object_id="#RED_COLOR_SLIDER")
 
     Green_Slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect(40, 70, 250, 30),
-                                                        start_value=0,
-                                                        value_range=(0,255),
-                                                        manager=manager,
-                                                        container=right_panel,
-                                                        object_id="#GREEN_COLOR_SLIDER")   
+                                                          start_value=255,
+                                                          value_range=(0, 255),
+                                                          manager=manager,
+                                                          container=right_panel,
+                                                          object_id="#GREEN_COLOR_SLIDER")
 
     Blue_Slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect(40, 115, 250, 30),
-                                                        start_value=0,
-                                                        value_range=(0,255),
-                                                        manager=manager,
-                                                        container=right_panel,
-                                                        object_id="#BLUE_COLOR_SLIDER")
-
-    
-
-                                                                                        
+                                                         start_value=255,
+                                                         value_range=(0, 255),
+                                                         manager=manager,
+                                                         container=right_panel,
+                                                         object_id="#BLUE_COLOR_SLIDER")
 
     all_sprites = pygame.sprite.Group()
     id_count = 0
@@ -136,14 +136,16 @@ def main():
                     if is_mouse_on_sprite(all_sprites, mouse_pos):
                         for sprite in all_sprites:
                             if sprite.rect.collidepoint(mouse_pos):
-
                                 selected_sprite = sprite
+                                Red_Slider.set_current_value(sprite.color[0])
+                                Green_Slider.set_current_value(sprite.color[1])
+                                Blue_Slider.set_current_value(sprite.color[2])
                                 break
                     else:
                         creating_sprite = True
                         selected_sprite = None
                         current_sprite = Platform(
-                            mouse_pos[0], mouse_pos[1], 1, 1, Current_Selected_Color, id_count, 0)
+                            mouse_pos[0], mouse_pos[1], 1, 1, current_selected_color, id_count, 0)
                         original_draw_pos = (mouse_pos[0], mouse_pos[1])
                 # If we did create one, update the sprite
                 else:
@@ -173,11 +175,20 @@ def main():
 
         displaysurface.fill("0xAFDEEF")
 
+        current_selected_color = (Red_Slider.get_current_value(),
+                                  Green_Slider.get_current_value(),
+                                  Blue_Slider.get_current_value())
+
         # If we do have a sprite selected, draw an outline around it
         if selected_sprite is not None:
-            draw_outline(selected_sprite, displaysurface)
+            selected_sprite.color = current_selected_color
+            selected_sprite.surf.fill(selected_sprite.color)
             if pygame.mouse.get_pressed()[0] and selected_sprite.rect.collidepoint(pygame.mouse.get_pos()):
-                selected_sprite.rect.center = pygame.mouse.get_pos()
+                # Adds pygame.mouse.get_rel() to the sprite's position (drags it)
+                selected_sprite.rect.center = tuple(map(lambda i, j: i + j,
+                                                        selected_sprite.rect.center,
+                                                        pygame.mouse.get_rel()))
+            draw_outline(selected_sprite, displaysurface)
 
         # If we are creating a sprite, draw it
         if current_sprite is not None:
@@ -189,9 +200,7 @@ def main():
 
         manager.draw_ui(displaysurface)
 
-        Current_Selected_Color = (Red_Slider.get_current_value(), Green_Slider.get_current_value(), Blue_Slider.get_current_value())
-
-        pygame.draw.rect(displaysurface, Current_Selected_Color, pygame.Rect(1345, 160, 125, 22))
+        pygame.mouse.get_rel()
 
         pygame.display.update()
         clock.tick(240)
