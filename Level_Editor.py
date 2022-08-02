@@ -38,9 +38,9 @@ def is_mouse_on_sprite(sprite_list, mouse_pos):
 
 def draw_outline(sprite, displaysurface):
     outline_rect = sprite.rect.copy()
-    outline_rect.inflate_ip((outline_rect.width + outline_rect.height) / 20,
-                            (outline_rect.width + outline_rect.height) / 20)
-    pygame.draw.rect(displaysurface, "0xFFFFFF", outline_rect, 0)
+    outline_rect.inflate_ip((outline_rect.width + outline_rect.height) / 25,
+                            (outline_rect.width + outline_rect.height) / 25)
+    pygame.draw.rect(displaysurface, "0xF5F97E", outline_rect, 0)
 
 
 def main():
@@ -95,6 +95,11 @@ def main():
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == clear_button:
                     all_sprites.empty()
+                    id_count = 0
+                    current_sprite = None
+                    original_draw_pos = None
+                    creating_sprite = False
+                    selected_sprite = None
                 if event.ui_element == save_button:
                     data = Data_Assembler(all_sprites)
                     Create_Level_File(data, "TEST.json")
