@@ -77,19 +77,23 @@ def main():
                                                         container=right_panel,
                                                         object_id="#RED_COLOR_SLIDER")
 
-    Blue_Slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect(40, 70, 250, 30),
+    Green_Slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect(40, 70, 250, 30),
+                                                        start_value=0,
+                                                        value_range=(0,255),
+                                                        manager=manager,
+                                                        container=right_panel,
+                                                        object_id="#GREEN_COLOR_SLIDER")   
+
+    Blue_Slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect(40, 115, 250, 30),
                                                         start_value=0,
                                                         value_range=(0,255),
                                                         manager=manager,
                                                         container=right_panel,
                                                         object_id="#BLUE_COLOR_SLIDER")
 
-    Green_Slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect(40, 115, 250, 30),
-                                                        start_value=0,
-                                                        value_range=(0,255),
-                                                        manager=manager,
-                                                        container=right_panel,
-                                                        object_id="#GREEN_COLOR_SLIDER")                                                                                                                
+    
+
+                                                                                        
 
     all_sprites = pygame.sprite.Group()
     id_count = 0
@@ -99,7 +103,6 @@ def main():
     selected_sprite = None
 
     while True:
-        print(Red_Slider.get_current_value())
         pressed_keys = pygame.key.get_pressed()
         if pressed_keys[K_ESCAPE]:
             pygame.quit()
@@ -132,14 +135,15 @@ def main():
                     # If the mouse is on a sprite, select that sprite
                     if is_mouse_on_sprite(all_sprites, mouse_pos):
                         for sprite in all_sprites:
-                            if sprite.rect.collidepoint(mouse_pos) and selected_sprite == None:
+                            if sprite.rect.collidepoint(mouse_pos):
+
                                 selected_sprite = sprite
                                 break
                     else:
                         creating_sprite = True
                         selected_sprite = None
                         current_sprite = Platform(
-                            mouse_pos[0], mouse_pos[1], 1, 1, "0x2c5160", id_count, 0)
+                            mouse_pos[0], mouse_pos[1], 1, 1, Current_Selected_Color, id_count, 0)
                         original_draw_pos = (mouse_pos[0], mouse_pos[1])
                 # If we did create one, update the sprite
                 else:
@@ -172,7 +176,7 @@ def main():
         # If we do have a sprite selected, draw an outline around it
         if selected_sprite is not None:
             draw_outline(selected_sprite, displaysurface)
-            if pygame.mouse.get_pressed()[0]:
+            if pygame.mouse.get_pressed()[0] and selected_sprite.rect.collidepoint(pygame.mouse.get_pos()):
                 selected_sprite.rect.center = pygame.mouse.get_pos()
 
         # If we are creating a sprite, draw it
@@ -184,6 +188,10 @@ def main():
             displaysurface.blit(entity.surf, entity.rect)
 
         manager.draw_ui(displaysurface)
+
+        Current_Selected_Color = (Red_Slider.get_current_value(), Green_Slider.get_current_value(), Blue_Slider.get_current_value())
+
+        pygame.draw.rect(displaysurface, Current_Selected_Color, pygame.Rect(1345, 160, 125, 22))
 
         pygame.display.update()
         clock.tick(240)
