@@ -27,6 +27,35 @@
             "normal_bg": "#032736"
         }
     },
+    "label": {
+        "colours": {
+            "normal_text": "#032736"
+        },
+        "font": {
+            "name": "PixeloidSans",
+            "size": "26",
+            "bold": "1",
+            "regular_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSans.ttf"
+            }
+        }
+    },
+    "text_entry_line": {
+        "colours": {
+            "dark_bg": "#032736",
+            "normal_text": "#ffffff"
+        },
+        "font": {
+            "name": "PixeloidSans",
+            "size": "20",
+            "bold": "1",
+            "regular_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSans.ttf"
+            }
+        }
+    },
     "button": {
         "colours": {
             "normal_bg": "#032736",

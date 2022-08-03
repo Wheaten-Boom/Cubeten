@@ -1,5 +1,6 @@
 import os
 import json
+from turtle import right
 import pygame
 from pygame.locals import *
 import pygame_gui
@@ -55,6 +56,18 @@ def main():
                                              starting_layer_height=0,
                                              manager=manager)
 
+    create_platform_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(50, 600, 200, 50),
+                                                          text="PLAT",
+                                                          manager=manager,
+                                                          container=left_panel,
+                                                          object_id="#PLATFORM_BUTTON")
+
+    create_moving_platform_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(50, 700, 200, 50),
+                                                                 text="MOV PLAT",
+                                                                 manager=manager,
+                                                                 container=left_panel,
+                                                                 object_id="#MOVING_PLATFORM_BUTTON")
+
     right_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(1300, 0, 300, 1000),
                                               starting_layer_height=0,
                                               manager=manager)
@@ -92,12 +105,39 @@ def main():
                                                          container=right_panel,
                                                          object_id="#BLUE_COLOR_SLIDER")
 
+    pos_x_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(40, 200, 50, 50),
+                                             text="X:",
+                                             manager=manager,
+                                             container=right_panel,
+                                             object_id="#POS_X_TEXT")
+
+    pos_x_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(80, 200, 75, 50),
+                                                           manager=manager,
+                                                           container=right_panel,
+                                                           object_id="#POS_X_TEXT_ENTRY")
+    pos_x_text_entry.set_allowed_characters("numbers")
+    pos_x_text_entry.set_text_length_limit(4)
+
+    pos_y_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(40, 250, 50, 50),
+                                             text="Y:",
+                                             manager=manager,
+                                             container=right_panel,
+                                             object_id="#POS_Y_TEXT")
+
+    pos_y_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(80, 250, 75, 50),
+                                                           manager=manager,
+                                                           container=right_panel,
+                                                           object_id="#POS_Y_TEXT_ENTRY")
+    pos_y_text_entry.set_allowed_characters("numbers")
+    pos_y_text_entry.set_text_length_limit(4)
+
     all_sprites = pygame.sprite.Group()
     id_count = 0
     current_sprite = None
     original_draw_pos = None
     creating_sprite = False
     selected_sprite = None
+    creation_type = None
 
     while True:
         pressed_keys = pygame.key.get_pressed()
@@ -111,6 +151,10 @@ def main():
                 quit()
 
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                if event.ui_element == create_platform_button:
+                    creation_type = Platform
+                if event.ui_element == create_moving_platform_button:
+                    creation_type = MovingPlatform
                 if event.ui_element == clear_button:
                     all_sprites.empty()
                     id_count = 0
@@ -121,6 +165,17 @@ def main():
                 if event.ui_element == save_button:
                     data = Data_Assembler(all_sprites)
                     Create_Level_File(data, "TEST.json")
+            if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED:
+                if event.ui_element == pos_x_text_entry:
+                    if event.text:
+                        if int(event.text) >= 0 and int(event.text) + selected_sprite.rect.width <= 1000:
+                            selected_sprite.rect.left = int(event.text) + 300
+                if event.ui_element == pos_y_text_entry:
+                    if event.text:
+                        if int(event.text) >= 0 and int(event.text) + selected_sprite.rect.height <= 1000:
+                            selected_sprite.rect.top = int(event.text)
+
+            manager.process_events(event)
 
         # Check whether the mouse left click is pressed
         if pygame.mouse.get_pressed()[0]:
@@ -136,15 +191,26 @@ def main():
                                 if sprite is selected_sprite:
                                     break
                                 selected_sprite = sprite
+                                creation_type = type(selected_sprite)
                                 Red_Slider.set_current_value(sprite.color[0])
                                 Green_Slider.set_current_value(sprite.color[1])
                                 Blue_Slider.set_current_value(sprite.color[2])
+                                pos_x_text_entry.set_text(str(
+                                    selected_sprite.rect.left - 300))
+                                pos_y_text_entry.set_text(str(
+                                    selected_sprite.rect.top))
+
                     else:
-                        creating_sprite = True
-                        selected_sprite = None
-                        current_sprite = Platform(
-                            mouse_pos[0], mouse_pos[1], 1, 1, current_selected_color, id_count, 0)
-                        original_draw_pos = (mouse_pos[0], mouse_pos[1])
+                        if creation_type is not None:
+                            creating_sprite = True
+                            selected_sprite = None
+                            current_sprite = Platform(mouse_pos[0],
+                                                      mouse_pos[1],
+                                                      1, 1,
+                                                      current_selected_color,
+                                                      id_count,
+                                                      0)
+                            original_draw_pos = (mouse_pos[0], mouse_pos[1])
                 # If we did create one, update the sprite
                 else:
                     current_sprite.rect.left = min(original_draw_pos[0],
@@ -164,11 +230,17 @@ def main():
         elif creating_sprite:
             creating_sprite = False
             all_sprites.add(current_sprite)
+            selected_sprite = current_sprite
+            pos_x_text_entry.set_text(str(selected_sprite.rect.left - 300))
+            pos_y_text_entry.set_text(str(selected_sprite.rect.top))
             current_sprite = None
             original_draw_pos = None
             id_count += 1
 
-        manager.process_events(event)
+        # Clears the selection if right click is pressed
+        if pygame.mouse.get_pressed()[2]:
+            selected_sprite = None
+
         manager.update(clock.get_time())
 
         displaysurface.fill("0xAFDEEF")
@@ -181,12 +253,30 @@ def main():
         if selected_sprite is not None:
             selected_sprite.color = current_selected_color
             selected_sprite.surf.fill(selected_sprite.color)
-            if pygame.mouse.get_pressed()[0] and selected_sprite.rect.collidepoint(pygame.mouse.get_pos()):
+
+            if (pygame.mouse.get_pressed()[0]
+                    and selected_sprite.rect.collidepoint(pygame.mouse.get_pos())):
                 # Adds pygame.mouse.get_rel() to the sprite's position (drags it)
-                selected_sprite.rect.center = tuple(map(lambda i, j: i + j,
-                                                        selected_sprite.rect.center,
-                                                        pygame.mouse.get_rel()))
+                new_pos = tuple(map(lambda i, j: i + j,
+                                    selected_sprite.rect.topleft,
+                                    pygame.mouse.get_rel()))
+                # If the sprite didn't move we don't want to update the position, this is to allow us to type new values in the text entry boxes
+                if selected_sprite.rect.topleft != new_pos:
+                    # Checks we aren't dragging it outside of the screen
+                    if new_pos[0] >= 300 and new_pos[0] + selected_sprite.rect.width <= 1300:
+                        selected_sprite.rect.left = new_pos[0]
+                    if new_pos[1] >= 0 and new_pos[1] + selected_sprite.rect.height <= 1000:
+                        selected_sprite.rect.top = new_pos[1]
+                    # Updates the text box with the sprite's position
+                    pos_x_text_entry.set_text(
+                        str(selected_sprite.rect.left - 300))
+                    pos_y_text_entry.set_text(str(selected_sprite.rect.top))
+
             draw_outline(selected_sprite, displaysurface)
+        # If we don't have a sprite selected, clear the text box
+        else:
+            pos_x_text_entry.set_text("")
+            pos_y_text_entry.set_text("")
 
         # If we are creating a sprite, draw it
         if current_sprite is not None:
