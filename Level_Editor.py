@@ -1,6 +1,5 @@
 import os
 import json
-from turtle import right
 import pygame
 from pygame.locals import *
 import pygame_gui
@@ -84,47 +83,65 @@ def main():
                                                container=right_panel,
                                                object_id="#SAVE_BUTTON")
 
-    Red_Slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect(40, 25, 250, 30),
-                                                        start_value=255,
+    red_slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect(40, 25, 250, 30),
+                                                        start_value=0,
                                                         value_range=(0, 255),
                                                         manager=manager,
                                                         container=right_panel,
                                                         object_id="#RED_COLOR_SLIDER")
 
-    Green_Slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect(40, 70, 250, 30),
-                                                          start_value=255,
+    red__rgb_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0, 25, 50, 30),
+                                                text="R:",
+                                                manager=manager,
+                                                container=right_panel,
+                                                object_id="#RGB_TEXT")
+
+    green_slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect(40, 70, 250, 30),
+                                                          start_value=0,
                                                           value_range=(0, 255),
                                                           manager=manager,
                                                           container=right_panel,
                                                           object_id="#GREEN_COLOR_SLIDER")
 
-    Blue_Slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect(40, 115, 250, 30),
-                                                         start_value=255,
+    green__rgb_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0, 70, 50, 30),
+                                                  text="G:",
+                                                  manager=manager,
+                                                  container=right_panel,
+                                                  object_id="#RGB_TEXT")
+
+    blue_slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect(40, 115, 250, 30),
+                                                         start_value=0,
                                                          value_range=(0, 255),
                                                          manager=manager,
                                                          container=right_panel,
                                                          object_id="#BLUE_COLOR_SLIDER")
 
-    pos_x_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(40, 200, 50, 50),
+    blue__rgb_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0, 115, 50, 30),
+                                                 text="B:",
+                                                 manager=manager,
+                                                 container=right_panel,
+                                                 object_id="#RGB_TEXT")
+
+    pos_x_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0, 200, 50, 50),
                                              text="X:",
                                              manager=manager,
                                              container=right_panel,
                                              object_id="#POS_X_TEXT")
 
-    pos_x_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(80, 200, 75, 50),
+    pos_x_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(40, 200, 75, 50),
                                                            manager=manager,
                                                            container=right_panel,
                                                            object_id="#POS_X_TEXT_ENTRY")
     pos_x_text_entry.set_allowed_characters("numbers")
     pos_x_text_entry.set_text_length_limit(4)
 
-    pos_y_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(40, 250, 50, 50),
+    pos_y_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0, 250, 50, 50),
                                              text="Y:",
                                              manager=manager,
                                              container=right_panel,
                                              object_id="#POS_Y_TEXT")
 
-    pos_y_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(80, 250, 75, 50),
+    pos_y_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(40, 250, 75, 50),
                                                            manager=manager,
                                                            container=right_panel,
                                                            object_id="#POS_Y_TEXT_ENTRY")
@@ -192,9 +209,9 @@ def main():
                                     break
                                 selected_sprite = sprite
                                 creation_type = type(selected_sprite)
-                                Red_Slider.set_current_value(sprite.color[0])
-                                Green_Slider.set_current_value(sprite.color[1])
-                                Blue_Slider.set_current_value(sprite.color[2])
+                                red_slider.set_current_value(sprite.color[0])
+                                green_slider.set_current_value(sprite.color[1])
+                                blue_slider.set_current_value(sprite.color[2])
                                 pos_x_text_entry.set_text(str(
                                     selected_sprite.rect.left - 300))
                                 pos_y_text_entry.set_text(str(
@@ -245,9 +262,9 @@ def main():
 
         displaysurface.fill("0xAFDEEF")
 
-        current_selected_color = (Red_Slider.get_current_value(),
-                                  Green_Slider.get_current_value(),
-                                  Blue_Slider.get_current_value())
+        current_selected_color = (red_slider.get_current_value(),
+                                  green_slider.get_current_value(),
+                                  blue_slider.get_current_value())
 
         # If we do have a sprite selected, draw an outline around it
         if selected_sprite is not None:

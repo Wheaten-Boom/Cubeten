@@ -27,6 +27,20 @@
             "normal_bg": "#032736"
         }
     },
+    "#RGB_TEXT": {
+        "colours": {
+            "normal_text": "#032736"
+        },
+        "font": {
+            "name": "PixeloidSans",
+            "size": "22",
+            "bold": "1",
+            "regular_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSans.ttf"
+            }
+        }
+    },
     "label": {
         "colours": {
             "normal_text": "#032736"
