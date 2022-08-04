@@ -459,10 +459,10 @@ class Player(pygame.sprite.Sprite):
         self.pos += self.vel + config['PHYSICS']['FRICTION'] * self.acc
 
         # If the player is out of the screen, it's updated back into the screen
-        if self.pos.x > config['WIDTH'] - self.rect.width / 2:
-            self.pos.x = config['WIDTH'] - self.rect.width / 2
-        if self.pos.x < 0 + self.rect.width / 2:
-            self.pos.x = 0 + self.rect.width / 2
+        if self.pos.x + self.rect.width > config['WIDTH']:
+            self.pos.x = config['WIDTH'] - self.rect.width
+        if self.pos.x < 0:
+            self.pos.x = 0
 
         self.rect.topleft = self.pos
 

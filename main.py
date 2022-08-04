@@ -28,7 +28,7 @@ def main():
         (config['WIDTH'], config['HEIGHT']))
     pygame.display.set_caption(config['TITLE'])
 
-    level = Level_Loader.Load("Demo")
+    level = Level_Loader.Load("TEST")
     # current_sublevel is the index of the sublevel being played in the sublevel list.
     current_sublevel = 0
 

@@ -13,7 +13,7 @@ def Create_Level_File(data, filename):
 
 
 def Data_Assembler(all_sprites):
-    data = {"SUB_LEVELS": ["SUBLEVEL_0"], "SUBLEVEL_0": {"PLATFORMS": []}}
+    data = {"SUB_LEVELS": ["SUBLEVEL_0"], "SUBLEVEL_0": {"PLATFORMS": [], "PLAYER": {}}}
     for sprite in all_sprites:
         if type(sprite) == Platform:
             new_platform = {"POS_X": int(sprite.rect.left) - 300,
@@ -25,6 +25,19 @@ def Data_Assembler(all_sprites):
                             "DRAW_LAYER": sprite.draw_layer}
 
             data["SUBLEVEL_0"]["PLATFORMS"].append(new_platform)
+
+        if type(sprite) == Player:
+            new_player = {"POS_X": int(sprite.rect.left) - 300,
+                            "POS_Y": int(sprite.rect.top),
+                            "WIDTH": int(sprite.rect.width),
+                            "HEIGHT": int(sprite.rect.height),
+                            "COLOR": sprite.color,
+                            "ID": sprite.ID,
+                            "DRAW_LAYER": sprite.draw_layer}
+
+            data["SUBLEVEL_0"]["PLAYER"] = (new_player)
+
+            
 
     return data
 
@@ -55,17 +68,23 @@ def main():
                                              starting_layer_height=0,
                                              manager=manager)
 
-    create_platform_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(50, 600, 200, 50),
+    create_platform_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(50, 40, 200, 50),
                                                           text="PLAT",
                                                           manager=manager,
                                                           container=left_panel,
                                                           object_id="#PLATFORM_BUTTON")
 
-    create_moving_platform_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(50, 700, 200, 50),
+    create_moving_platform_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(50, 120, 200, 50),
                                                                  text="MOV PLAT",
                                                                  manager=manager,
                                                                  container=left_panel,
                                                                  object_id="#MOVING_PLATFORM_BUTTON")
+
+    create_player_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(50, 200, 200, 50),
+                                                        text="PLAYER",
+                                                        manager=manager,
+                                                        container=left_panel,
+                                                        object_id="#PLAYER_BUTTON")
 
     right_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(1300, 0, 300, 1000),
                                               starting_layer_height=0,
@@ -213,6 +232,8 @@ def main():
                     creation_type = Platform
                 if event.ui_element == create_moving_platform_button:
                     creation_type = MovingPlatform
+                if event.ui_element == create_player_button:
+                    creation_type = Player
                 if event.ui_element == clear_button:
                     all_sprites.empty()
                     id_count = 0
@@ -220,13 +241,19 @@ def main():
                     original_draw_pos = None
                     creating_sprite = False
                     selected_sprite = None
+                    create_player_button.enable()
+
                 if event.ui_element == save_button:
                     data = Data_Assembler(all_sprites)
                     Create_Level_File(data, "TEST.json")
+                    
                 if event.ui_element == delete_button:
                     if selected_sprite is not None:
                         all_sprites.remove(selected_sprite)
+                        if (type(selected_sprite) == Player):
+                            create_player_button.enable()
                         selected_sprite = None
+
             if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED:
                 if event.ui_element == pos_x_text_entry:
                     if event.text:
@@ -234,14 +261,16 @@ def main():
                             selected_sprite.rect.left = int(event.text) + 300
                             input_out_of_bounds.set_text("")
                         else:
-                            input_out_of_bounds.set_text("POS X IS OUT OF BOUNDS!")
+                            input_out_of_bounds.set_text(
+                                "POS X IS OUT OF BOUNDS!")
                 if event.ui_element == pos_y_text_entry:
                     if event.text:
                         if int(event.text) >= 0 and int(event.text) + selected_sprite.rect.height <= 1000:
                             selected_sprite.rect.top = int(event.text)
                             input_out_of_bounds.set_text("")
                         else:
-                            input_out_of_bounds.set_text("POS Y IS OUT OF BOUNDS!")
+                            input_out_of_bounds.set_text(
+                                "POS Y IS OUT OF BOUNDS!")
                 if event.ui_element == width_text_entry:
                     if event.text:
                         if int(event.text) > 0 and int(event.text) + selected_sprite.rect.left <= 1300:
@@ -250,7 +279,8 @@ def main():
                             selected_sprite.rect.width = int(event.text)
                             input_out_of_bounds.set_text("")
                         else:
-                            input_out_of_bounds.set_text("WIDTH GOES OUT OF BOUNDS!")
+                            input_out_of_bounds.set_text(
+                                "WIDTH GOES OUT OF BOUNDS!")
                 if event.ui_element == height_text_entry:
                     if event.text:
                         if int(event.text) > 0 and int(event.text) + selected_sprite.rect.top <= 1000:
@@ -259,7 +289,8 @@ def main():
                             selected_sprite.rect.height = int(event.text)
                             input_out_of_bounds.set_text("")
                         else:
-                            input_out_of_bounds.set_text("HEIGHT GOES OUT OF BOUNDS!")
+                            input_out_of_bounds.set_text(
+                                "HEIGHT GOES OUT OF BOUNDS!")
 
             manager.process_events(event)
 
@@ -276,7 +307,7 @@ def main():
                             if sprite.rect.collidepoint(mouse_pos):
                                 if sprite is selected_sprite:
                                     break
-                                
+
                                 selected_sprite = sprite
                                 creation_type = type(selected_sprite)
                                 red_slider.set_current_value(sprite.color[0])
@@ -295,15 +326,34 @@ def main():
                         if creation_type is not None and selected_sprite is None:
                             creating_sprite = True
                             selected_sprite = None
-                            current_sprite = Platform(mouse_pos[0],
-                                                      mouse_pos[1],
-                                                      1, 1,
-                                                      current_selected_color,
-                                                      id_count,
-                                                      0)
-                            original_draw_pos = (mouse_pos[0], mouse_pos[1])
+
+                            if creation_type == Platform:
+                                current_sprite = Platform(mouse_pos[0],
+                                                          mouse_pos[1],
+                                                          1, 1,
+                                                          current_selected_color,
+                                                          id_count,
+                                                          0)
+                                original_draw_pos = (
+                                    mouse_pos[0], mouse_pos[1])
+
+                            if creation_type == Player:
+                                current_sprite = Player(mouse_pos[0],
+                                                        mouse_pos[1],
+                                                        75, 75,
+                                                        current_selected_color,
+                                                        id_count,
+                                                        0)
+
+                                current_sprite.surf = pygame.Surface((current_sprite.rect.width,
+                                                                      current_sprite.rect.height))
+                                current_sprite.surf.fill(current_sprite.color)
+
+                                create_player_button.disable()
+                                creation_type = None
+
                 # If we did create one, update the sprite
-                else:
+                elif (type(current_sprite) is not Player):
                     current_sprite.rect.left = min(original_draw_pos[0],
                                                    mouse_pos[0])
                     current_sprite.rect.top = min(original_draw_pos[1],
@@ -334,7 +384,6 @@ def main():
         if pygame.mouse.get_pressed()[2]:
             selected_sprite = None
             input_out_of_bounds.set_text("")
-
 
         manager.update(delta_time)
 

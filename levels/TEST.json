@@ -1,0 +1,48 @@
+{
+    "SUB_LEVELS": [
+        "SUBLEVEL_0"
+    ],
+    "SUBLEVEL_0": {
+        "PLATFORMS": [
+            {
+                "POS_X": 76,
+                "POS_Y": 886,
+                "WIDTH": 851,
+                "HEIGHT": 29,
+                "COLOR": [
+                    128,
+                    248,
+                    255
+                ],
+                "ID": 1,
+                "DRAW_LAYER": 0
+            },
+            {
+                "POS_X": 97,
+                "POS_Y": 747,
+                "WIDTH": 374,
+                "HEIGHT": 16,
+                "COLOR": [
+                    205,
+                    177,
+                    49
+                ],
+                "ID": 2,
+                "DRAW_LAYER": 0
+            }
+        ],
+        "PLAYER": {
+            "POS_X": 589,
+            "POS_Y": 801,
+            "WIDTH": 75,
+            "HEIGHT": 75,
+            "COLOR": [
+                202,
+                42,
+                185
+            ],
+            "ID": 0,
+            "DRAW_LAYER": 0
+        }
+    }
+}
