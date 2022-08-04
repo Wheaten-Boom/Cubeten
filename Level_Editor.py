@@ -96,7 +96,7 @@ def main():
                                                         container=right_panel,
                                                         object_id="#RED_COLOR_SLIDER")
 
-    red__rgb_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0, 25, 50, 30),
+    red__rgb_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 20, -1, -1),
                                                 text="R:",
                                                 manager=manager,
                                                 container=right_panel,
@@ -109,7 +109,7 @@ def main():
                                                           container=right_panel,
                                                           object_id="#GREEN_COLOR_SLIDER")
 
-    green__rgb_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0, 70, 50, 30),
+    green__rgb_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 65, -1, -1),
                                                   text="G:",
                                                   manager=manager,
                                                   container=right_panel,
@@ -122,13 +122,13 @@ def main():
                                                          container=right_panel,
                                                          object_id="#BLUE_COLOR_SLIDER")
 
-    blue__rgb_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0, 115, 50, 30),
+    blue__rgb_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 110, -1, -1),
                                                  text="B:",
                                                  manager=manager,
                                                  container=right_panel,
                                                  object_id="#RGB_TEXT")
 
-    pos_x_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0, 200, 50, 50),
+    pos_x_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 200, -1, -1),
                                              text="X:",
                                              manager=manager,
                                              container=right_panel,
@@ -141,7 +141,7 @@ def main():
     pos_x_text_entry.set_allowed_characters("numbers")
     pos_x_text_entry.set_text_length_limit(4)
 
-    pos_y_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0, 250, 50, 50),
+    pos_y_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 250, -1, -1),
                                              text="Y:",
                                              manager=manager,
                                              container=right_panel,
@@ -154,7 +154,7 @@ def main():
     pos_y_text_entry.set_allowed_characters("numbers")
     pos_y_text_entry.set_text_length_limit(4)
 
-    width_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(135, 200, 50, 50),
+    width_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(145, 200, -1, -1),
                                              text="W:",
                                              manager=manager,
                                              container=right_panel,
@@ -167,7 +167,7 @@ def main():
     width_text_entry.set_allowed_characters("numbers")
     width_text_entry.set_text_length_limit(4)
 
-    height_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(135, 250, 50, 50),
+    height_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(150, 250, -1, -1),
                                               text="H:",
                                               manager=manager,
                                               container=right_panel,
@@ -179,6 +179,13 @@ def main():
                                                             object_id="#HEIGHT_TEXT_ENTRY")
     height_text_entry.set_allowed_characters("numbers")
     height_text_entry.set_text_length_limit(4)
+
+    input_out_of_bounds = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 310, -1, -1),
+                                                      text="",
+                                                      manager=manager,
+                                                      container=right_panel,
+                                                      visible=True,
+                                                      object_id="#INPUT_OUT_OF_BOUNDS")
 
     all_sprites = pygame.sprite.Group()
     id_count = 0
@@ -223,22 +230,34 @@ def main():
                     if event.text:
                         if int(event.text) >= 0 and int(event.text) + selected_sprite.rect.width <= 1000:
                             selected_sprite.rect.left = int(event.text) + 300
+                            input_out_of_bounds.set_text("")
+                        else:
+                            input_out_of_bounds.set_text("POS X IS OUT OF BOUNDS!")
                 if event.ui_element == pos_y_text_entry:
                     if event.text:
                         if int(event.text) >= 0 and int(event.text) + selected_sprite.rect.height <= 1000:
                             selected_sprite.rect.top = int(event.text)
+                            input_out_of_bounds.set_text("")
+                        else:
+                            input_out_of_bounds.set_text("POS Y IS OUT OF BOUNDS!")
                 if event.ui_element == width_text_entry:
                     if event.text:
                         if int(event.text) > 0 and int(event.text) + selected_sprite.rect.left <= 1300:
                             selected_sprite.surf = pygame.Surface(
                                 (int(event.text), selected_sprite.rect.height))
                             selected_sprite.rect.width = int(event.text)
+                            input_out_of_bounds.set_text("")
+                        else:
+                            input_out_of_bounds.set_text("WIDTH GOES OUT OF BOUNDS!")
                 if event.ui_element == height_text_entry:
                     if event.text:
                         if int(event.text) > 0 and int(event.text) + selected_sprite.rect.top <= 1000:
                             selected_sprite.surf = pygame.Surface(
                                 (selected_sprite.rect.width, int(event.text)))
                             selected_sprite.rect.height = int(event.text)
+                            input_out_of_bounds.set_text("")
+                        else:
+                            input_out_of_bounds.set_text("HEIGHT GOES OUT OF BOUNDS!")
 
             manager.process_events(event)
 
@@ -255,6 +274,7 @@ def main():
                             if sprite.rect.collidepoint(mouse_pos):
                                 if sprite is selected_sprite:
                                     break
+                                
                                 selected_sprite = sprite
                                 creation_type = type(selected_sprite)
                                 red_slider.set_current_value(sprite.color[0])
@@ -270,7 +290,7 @@ def main():
                                     selected_sprite.rect.height))
 
                     else:
-                        if creation_type is not None:
+                        if creation_type is not None and selected_sprite == None:
                             creating_sprite = True
                             selected_sprite = None
                             current_sprite = Platform(mouse_pos[0],
@@ -311,6 +331,8 @@ def main():
         # Clears the selection if right click is pressed
         if pygame.mouse.get_pressed()[2]:
             selected_sprite = None
+            input_out_of_bounds.set_text("")
+
 
         manager.update(clock.get_time())
 

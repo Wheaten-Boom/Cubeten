@@ -41,6 +41,20 @@
             }
         }
     },
+    "#INPUT_OUT_OF_BOUNDS": {
+        "colours": {
+            "normal_text": "#FF0000"
+        },
+        "font": {
+            "name": "PixeloidSans",
+            "size": "18",
+            "bold": "1",
+            "regular_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSans.ttf"
+            }
+        }
+    },
     "label": {
         "colours": {
             "normal_text": "#032736"
