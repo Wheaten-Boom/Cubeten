@@ -83,6 +83,12 @@ def main():
                                                container=right_panel,
                                                object_id="#SAVE_BUTTON")
 
+    delete_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(85, 800, 125, 75),
+                                                 text="DELETE",
+                                                 manager=manager,
+                                                 container=right_panel,
+                                                 object_id="#DELETE_BUTTON")
+
     red_slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect(40, 25, 250, 30),
                                                         start_value=0,
                                                         value_range=(0, 255),
@@ -148,6 +154,32 @@ def main():
     pos_y_text_entry.set_allowed_characters("numbers")
     pos_y_text_entry.set_text_length_limit(4)
 
+    width_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(135, 200, 50, 50),
+                                             text="W:",
+                                             manager=manager,
+                                             container=right_panel,
+                                             object_id="#WIDTH_TEXT")
+
+    width_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(175, 200, 75, 50),
+                                                           manager=manager,
+                                                           container=right_panel,
+                                                           object_id="#WIDTH_TEXT_ENTRY")
+    width_text_entry.set_allowed_characters("numbers")
+    width_text_entry.set_text_length_limit(4)
+
+    height_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(135, 250, 50, 50),
+                                              text="H:",
+                                              manager=manager,
+                                              container=right_panel,
+                                              object_id="#HEIGHT_TEXT")
+
+    height_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(175, 250, 75, 50),
+                                                            manager=manager,
+                                                            container=right_panel,
+                                                            object_id="#HEIGHT_TEXT_ENTRY")
+    height_text_entry.set_allowed_characters("numbers")
+    height_text_entry.set_text_length_limit(4)
+
     all_sprites = pygame.sprite.Group()
     id_count = 0
     current_sprite = None
@@ -182,6 +214,10 @@ def main():
                 if event.ui_element == save_button:
                     data = Data_Assembler(all_sprites)
                     Create_Level_File(data, "TEST.json")
+                if event.ui_element == delete_button:
+                    if selected_sprite is not None:
+                        all_sprites.remove(selected_sprite)
+                        selected_sprite = None
             if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED:
                 if event.ui_element == pos_x_text_entry:
                     if event.text:
@@ -191,6 +227,18 @@ def main():
                     if event.text:
                         if int(event.text) >= 0 and int(event.text) + selected_sprite.rect.height <= 1000:
                             selected_sprite.rect.top = int(event.text)
+                if event.ui_element == width_text_entry:
+                    if event.text:
+                        if int(event.text) >= 0 and int(event.text) + selected_sprite.rect.left <= 1000:
+                            selected_sprite.surf = pygame.Surface(
+                                (int(event.text), selected_sprite.rect.height))
+                            selected_sprite.rect.width = int(event.text)
+                if event.ui_element == height_text_entry:
+                    if event.text:
+                        if int(event.text) >= 0 and int(event.text) + selected_sprite.rect.top <= 1000:
+                            selected_sprite.surf = pygame.Surface(
+                                (selected_sprite.rect.width, int(event.text)))
+                            selected_sprite.rect.height = int(event.text)
 
             manager.process_events(event)
 
@@ -216,6 +264,10 @@ def main():
                                     selected_sprite.rect.left - 300))
                                 pos_y_text_entry.set_text(str(
                                     selected_sprite.rect.top))
+                                width_text_entry.set_text(str(
+                                    selected_sprite.rect.width))
+                                height_text_entry.set_text(str(
+                                    selected_sprite.rect.height))
 
                     else:
                         if creation_type is not None:
@@ -250,6 +302,8 @@ def main():
             selected_sprite = current_sprite
             pos_x_text_entry.set_text(str(selected_sprite.rect.left - 300))
             pos_y_text_entry.set_text(str(selected_sprite.rect.top))
+            width_text_entry.set_text(str(selected_sprite.rect.width))
+            height_text_entry.set_text(str(selected_sprite.rect.height))
             current_sprite = None
             original_draw_pos = None
             id_count += 1
@@ -285,15 +339,22 @@ def main():
                     if new_pos[1] >= 0 and new_pos[1] + selected_sprite.rect.height <= 1000:
                         selected_sprite.rect.top = new_pos[1]
                     # Updates the text box with the sprite's position
-                    pos_x_text_entry.set_text(
-                        str(selected_sprite.rect.left - 300))
-                    pos_y_text_entry.set_text(str(selected_sprite.rect.top))
+                    pos_x_text_entry.set_text(str(
+                        selected_sprite.rect.left - 300))
+                    pos_y_text_entry.set_text(str(
+                        selected_sprite.rect.top))
+                    width_text_entry.set_text(str(
+                        selected_sprite.rect.width))
+                    height_text_entry.set_text(str(
+                        selected_sprite.rect.height))
 
             draw_outline(selected_sprite, displaysurface)
         # If we don't have a sprite selected, clear the text box
         else:
             pos_x_text_entry.set_text("")
             pos_y_text_entry.set_text("")
+            width_text_entry.set_text("")
+            height_text_entry.set_text("")
 
         # If we are creating a sprite, draw it
         if current_sprite is not None:
