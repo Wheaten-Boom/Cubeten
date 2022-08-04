@@ -229,13 +229,13 @@ def main():
                             selected_sprite.rect.top = int(event.text)
                 if event.ui_element == width_text_entry:
                     if event.text:
-                        if int(event.text) >= 0 and int(event.text) + selected_sprite.rect.left <= 1000:
+                        if int(event.text) > 0 and int(event.text) + selected_sprite.rect.left <= 1300:
                             selected_sprite.surf = pygame.Surface(
                                 (int(event.text), selected_sprite.rect.height))
                             selected_sprite.rect.width = int(event.text)
                 if event.ui_element == height_text_entry:
                     if event.text:
-                        if int(event.text) >= 0 and int(event.text) + selected_sprite.rect.top <= 1000:
+                        if int(event.text) > 0 and int(event.text) + selected_sprite.rect.top <= 1000:
                             selected_sprite.surf = pygame.Surface(
                                 (selected_sprite.rect.width, int(event.text)))
                             selected_sprite.rect.height = int(event.text)
