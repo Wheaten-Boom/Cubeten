@@ -199,12 +199,12 @@ def main():
     height_text_entry.set_allowed_characters("numbers")
     height_text_entry.set_text_length_limit(4)
 
-    input_out_of_bounds = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 310, -1, -1),
-                                                      text="",
-                                                      manager=manager,
-                                                      container=right_panel,
-                                                      visible=True,
-                                                      object_id="#INPUT_OUT_OF_BOUNDS")
+    error_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 310, -1, -1),
+                                             text="",
+                                             manager=manager,
+                                             container=right_panel,
+                                             visible=True,
+                                             object_id="#ERROR_TEXT")
 
     all_sprites = pygame.sprite.Group()
     id_count = 0
@@ -259,38 +259,34 @@ def main():
                     if event.text:
                         if int(event.text) >= 0 and int(event.text) + selected_sprite.rect.width <= 1000:
                             selected_sprite.rect.left = int(event.text) + 300
-                            input_out_of_bounds.set_text("")
+                            error_text.set_text("")
                         else:
-                            input_out_of_bounds.set_text(
-                                "POS X IS OUT OF BOUNDS!")
+                            error_text.set_text("POS X IS OUT OF BOUNDS!")
                 if event.ui_element == pos_y_text_entry:
                     if event.text:
                         if int(event.text) >= 0 and int(event.text) + selected_sprite.rect.height <= 1000:
                             selected_sprite.rect.top = int(event.text)
-                            input_out_of_bounds.set_text("")
+                            error_text.set_text("")
                         else:
-                            input_out_of_bounds.set_text(
-                                "POS Y IS OUT OF BOUNDS!")
+                            error_text.set_text("POS Y IS OUT OF BOUNDS!")
                 if event.ui_element == width_text_entry:
                     if event.text:
                         if int(event.text) > 0 and int(event.text) + selected_sprite.rect.left <= 1300:
                             selected_sprite.surf = pygame.Surface(
                                 (int(event.text), selected_sprite.rect.height))
                             selected_sprite.rect.width = int(event.text)
-                            input_out_of_bounds.set_text("")
+                            error_text.set_text("")
                         else:
-                            input_out_of_bounds.set_text(
-                                "WIDTH GOES OUT OF BOUNDS!")
+                            error_text.set_text("WIDTH GOES OUT OF BOUNDS!")
                 if event.ui_element == height_text_entry:
                     if event.text:
                         if int(event.text) > 0 and int(event.text) + selected_sprite.rect.top <= 1000:
                             selected_sprite.surf = pygame.Surface(
                                 (selected_sprite.rect.width, int(event.text)))
                             selected_sprite.rect.height = int(event.text)
-                            input_out_of_bounds.set_text("")
+                            error_text.set_text("")
                         else:
-                            input_out_of_bounds.set_text(
-                                "HEIGHT GOES OUT OF BOUNDS!")
+                            error_text.set_text("HEIGHT GOES OUT OF BOUNDS!")
 
             manager.process_events(event)
 
@@ -383,7 +379,7 @@ def main():
         # Clears the selection if right click is pressed
         if pygame.mouse.get_pressed()[2]:
             selected_sprite = None
-            input_out_of_bounds.set_text("")
+            error_text.set_text("")
 
         manager.update(delta_time)
 
