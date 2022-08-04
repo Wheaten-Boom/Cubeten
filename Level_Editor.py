@@ -366,6 +366,8 @@ def main():
 
         manager.draw_ui(displaysurface)
 
+        pygame.draw.rect(displaysurface, current_selected_color, (1345, 157, 245, 27))
+
         pygame.mouse.get_rel()
 
         pygame.display.update()
