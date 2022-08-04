@@ -79,7 +79,7 @@ def main():
                             button.update(
                                 level[current_sublevel].movable_sprites, level[current_sublevel].player, level)
 
-        displaysurface.fill((0, 0, 0))
+        displaysurface.fill(level[current_sublevel].bg_color)
 
         level[current_sublevel].player.move()
         for entity in level[current_sublevel].cubes:
