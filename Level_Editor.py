@@ -196,6 +196,8 @@ def main():
     creation_type = None
 
     while True:
+        delta_time = clock.tick(240) / 1000
+
         pressed_keys = pygame.key.get_pressed()
         if pressed_keys[K_ESCAPE]:
             pygame.quit()
@@ -290,7 +292,7 @@ def main():
                                     selected_sprite.rect.height))
 
                     else:
-                        if creation_type is not None and selected_sprite == None:
+                        if creation_type is not None and selected_sprite is None:
                             creating_sprite = True
                             selected_sprite = None
                             current_sprite = Platform(mouse_pos[0],
@@ -334,7 +336,7 @@ def main():
             input_out_of_bounds.set_text("")
 
 
-        manager.update(clock.get_time())
+        manager.update(delta_time)
 
         displaysurface.fill("0xAFDEEF")
 
@@ -388,12 +390,12 @@ def main():
 
         manager.draw_ui(displaysurface)
 
-        pygame.draw.rect(displaysurface, current_selected_color, (1345, 157, 245, 27))
+        pygame.draw.rect(displaysurface, current_selected_color,
+                         (1345, 157, 245, 27))
 
         pygame.mouse.get_rel()
 
         pygame.display.update()
-        clock.tick(240)
 
 
 if __name__ == "__main__":
