@@ -1,3 +1,4 @@
+from calendar import c
 import os
 import json
 import pygame
@@ -7,6 +8,19 @@ from pygame_gui import *
 from objects import *
 
 
+class SubLevel():
+    def __init__(self, sublevel_number):
+        self.sublevel_number = sublevel_number
+        self.all_sprites = pygame.sprite.Group()
+        self.id_count = 0
+        self.current_sprite = None
+        self.original_draw_pos = None
+        self.creating_sprite = False
+        self.selected_sprite = None
+        self.creation_type = None
+        self.bg_color = "0xAFDEEF"
+
+
 def Create_Level_File(data, filename):
     with open(os.path.join(os.path.dirname(__file__), "levels", filename), "w") as file:
         json.dump(data, file, indent=4)
@@ -14,7 +28,7 @@ def Create_Level_File(data, filename):
 
 def Data_Assembler(all_sprites):
     data = {"SUB_LEVELS": ["SUBLEVEL_0"],
-            "SUBLEVEL_0": {"PLATFORMS": [], "PLAYER": {}}}
+            "SUBLEVEL_0": {"BG_COLOR": "0xAFDEEF", "PLATFORMS": [], "PLAYER": {}}}
     for sprite in all_sprites:
         if type(sprite) == Platform:
             new_platform = {"POS_X": int(sprite.rect.left) - 300,
@@ -36,7 +50,7 @@ def Data_Assembler(all_sprites):
                           "ID": sprite.ID,
                           "DRAW_LAYER": sprite.draw_layer}
 
-            data["SUBLEVEL_0"]["PLAYER"] = (new_player)
+            data["SUBLEVEL_0"]["PLAYER"] = new_player
 
     return data
 
@@ -71,19 +85,31 @@ def main():
                                              starting_layer_height=0,
                                              manager=manager)
 
-    create_platform_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(50, 40, 200, 50),
+    previous_level_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(50, 0, 100, 50),
+                                                         text="PREV",
+                                                         manager=manager,
+                                                         container=left_panel,
+                                                         object_id="prev_level_button")
+
+    next_level_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(150, 0, 100, 50),
+                                                     text="NEXT",
+                                                     manager=manager,
+                                                     container=left_panel,
+                                                     object_id="next_level_button")
+
+    create_platform_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(50, 100, 200, 50),
                                                           text="PLAT",
                                                           manager=manager,
                                                           container=left_panel,
                                                           object_id="#PLATFORM_BUTTON")
 
-    create_moving_platform_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(50, 120, 200, 50),
+    create_moving_platform_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(50, 180, 200, 50),
                                                                  text="MOV PLAT",
                                                                  manager=manager,
                                                                  container=left_panel,
                                                                  object_id="#MOVING_PLATFORM_BUTTON")
 
-    create_player_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(50, 200, 200, 50),
+    create_player_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(50, 260, 200, 50),
                                                         text="PLAYER",
                                                         manager=manager,
                                                         container=left_panel,
@@ -233,18 +259,15 @@ def main():
     pos_y2_text_entry.set_text_length_limit(4)
 
     error_text = pygame_gui.elements.UITextBox(relative_rect=pygame.Rect(45, 700, 200, 100),
-                                             html_text="",
-                                             manager=manager,
-                                             container=right_panel,
-                                             object_id="#ERROR_TEXT")
+                                               html_text="",
+                                               manager=manager,
+                                               container=right_panel,
+                                               object_id="#ERROR_TEXT")
 
-    all_sprites = pygame.sprite.Group()
-    id_count = 0
-    current_sprite = None
-    original_draw_pos = None
-    creating_sprite = False
-    selected_sprite = None
-    creation_type = None
+    levels = []
+    levels.append(SubLevel(0))
+    current_sub_level = 0
+    levels[current_sub_level].creation_type = None
 
     while True:
         delta_time = clock.tick(240) / 1000
@@ -260,65 +283,82 @@ def main():
                 quit()
 
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                if event.ui_element == previous_level_button:
+                    if current_sub_level > 0:
+                        current_sub_level -= 1
+                    else:
+                        error_text.set_text("YOU'RE AT THE FIRST LEVEL")
+
+                if event.ui_element == next_level_button:
+                    if current_sub_level < 256:
+                        current_sub_level += 1
+                        if current_sub_level >= len(levels):
+                            levels.append(SubLevel(current_sub_level))
+                    else:
+                        error_text.set_text("MAX LEVELS REACHED")
+
                 if event.ui_element == create_platform_button:
-                    creation_type = Platform
+                    levels[current_sub_level].creation_type = Platform
 
                 if event.ui_element == create_moving_platform_button:
-                    creation_type = MovingPlatform
+                    levels[current_sub_level].creation_type = MovingPlatform
 
                 if event.ui_element == create_player_button:
-                    creation_type = Player
+                    levels[current_sub_level].creation_type = Player
 
                 if event.ui_element == clear_button:
-                    all_sprites.empty()
-                    id_count = 0
-                    current_sprite = None
-                    original_draw_pos = None
-                    creating_sprite = False
-                    selected_sprite = None
+                    levels[current_sub_level].all_sprites.empty()
+                    levels[current_sub_level].id_count = 0
+                    levels[current_sub_level].current_sprite = None
+                    levels[current_sub_level].original_draw_pos = None
+                    levels[current_sub_level].creating_sprite = False
+                    levels[current_sub_level].selected_sprite = None
                     create_player_button.enable()
 
                 if event.ui_element == save_button:
-                    data = Data_Assembler(all_sprites)
+                    # TODO: Change this to send levels and then traverse it to get the sublevels
+                    data = Data_Assembler(
+                        levels[current_sub_level].all_sprites)
                     Create_Level_File(data, "TEST.json")
 
                 if event.ui_element == delete_button:
-                    if selected_sprite is not None:
-                        all_sprites.remove(selected_sprite)
-                        if (type(selected_sprite) == Player):
+                    if levels[current_sub_level].selected_sprite is not None:
+                        levels[current_sub_level].all_sprites.remove(
+                            levels[current_sub_level].selected_sprite)
+                        if (type(levels[current_sub_level].selected_sprite) == Player):
                             create_player_button.enable()
-                        selected_sprite = None
+                        levels[current_sub_level].selected_sprite = None
 
             if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED:
                 if event.ui_element == pos_x_text_entry:
                     if event.text:
-                        if int(event.text) >= 0 and int(event.text) + selected_sprite.rect.width <= 1000:
-                            selected_sprite.rect.left = int(event.text) + 300
+                        if int(event.text) >= 0 and int(event.text) + levels[current_sub_level].selected_sprite.rect.width <= 1000:
+                            levels[current_sub_level].selected_sprite.rect.left = int(event.text) + 300
                             error_text.set_text("")
                         else:
                             error_text.set_text("POS X IS OUT OF BOUNDS!")
                 if event.ui_element == pos_y_text_entry:
                     if event.text:
-                        if int(event.text) >= 0 and int(event.text) + selected_sprite.rect.height <= 1000:
-                            selected_sprite.rect.top = int(event.text)
+                        if int(event.text) >= 0 and int(event.text) + levels[current_sub_level].selected_sprite.rect.height <= 1000:
+                            levels[current_sub_level].selected_sprite.rect.top = int(event.text)
                             error_text.set_text("")
                         else:
                             error_text.set_text("POS Y IS OUT OF BOUNDS!")
                 if event.ui_element == width_text_entry:
                     if event.text:
-                        if int(event.text) > 0 and int(event.text) + selected_sprite.rect.left <= 1300:
-                            selected_sprite.surf = pygame.Surface(
-                                (int(event.text), selected_sprite.rect.height))
-                            selected_sprite.rect.width = int(event.text)
+                        if int(event.text) > 0 and int(event.text) + levels[current_sub_level].selected_sprite.rect.left <= 1300:
+                            levels[current_sub_level].selected_sprite.surf = pygame.Surface(
+                                (int(event.text), levels[current_sub_level].selected_sprite.rect.height))
+                            levels[current_sub_level].selected_sprite.rect.width = int(event.text)
                             error_text.set_text("")
                         else:
                             error_text.set_text("WIDTH GOES OUT OF BOUNDS!")
                 if event.ui_element == height_text_entry:
                     if event.text:
-                        if int(event.text) > 0 and int(event.text) + selected_sprite.rect.top <= 1000:
-                            selected_sprite.surf = pygame.Surface(
-                                (selected_sprite.rect.width, int(event.text)))
-                            selected_sprite.rect.height = int(event.text)
+                        if int(event.text) > 0 and int(event.text) + levels[current_sub_level].selected_sprite.rect.top <= 1000:
+                            levels[current_sub_level].selected_sprite.surf = pygame.Surface(
+                                (levels[current_sub_level].selected_sprite.rect.width, int(event.text)))
+                            levels[current_sub_level].selected_sprite.rect.height = int(event.text)
                             error_text.set_text("")
                         else:
                             error_text.set_text("HEIGHT GOES OUT OF BOUNDS!")
@@ -331,101 +371,101 @@ def main():
             # Check if the mouse is on the drawing area
             if mouse_pos[0] > 300 and mouse_pos[0] < 1300 and mouse_pos[1] > 0 and mouse_pos[1] < 1000:
                 # If we didn't already create a sprite, create one
-                if not creating_sprite:
+                if not levels[current_sub_level].creating_sprite:
                     # If the mouse is on a sprite, select that sprite
-                    if is_mouse_on_sprite(all_sprites, mouse_pos):
-                        for sprite in all_sprites:
+                    if is_mouse_on_sprite(levels[current_sub_level].all_sprites, mouse_pos):
+                        for sprite in levels[current_sub_level].all_sprites:
                             if sprite.rect.collidepoint(mouse_pos):
-                                if sprite is selected_sprite:
+                                if sprite is levels[current_sub_level].selected_sprite:
                                     break
 
-                                selected_sprite = sprite
-                                creation_type = type(selected_sprite)
+                                levels[current_sub_level].selected_sprite = sprite
+                                levels[current_sub_level].creation_type = type(levels[current_sub_level].selected_sprite)
                                 red_slider.set_current_value(sprite.color[0])
                                 green_slider.set_current_value(sprite.color[1])
                                 blue_slider.set_current_value(sprite.color[2])
                                 pos_x_text_entry.set_text(str(
-                                    selected_sprite.rect.left - 300))
+                                    levels[current_sub_level].selected_sprite.rect.left - 300))
                                 pos_y_text_entry.set_text(str(
-                                    selected_sprite.rect.top))
+                                    levels[current_sub_level].selected_sprite.rect.top))
                                 width_text_entry.set_text(str(
-                                    selected_sprite.rect.width))
+                                    levels[current_sub_level].selected_sprite.rect.width))
                                 height_text_entry.set_text(str(
-                                    selected_sprite.rect.height))
+                                    levels[current_sub_level].selected_sprite.rect.height))
 
                     else:
-                        if creation_type is not None and selected_sprite is None:
-                            creating_sprite = True
-                            selected_sprite = None
+                        if levels[current_sub_level].creation_type is not None and levels[current_sub_level].selected_sprite is None:
+                            levels[current_sub_level].creating_sprite = True
+                            levels[current_sub_level].selected_sprite = None
 
-                            if creation_type == Platform:
-                                current_sprite = Platform(mouse_pos[0],
+                            if levels[current_sub_level].creation_type == Platform:
+                                levels[current_sub_level].current_sprite = Platform(mouse_pos[0],
                                                           mouse_pos[1],
                                                           1, 1,
                                                           current_selected_color,
-                                                          id_count,
+                                                          levels[current_sub_level].id_count,
                                                           0)
-                                original_draw_pos = (mouse_pos[0],
+                                levels[current_sub_level].original_draw_pos = (mouse_pos[0],
                                                      mouse_pos[1])
 
-                            if creation_type == MovingPlatform:
-                                current_sprite = MovingPlatform(mouse_pos[0], mouse_pos[1],
+                            if levels[current_sub_level].creation_type == MovingPlatform:
+                                levels[current_sub_level].current_sprite = MovingPlatform(mouse_pos[0], mouse_pos[1],
                                                                 mouse_pos[0], mouse_pos[1],
                                                                 1,
                                                                 1, 1,
                                                                 current_selected_color,
-                                                                id_count,
+                                                                levels[current_sub_level].id_count,
                                                                 0,
                                                                 True)
-                                original_draw_pos = (mouse_pos[0],
+                                levels[current_sub_level].original_draw_pos = (mouse_pos[0],
                                                      mouse_pos[1])
 
-                            if creation_type == Player:
-                                current_sprite = Player(mouse_pos[0],
+                            if levels[current_sub_level].creation_type == Player:
+                                levels[current_sub_level].current_sprite = Player(mouse_pos[0],
                                                         mouse_pos[1],
                                                         75, 75,
                                                         current_selected_color,
-                                                        id_count,
+                                                        levels[current_sub_level].id_count,
                                                         0)
 
-                                current_sprite.surf = pygame.Surface((current_sprite.rect.width,
-                                                                      current_sprite.rect.height))
-                                current_sprite.surf.fill(current_sprite.color)
+                                levels[current_sub_level].current_sprite.surf = pygame.Surface((levels[current_sub_level].current_sprite.rect.width,
+                                                                      levels[current_sub_level].current_sprite.rect.height))
+                                levels[current_sub_level].current_sprite.surf.fill(levels[current_sub_level].current_sprite.color)
 
                                 create_player_button.disable()
-                                creation_type = None
+                                levels[current_sub_level].creation_type = None
 
                 # If we did create one, update the sprite
-                elif (type(current_sprite) is not Player):
-                    current_sprite.rect.left = min(original_draw_pos[0],
+                elif (type(levels[current_sub_level].current_sprite) is not Player):
+                    levels[current_sub_level].current_sprite.rect.left = min(levels[current_sub_level].original_draw_pos[0],
                                                    mouse_pos[0])
-                    current_sprite.rect.top = min(original_draw_pos[1],
+                    levels[current_sub_level].current_sprite.rect.top = min(levels[current_sub_level].original_draw_pos[1],
                                                   mouse_pos[1])
-                    current_sprite.rect.width = abs(mouse_pos[0]
-                                                    - original_draw_pos[0])
-                    current_sprite.rect.height = abs(mouse_pos[1]
-                                                     - original_draw_pos[1])
+                    levels[current_sub_level].current_sprite.rect.width = abs(mouse_pos[0]
+                                                    - levels[current_sub_level].original_draw_pos[0])
+                    levels[current_sub_level].current_sprite.rect.height = abs(mouse_pos[1]
+                                                     - levels[current_sub_level].original_draw_pos[1])
 
-                    current_sprite.surf = pygame.Surface((current_sprite.rect.width,
-                                                          current_sprite.rect.height))
-                    current_sprite.surf.fill(current_sprite.color)
+                    levels[current_sub_level].current_sprite.surf = pygame.Surface((levels[current_sub_level].current_sprite.rect.width,
+                                                          levels[current_sub_level].current_sprite.rect.height))
+                    levels[current_sub_level].current_sprite.surf.fill(levels[current_sub_level].current_sprite.color)
 
         # If the mouse left click is not pressed, stop creating a sprite and add it to the sprite group
-        elif creating_sprite:
-            creating_sprite = False
-            all_sprites.add(current_sprite)
-            selected_sprite = current_sprite
-            pos_x_text_entry.set_text(str(selected_sprite.rect.left - 300))
-            pos_y_text_entry.set_text(str(selected_sprite.rect.top))
-            width_text_entry.set_text(str(selected_sprite.rect.width))
-            height_text_entry.set_text(str(selected_sprite.rect.height))
-            current_sprite = None
-            original_draw_pos = None
-            id_count += 1
+        elif levels[current_sub_level].creating_sprite:
+            levels[current_sub_level].creating_sprite = False
+            levels[current_sub_level].all_sprites.add(levels[current_sub_level].current_sprite)
+            levels[current_sub_level].selected_sprite = levels[current_sub_level].current_sprite
+            pos_x_text_entry.set_text(str(levels[current_sub_level].selected_sprite.rect.left - 300))
+            pos_y_text_entry.set_text(str(levels[current_sub_level].selected_sprite.rect.top))
+            width_text_entry.set_text(str(levels[current_sub_level].selected_sprite.rect.width))
+            height_text_entry.set_text(str(levels[current_sub_level].selected_sprite.rect.height))
+            levels[current_sub_level].current_sprite = None
+            levels[current_sub_level].original_draw_pos = None
+            levels[current_sub_level].id_count += 1
 
         # Clears the selection if right click is pressed
         if pygame.mouse.get_pressed()[2]:
-            selected_sprite = None
+            levels[current_sub_level].selected_sprite = None
             error_text.set_text("")
 
         manager.update(delta_time)
@@ -437,34 +477,34 @@ def main():
                                   blue_slider.get_current_value())
 
         # If we do have a sprite selected, draw an outline around it
-        if selected_sprite is not None:
-            selected_sprite.color = current_selected_color
-            selected_sprite.surf.fill(selected_sprite.color)
+        if levels[current_sub_level].selected_sprite is not None:
+            levels[current_sub_level].selected_sprite.color = current_selected_color
+            levels[current_sub_level].selected_sprite.surf.fill(levels[current_sub_level].selected_sprite.color)
 
             if (pygame.mouse.get_pressed()[0]
-                    and selected_sprite.rect.collidepoint(pygame.mouse.get_pos())):
+                    and levels[current_sub_level].selected_sprite.rect.collidepoint(pygame.mouse.get_pos())):
                 # Adds pygame.mouse.get_rel() to the sprite's position (drags it)
                 new_pos = tuple(map(lambda i, j: i + j,
-                                    selected_sprite.rect.topleft,
+                                    levels[current_sub_level].selected_sprite.rect.topleft,
                                     pygame.mouse.get_rel()))
                 # If the sprite didn't move we don't want to update the position, this is to allow us to type new values in the text entry boxes
-                if selected_sprite.rect.topleft != new_pos:
+                if levels[current_sub_level].selected_sprite.rect.topleft != new_pos:
                     # Checks we aren't dragging it outside of the screen
-                    if new_pos[0] >= 300 and new_pos[0] + selected_sprite.rect.width <= 1300:
-                        selected_sprite.rect.left = new_pos[0]
-                    if new_pos[1] >= 0 and new_pos[1] + selected_sprite.rect.height <= 1000:
-                        selected_sprite.rect.top = new_pos[1]
+                    if new_pos[0] >= 300 and new_pos[0] + levels[current_sub_level].selected_sprite.rect.width <= 1300:
+                        levels[current_sub_level].selected_sprite.rect.left = new_pos[0]
+                    if new_pos[1] >= 0 and new_pos[1] + levels[current_sub_level].selected_sprite.rect.height <= 1000:
+                        levels[current_sub_level].selected_sprite.rect.top = new_pos[1]
                     # Updates the text box with the sprite's position
                     pos_x_text_entry.set_text(str(
-                        selected_sprite.rect.left - 300))
+                        levels[current_sub_level].selected_sprite.rect.left - 300))
                     pos_y_text_entry.set_text(str(
-                        selected_sprite.rect.top))
+                        levels[current_sub_level].selected_sprite.rect.top))
                     width_text_entry.set_text(str(
-                        selected_sprite.rect.width))
+                        levels[current_sub_level].selected_sprite.rect.width))
                     height_text_entry.set_text(str(
-                        selected_sprite.rect.height))
+                        levels[current_sub_level].selected_sprite.rect.height))
 
-            draw_outline(selected_sprite, "0xF5F97E", displaysurface)
+            draw_outline(levels[current_sub_level].selected_sprite, "0xF5F97E", displaysurface)
         # If we don't have a sprite selected, clear the text box
         else:
             pos_x_text_entry.set_text("")
@@ -475,11 +515,11 @@ def main():
             pos_y2_text_entry.set_text("")
 
         # If we are creating a sprite, draw it
-        if current_sprite is not None:
-            displaysurface.blit(current_sprite.surf, current_sprite.rect)
+        if levels[current_sub_level].current_sprite is not None:
+            displaysurface.blit(levels[current_sub_level].current_sprite.surf, levels[current_sub_level].current_sprite.rect)
 
         # Draw all the sprites
-        for entity in all_sprites:
+        for entity in levels[current_sub_level].all_sprites:
             displaysurface.blit(entity.surf, entity.rect)
 
         manager.draw_ui(displaysurface)

@@ -29,7 +29,7 @@ class Sub_Level():
         self.cubes = pygame.sprite.Group()
         self.switching_panels = pygame.sprite.Group()
         self.movable_sprites = pygame.sprite.Group()
-        self.bg_color = (0,0,0)
+        self.bg_color = "0x000000"
 
         with open(os.path.join(os.path.dirname(__file__), 'levels', str(self.level_name) + ".json")) as level_file:
             level_file = json.load(level_file)
