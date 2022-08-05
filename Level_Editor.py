@@ -13,14 +13,15 @@ def Create_Level_File(data, filename):
 
 
 def Data_Assembler(all_sprites):
-    data = {"SUB_LEVELS": ["SUBLEVEL_0"], "SUBLEVEL_0": {"PLATFORMS": [], "PLAYER": {}}}
+    data = {"SUB_LEVELS": ["SUBLEVEL_0"],
+            "SUBLEVEL_0": {"PLATFORMS": [], "PLAYER": {}}}
     for sprite in all_sprites:
         if type(sprite) == Platform:
             new_platform = {"POS_X": int(sprite.rect.left) - 300,
                             "POS_Y": int(sprite.rect.top),
                             "WIDTH": int(sprite.rect.width),
                             "HEIGHT": int(sprite.rect.height),
-                            "COLOR": sprite.color,
+                            "COLOR": "0x" + rgb_to_hex(sprite.color),
                             "ID": sprite.ID,
                             "DRAW_LAYER": sprite.draw_layer}
 
@@ -28,16 +29,14 @@ def Data_Assembler(all_sprites):
 
         if type(sprite) == Player:
             new_player = {"POS_X": int(sprite.rect.left) - 300,
-                            "POS_Y": int(sprite.rect.top),
-                            "WIDTH": int(sprite.rect.width),
-                            "HEIGHT": int(sprite.rect.height),
-                            "COLOR": sprite.color,
-                            "ID": sprite.ID,
-                            "DRAW_LAYER": sprite.draw_layer}
+                          "POS_Y": int(sprite.rect.top),
+                          "WIDTH": int(sprite.rect.width),
+                          "HEIGHT": int(sprite.rect.height),
+                          "COLOR": "0x" + rgb_to_hex(sprite.color),
+                          "ID": sprite.ID,
+                          "DRAW_LAYER": sprite.draw_layer}
 
             data["SUBLEVEL_0"]["PLAYER"] = (new_player)
-
-            
 
     return data
 
@@ -54,6 +53,10 @@ def draw_outline(sprite, displaysurface):
     outline_rect.inflate_ip((outline_rect.width + outline_rect.height) / 25,
                             (outline_rect.width + outline_rect.height) / 25)
     pygame.draw.rect(displaysurface, "0xF5F97E", outline_rect, 0)
+
+
+def rgb_to_hex(rgb):
+    return "%02x%02x%02x" % rgb
 
 
 def main():
@@ -246,7 +249,7 @@ def main():
                 if event.ui_element == save_button:
                     data = Data_Assembler(all_sprites)
                     Create_Level_File(data, "TEST.json")
-                    
+
                 if event.ui_element == delete_button:
                     if selected_sprite is not None:
                         all_sprites.remove(selected_sprite)
