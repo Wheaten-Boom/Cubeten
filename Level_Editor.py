@@ -48,11 +48,11 @@ def is_mouse_on_sprite(sprite_list, mouse_pos):
     return False
 
 
-def draw_outline(sprite, displaysurface):
+def draw_outline(sprite, color, displaysurface):
     outline_rect = sprite.rect.copy()
     outline_rect.inflate_ip((outline_rect.width + outline_rect.height) / 25,
                             (outline_rect.width + outline_rect.height) / 25)
-    pygame.draw.rect(displaysurface, "0xF5F97E", outline_rect, 0)
+    pygame.draw.rect(displaysurface, color, outline_rect, 0)
 
 
 def rgb_to_hex(rgb):
@@ -202,11 +202,40 @@ def main():
     height_text_entry.set_allowed_characters("numbers")
     height_text_entry.set_text_length_limit(4)
 
-    error_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 310, -1, -1),
-                                             text="",
+    pos_x2_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(3, 300, -1, -1),
+                                              text="X2:",
+                                              manager=manager,
+                                              container=right_panel,
+                                              object_id="#POS_X2_TEXT",
+                                              visible=False)
+
+    pos_x2_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(40, 300, 75, 50),
+                                                            manager=manager,
+                                                            container=right_panel,
+                                                            object_id="#POS_X2_TEXT_ENTRY",
+                                                            visible=False)
+    pos_x2_text_entry.set_allowed_characters("numbers")
+    pos_x2_text_entry.set_text_length_limit(4)
+
+    pos_y2_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(3, 350, -1, -1),
+                                              text="Y2:",
+                                              manager=manager,
+                                              container=right_panel,
+                                              object_id="#POS_Y2_TEXT",
+                                              visible=False)
+
+    pos_y2_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(40, 350, 75, 50),
+                                                            manager=manager,
+                                                            container=right_panel,
+                                                            object_id="#POS_Y2_TEXT_ENTRY",
+                                                            visible=False)
+    pos_y2_text_entry.set_allowed_characters("numbers")
+    pos_y2_text_entry.set_text_length_limit(4)
+
+    error_text = pygame_gui.elements.UITextBox(relative_rect=pygame.Rect(45, 700, 200, 100),
+                                             html_text="",
                                              manager=manager,
                                              container=right_panel,
-                                             visible=True,
                                              object_id="#ERROR_TEXT")
 
     all_sprites = pygame.sprite.Group()
@@ -233,10 +262,13 @@ def main():
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == create_platform_button:
                     creation_type = Platform
+
                 if event.ui_element == create_moving_platform_button:
                     creation_type = MovingPlatform
+
                 if event.ui_element == create_player_button:
                     creation_type = Player
+
                 if event.ui_element == clear_button:
                     all_sprites.empty()
                     id_count = 0
@@ -333,8 +365,20 @@ def main():
                                                           current_selected_color,
                                                           id_count,
                                                           0)
-                                original_draw_pos = (
-                                    mouse_pos[0], mouse_pos[1])
+                                original_draw_pos = (mouse_pos[0],
+                                                     mouse_pos[1])
+
+                            if creation_type == MovingPlatform:
+                                current_sprite = MovingPlatform(mouse_pos[0], mouse_pos[1],
+                                                                mouse_pos[0], mouse_pos[1],
+                                                                1,
+                                                                1, 1,
+                                                                current_selected_color,
+                                                                id_count,
+                                                                0,
+                                                                True)
+                                original_draw_pos = (mouse_pos[0],
+                                                     mouse_pos[1])
 
                             if creation_type == Player:
                                 current_sprite = Player(mouse_pos[0],
@@ -420,13 +464,15 @@ def main():
                     height_text_entry.set_text(str(
                         selected_sprite.rect.height))
 
-            draw_outline(selected_sprite, displaysurface)
+            draw_outline(selected_sprite, "0xF5F97E", displaysurface)
         # If we don't have a sprite selected, clear the text box
         else:
             pos_x_text_entry.set_text("")
             pos_y_text_entry.set_text("")
             width_text_entry.set_text("")
             height_text_entry.set_text("")
+            pos_x2_text_entry.set_text("")
+            pos_y2_text_entry.set_text("")
 
         # If we are creating a sprite, draw it
         if current_sprite is not None:

@@ -41,8 +41,9 @@
             }
         }
     },
-    "#INPUT_OUT_OF_BOUNDS": {
+    "#ERROR_TEXT": {
         "colours": {
+            "dark_bg": "#57AFAF",
             "normal_text": "#FF0000"
         },
         "font": {
@@ -53,6 +54,12 @@
                 "package": "assets.fonts",
                 "resource": "PixeloidSans.ttf"
             }
+        },
+        "misc": {
+            "border_width": "0",
+            "shadow_width": "0",
+            "text_horiz_alignment": "center",
+            "text_vert_alignment": "center"
         }
     },
     "label": {
