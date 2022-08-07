@@ -25,31 +25,41 @@ def Create_Level_File(data, filename):
         json.dump(data, file, indent=4)
 
 
-def Data_Assembler(all_sprites):
-    data = {"SUB_LEVELS": ["SUBLEVEL_0"],
-            "SUBLEVEL_0": {"BG_COLOR": "0xAFDEEF", "PLATFORMS": [], "PLAYER": {}}}
-    for sprite in all_sprites:
-        if type(sprite) == Platform:
-            new_platform = {"POS_X": int(sprite.rect.left) - 300,
-                            "POS_Y": int(sprite.rect.top),
-                            "WIDTH": int(sprite.rect.width),
-                            "HEIGHT": int(sprite.rect.height),
-                            "COLOR": "0x" + rgb_to_hex(sprite.color),
-                            "ID": sprite.ID,
-                            "DRAW_LAYER": sprite.draw_layer}
+def Data_Assembler(levels):
+    level_count = 0
+    # A copy of levels but without empty sublevels
+    clean_levels = [level for level in levels if level.all_sprites]
+    data = {"SUB_LEVELS": []}
+    for level in clean_levels:
+        data["SUB_LEVELS"].append("LEVEL_" + str(level_count))
+        level_count += 1
 
-            data["SUBLEVEL_0"]["PLATFORMS"].append(new_platform)
+    for index, sub_level in enumerate(data["SUB_LEVELS"]):
+        data[sub_level] = {"BG_COLOR": "0xAFDEEF",
+                           "PLATFORMS": [], "PLAYER": {}}
 
-        if type(sprite) == Player:
-            new_player = {"POS_X": int(sprite.rect.left) - 300,
-                          "POS_Y": int(sprite.rect.top),
-                          "WIDTH": int(sprite.rect.width),
-                          "HEIGHT": int(sprite.rect.height),
-                          "COLOR": "0x" + rgb_to_hex(sprite.color),
-                          "ID": sprite.ID,
-                          "DRAW_LAYER": sprite.draw_layer}
+        for sprite in clean_levels[index].all_sprites:
+            if type(sprite) == Platform:
+                new_platform = {"POS_X": int(sprite.rect.left) - 300,
+                                "POS_Y": int(sprite.rect.top),
+                                "WIDTH": int(sprite.rect.width),
+                                "HEIGHT": int(sprite.rect.height),
+                                "COLOR": "0x" + rgb_to_hex(sprite.color),
+                                "ID": sprite.ID,
+                                "DRAW_LAYER": sprite.draw_layer}
 
-            data["SUBLEVEL_0"]["PLAYER"] = new_player
+                data[sub_level]["PLATFORMS"].append(new_platform)
+
+            if type(sprite) == Player:
+                new_player = {"POS_X": int(sprite.rect.left) - 300,
+                              "POS_Y": int(sprite.rect.top),
+                              "WIDTH": int(sprite.rect.width),
+                              "HEIGHT": int(sprite.rect.height),
+                              "COLOR": "0x" + rgb_to_hex(sprite.color),
+                              "ID": sprite.ID,
+                              "DRAW_LAYER": sprite.draw_layer}
+
+                data[sub_level]["PLAYER"] = new_player
 
     return data
 
@@ -319,8 +329,7 @@ def main():
 
                 if event.ui_element == save_button:
                     # TODO: Change this to send levels and then traverse it to get the sublevels
-                    data = Data_Assembler(
-                        levels[current_sub_level].all_sprites)
+                    data = Data_Assembler(levels)
                     Create_Level_File(data, "TEST.json")
 
                 if event.ui_element == delete_button:
@@ -433,7 +442,7 @@ def main():
                                                                                   75, 75,
                                                                                   current_selected_color,
                                                                                   levels[current_sub_level].id_count,
-                                                                                  0)
+                                                                                  1)
 
                                 levels[current_sub_level].current_sprite.surf = pygame.Surface((levels[current_sub_level].current_sprite.rect.width,
                                                                                                 levels[current_sub_level].current_sprite.rect.height))
