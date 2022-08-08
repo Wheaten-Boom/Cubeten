@@ -31,12 +31,12 @@ def Data_Assembler(levels):
     clean_levels = [level for level in levels if level.all_sprites]
     data = {"SUB_LEVELS": []}
     for level in clean_levels:
-        data["SUB_LEVELS"].append("LEVEL_" + str(level_count))
+        data["SUB_LEVELS"].append("SUB_LEVEL_" + str(level_count))
         level_count += 1
 
     for index, sub_level in enumerate(data["SUB_LEVELS"]):
         data[sub_level] = {"BG_COLOR": "0xAFDEEF",
-                           "PLATFORMS": [], "PLAYER": {}}
+                           "PLATFORMS": [], "MOVING_PLATFORMS": [], "PLAYER": {}}
 
         for sprite in clean_levels[index].all_sprites:
             if type(sprite) == Platform:
@@ -50,7 +50,22 @@ def Data_Assembler(levels):
 
                 data[sub_level]["PLATFORMS"].append(new_platform)
 
-            if type(sprite) == Player:
+            elif type(sprite) == MovingPlatform:
+                new_moving_platform = {"X1": int(sprite.start_pos[0]) - 300,
+                                       "Y1": int(sprite.start_pos[1]),
+                                       "X2": int(sprite.end_pos[0]) - 300,
+                                       "Y2": int(sprite.end_pos[1]),
+                                       "SPEED": int(sprite.speed),
+                                       "WIDTH": int(sprite.rect.width),
+                                       "HEIGHT": int(sprite.rect.height),
+                                       "COLOR": "0x" + rgb_to_hex(sprite.color),
+                                       "IS_ACTIVE": sprite.isActive,
+                                       "ID": sprite.ID,
+                                       "DRAW_LAYER": sprite.draw_layer}
+
+                data[sub_level]["MOVING_PLATFORMS"].append(new_moving_platform)
+
+            elif type(sprite) == Player:
                 new_player = {"POS_X": int(sprite.rect.left) - 300,
                               "POS_Y": int(sprite.rect.top),
                               "WIDTH": int(sprite.rect.width),
@@ -71,21 +86,98 @@ def is_mouse_on_sprite(sprite_list, mouse_pos):
     return False
 
 
-def draw_outline(sprite, color, displaysurface):
+def draw_outline(sprite, color):
     outline_rect = sprite.rect.copy()
     outline_rect.inflate_ip((outline_rect.width + outline_rect.height) / 25,
                             (outline_rect.width + outline_rect.height) / 25)
-    pygame.draw.rect(displaysurface, color, outline_rect, 0)
+    pygame.draw.rect(displaysurface, color, outline_rect, int(
+        (outline_rect.width + outline_rect.height) / 50))
 
 
 def rgb_to_hex(rgb):
     return "%02x%02x%02x" % rgb
 
 
+def update_selected_sprite(sprite, color):
+    # If we do have a sprite selected, draw an outline around it
+    if sprite is not None:
+        sprite.color = color
+        sprite.surf.fill(sprite.color)
+
+        if type(sprite) is MovingPlatform:
+            selection_sprite = Platform(sprite.end_pos[0],
+                                        sprite.end_pos[1],
+                                        sprite.rect.width,
+                                        sprite.rect.height,
+                                        sprite.color,
+                                        sprite.ID,
+                                        sprite.draw_layer)
+
+            update_selected_sprite(selection_sprite, "0xFFFFFF")
+
+            if sprite.end_pos != selection_sprite.rect.topleft:
+                sprite.end_pos = selection_sprite.rect.topleft
+                pos_x2_text_entry.set_text(str(sprite.end_pos[0] - 300))
+                pos_y2_text_entry.set_text(str(sprite.end_pos[1]))
+                speed_text_entry.set_text(str(sprite.speed))
+
+            pos_x2_text.visible = True
+            pos_x2_text_entry.visible = True
+            pos_y2_text.visible = True
+            pos_y2_text_entry.visible = True
+            speed_text.visible = True
+            speed_text_entry.visible = True
+
+        else:
+            pos_x2_text.visible = False
+            pos_x2_text_entry.visible = False
+            pos_y2_text.visible = False
+            pos_y2_text_entry.visible = False
+            speed_text.visible = False
+            speed_text_entry.visible = False
+
+        if (pygame.mouse.get_pressed()[0]
+                and sprite.rect.collidepoint(pygame.mouse.get_pos())):
+            # Adds pygame.mouse.get_rel() to the sprite's position (drags it)
+            new_pos = tuple(map(lambda i, j: i + j,
+                                sprite.rect.topleft,
+                                pygame.mouse.get_rel()))
+            # If the sprite didn't move we don't want to update the position, this is to allow us to type new values in the text entry boxes
+            if sprite.rect.topleft != new_pos:
+                # Checks we aren't dragging it outside of the screen
+                if new_pos[0] >= 300 and new_pos[0] + sprite.rect.width <= 1300:
+                    sprite.rect.left = new_pos[0]
+                if new_pos[1] >= 0 and new_pos[1] + sprite.rect.height <= 1000:
+                    sprite.rect.top = new_pos[1]
+
+        # Updates the text box with the sprite's position
+        pos_x_text_entry.set_text(str(
+            sprite.rect.left - 300))
+        pos_y_text_entry.set_text(str(
+            sprite.rect.top))
+        width_text_entry.set_text(str(
+            sprite.rect.width))
+        height_text_entry.set_text(str(
+            sprite.rect.height))
+
+        draw_outline(sprite, "0xF5F97E")
+
+    # If we don't have a sprite selected, clear the text box
+    else:
+        pos_x_text_entry.set_text("")
+        pos_y_text_entry.set_text("")
+        width_text_entry.set_text("")
+        height_text_entry.set_text("")
+        pos_x2_text_entry.set_text("")
+        pos_y2_text_entry.set_text("")
+        speed_text_entry.set_text("")
+
+
 def main():
     pygame.init()
     clock = pygame.time.Clock()
 
+    global displaysurface
     displaysurface = pygame.display.set_mode((1600, 1000))
     manager = pygame_gui.UIManager((1600, 1000), PackageResource(
         "assets.themes", "editor_theme.json"))
@@ -186,12 +278,14 @@ def main():
                                                  container=right_panel,
                                                  object_id="#RGB_TEXT")
 
+    global pos_x_text
     pos_x_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 200, -1, -1),
                                              text="X:",
                                              manager=manager,
                                              container=right_panel,
                                              object_id="#POS_X_TEXT")
 
+    global pos_x_text_entry
     pos_x_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(40, 200, 75, 50),
                                                            manager=manager,
                                                            container=right_panel,
@@ -199,12 +293,14 @@ def main():
     pos_x_text_entry.set_allowed_characters("numbers")
     pos_x_text_entry.set_text_length_limit(4)
 
+    global pos_y_text
     pos_y_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 250, -1, -1),
                                              text="Y:",
                                              manager=manager,
                                              container=right_panel,
                                              object_id="#POS_Y_TEXT")
 
+    global pos_y_text_entry
     pos_y_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(40, 250, 75, 50),
                                                            manager=manager,
                                                            container=right_panel,
@@ -212,12 +308,14 @@ def main():
     pos_y_text_entry.set_allowed_characters("numbers")
     pos_y_text_entry.set_text_length_limit(4)
 
+    global width_text
     width_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(145, 200, -1, -1),
                                              text="W:",
                                              manager=manager,
                                              container=right_panel,
                                              object_id="#WIDTH_TEXT")
 
+    global width_text_entry
     width_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(175, 200, 75, 50),
                                                            manager=manager,
                                                            container=right_panel,
@@ -225,12 +323,14 @@ def main():
     width_text_entry.set_allowed_characters("numbers")
     width_text_entry.set_text_length_limit(4)
 
+    global height_text
     height_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(150, 250, -1, -1),
                                               text="H:",
                                               manager=manager,
                                               container=right_panel,
                                               object_id="#HEIGHT_TEXT")
 
+    global height_text_entry
     height_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(175, 250, 75, 50),
                                                             manager=manager,
                                                             container=right_panel,
@@ -238,6 +338,7 @@ def main():
     height_text_entry.set_allowed_characters("numbers")
     height_text_entry.set_text_length_limit(4)
 
+    global pos_x2_text
     pos_x2_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(3, 300, -1, -1),
                                               text="X2:",
                                               manager=manager,
@@ -245,6 +346,7 @@ def main():
                                               object_id="#POS_X2_TEXT",
                                               visible=False)
 
+    global pos_x2_text_entry
     pos_x2_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(40, 300, 75, 50),
                                                             manager=manager,
                                                             container=right_panel,
@@ -253,6 +355,7 @@ def main():
     pos_x2_text_entry.set_allowed_characters("numbers")
     pos_x2_text_entry.set_text_length_limit(4)
 
+    global pos_y2_text
     pos_y2_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(3, 350, -1, -1),
                                               text="Y2:",
                                               manager=manager,
@@ -260,6 +363,7 @@ def main():
                                               object_id="#POS_Y2_TEXT",
                                               visible=False)
 
+    global pos_y2_text_entry
     pos_y2_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(40, 350, 75, 50),
                                                             manager=manager,
                                                             container=right_panel,
@@ -268,6 +372,24 @@ def main():
     pos_y2_text_entry.set_allowed_characters("numbers")
     pos_y2_text_entry.set_text_length_limit(4)
 
+    global speed_text
+    speed_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 400, -1, -1),
+                                             text="S:",
+                                             manager=manager,
+                                             container=right_panel,
+                                             object_id="#SPEED_TEXT",
+                                             visible=False)
+
+    global speed_text_entry
+    speed_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(40, 400, 75, 50),
+                                                           manager=manager,
+                                                           container=right_panel,
+                                                           object_id="#SPEED_TEXT_ENTRY",
+                                                           visible=False)
+    speed_text_entry.set_allowed_characters("numbers")
+    speed_text_entry.set_text_length_limit(4)
+
+    global error_text
     error_text = pygame_gui.elements.UITextBox(relative_rect=pygame.Rect(45, 700, 200, 100),
                                                html_text="",
                                                manager=manager,
@@ -328,7 +450,6 @@ def main():
                     create_player_button.enable()
 
                 if event.ui_element == save_button:
-                    # TODO: Change this to send levels and then traverse it to get the sublevels
                     data = Data_Assembler(levels)
                     Create_Level_File(data, "TEST.json")
 
@@ -425,6 +546,7 @@ def main():
                                                                                mouse_pos[1])
 
                             if levels[current_sub_level].creation_type == MovingPlatform:
+
                                 levels[current_sub_level].current_sprite = MovingPlatform(mouse_pos[0], mouse_pos[1],
                                                                                           mouse_pos[0], mouse_pos[1],
                                                                                           1,
@@ -504,45 +626,8 @@ def main():
         else:
             create_player_button.enable()
 
-        # If we do have a sprite selected, draw an outline around it
-        if levels[current_sub_level].selected_sprite is not None:
-            levels[current_sub_level].selected_sprite.color = current_selected_color
-            levels[current_sub_level].selected_sprite.surf.fill(
-                levels[current_sub_level].selected_sprite.color)
-
-            if (pygame.mouse.get_pressed()[0]
-                    and levels[current_sub_level].selected_sprite.rect.collidepoint(pygame.mouse.get_pos())):
-                # Adds pygame.mouse.get_rel() to the sprite's position (drags it)
-                new_pos = tuple(map(lambda i, j: i + j,
-                                    levels[current_sub_level].selected_sprite.rect.topleft,
-                                    pygame.mouse.get_rel()))
-                # If the sprite didn't move we don't want to update the position, this is to allow us to type new values in the text entry boxes
-                if levels[current_sub_level].selected_sprite.rect.topleft != new_pos:
-                    # Checks we aren't dragging it outside of the screen
-                    if new_pos[0] >= 300 and new_pos[0] + levels[current_sub_level].selected_sprite.rect.width <= 1300:
-                        levels[current_sub_level].selected_sprite.rect.left = new_pos[0]
-                    if new_pos[1] >= 0 and new_pos[1] + levels[current_sub_level].selected_sprite.rect.height <= 1000:
-                        levels[current_sub_level].selected_sprite.rect.top = new_pos[1]
-                    # Updates the text box with the sprite's position
-                    pos_x_text_entry.set_text(str(
-                        levels[current_sub_level].selected_sprite.rect.left - 300))
-                    pos_y_text_entry.set_text(str(
-                        levels[current_sub_level].selected_sprite.rect.top))
-                    width_text_entry.set_text(str(
-                        levels[current_sub_level].selected_sprite.rect.width))
-                    height_text_entry.set_text(str(
-                        levels[current_sub_level].selected_sprite.rect.height))
-
-            draw_outline(
-                levels[current_sub_level].selected_sprite, "0xF5F97E", displaysurface)
-        # If we don't have a sprite selected, clear the text box
-        else:
-            pos_x_text_entry.set_text("")
-            pos_y_text_entry.set_text("")
-            width_text_entry.set_text("")
-            height_text_entry.set_text("")
-            pos_x2_text_entry.set_text("")
-            pos_y2_text_entry.set_text("")
+        update_selected_sprite(levels[current_sub_level].selected_sprite,
+                               current_selected_color)
 
         # If we are creating a sprite, draw it
         if levels[current_sub_level].current_sprite is not None:
