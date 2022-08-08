@@ -98,6 +98,8 @@ def rgb_to_hex(rgb):
     return "%02x%02x%02x" % rgb
 
 
+# !: This currently doesn't allow changing the text entrys manually, since it overwrites our input with the set_text().
+# !: Fix this future me please. ;-;
 def update_selected_sprite(sprite, color):
     # If we do have a sprite selected, draw an outline around it
     if sprite is not None:
