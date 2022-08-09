@@ -117,7 +117,7 @@ def update_selected_sprite(sprite, color):
 
             update_selected_sprite(selection_sprite, "0xFFFFFF")
 
-            if sprite.end_pos != selection_sprite.rect.topleft:
+            if not (pygame.mouse.get_pos()[0] > 1300):
                 sprite.end_pos = selection_sprite.rect.topleft
                 pos_x2_text_entry.set_text(str(sprite.end_pos[0] - 300))
                 pos_y2_text_entry.set_text(str(sprite.end_pos[1]))
@@ -152,15 +152,16 @@ def update_selected_sprite(sprite, color):
                 if new_pos[1] >= 0 and new_pos[1] + sprite.rect.height <= 1000:
                     sprite.rect.top = new_pos[1]
 
-        # Updates the text box with the sprite's position
-        pos_x_text_entry.set_text(str(
-            sprite.rect.left - 300))
-        pos_y_text_entry.set_text(str(
-            sprite.rect.top))
-        width_text_entry.set_text(str(
-            sprite.rect.width))
-        height_text_entry.set_text(str(
-            sprite.rect.height))
+        if not (pygame.mouse.get_pos()[0] > 1300):
+        # Updates the text box with the sprite's position (if the mouse is in the main container)
+            pos_x_text_entry.set_text(str(
+                sprite.rect.left - 300))
+            pos_y_text_entry.set_text(str(
+                sprite.rect.top))
+            width_text_entry.set_text(str(
+                sprite.rect.width))
+            height_text_entry.set_text(str(
+                sprite.rect.height))
 
         draw_outline(sprite, "0xF5F97E")
 
@@ -478,6 +479,7 @@ def main():
                             levels[current_sub_level].selected_sprite.rect.top = int(
                                 event.text)
                             error_text.set_text("")
+
                         else:
                             error_text.set_text("POS Y IS OUT OF BOUNDS!")
                 if event.ui_element == width_text_entry:
