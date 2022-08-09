@@ -70,7 +70,8 @@ class MovingPlatform(pygame.sprite.Sprite):
         self.pos = pygame.math.Vector2(x1, y1)
         self.rect.topleft = self.pos
         self.speed = speed
-        self.direction = 1
+        self.direction_x = 1
+        self.direction_y = 1
         self.isActive = isActive
         self.ID = ID
         self.draw_layer = draw_layer
@@ -86,9 +87,9 @@ class MovingPlatform(pygame.sprite.Sprite):
             # Moves the platform towards the goal by
             # the distance of the points divided by the speed multiplied by the direction
             # in order to get the distance-per-frame with direction
-            self.pos.x += self.direction * \
+            self.pos.x += self.direction_x * \
                 abs(self.end_pos.x - self.start_pos.x) / self.speed
-            self.pos.y += self.direction * \
+            self.pos.y += self.direction_y * \
                 abs(self.end_pos.y - self.start_pos.y) / self.speed
 
             # Moves all entities on the platform along with it
@@ -96,19 +97,26 @@ class MovingPlatform(pygame.sprite.Sprite):
                 self, collision_group, False)
             for entity in collides:
                 if entity.rect.bottom == self.rect.top + 1:
-                    entity.pos.x += self.direction * \
+                    entity.pos.x += self.direction_x * \
                         abs(self.end_pos.x - self.start_pos.x) / self.speed
-                    entity.pos.y += self.direction * \
+                    entity.pos.y += self.direction_y * \
                         abs(self.end_pos.y - self.start_pos.y) / self.speed
                     entity.rect.topleft = entity.pos
 
             # If the platform reaches the goal, it switches direction
-            if self.direction == 1:
-                if self.pos.x >= self.end_pos.x and self.pos.y >= self.end_pos.y:
-                    self.direction = -1
-            else:
-                if self.pos.x <= self.start_pos.x and self.pos.y <= self.start_pos.y:
-                    self.direction = 1
+            if self.direction_x == 1:
+                if self.pos.x >= self.end_pos.x:
+                    self.direction_x = -1
+            elif self.direction_x == -1:
+                if self.pos.x <= self.start_pos.x:
+                    self.direction_x = 1
+            if self.direction_y == 1:
+                if self.pos.y >= self.end_pos.y:
+                    self.direction_y = -1
+            elif self.direction_y == -1:
+                if self.pos.y <= self.start_pos.y:
+                    self.direction_y = 1
+                    
             self.rect.topleft = self.pos
 
 
