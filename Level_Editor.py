@@ -153,7 +153,7 @@ def update_selected_sprite(sprite, color):
                     sprite.rect.top = new_pos[1]
 
         if not (pygame.mouse.get_pos()[0] > 1300):
-        # Updates the text box with the sprite's position (if the mouse is in the main container)
+            # Updates the text box with the sprite's position (if the mouse is in the main container)
             pos_x_text_entry.set_text(str(
                 sprite.rect.left - 300))
             pos_y_text_entry.set_text(str(
@@ -485,6 +485,10 @@ def main():
                 if event.ui_element == width_text_entry:
                     if event.text:
                         if int(event.text) > 0 and int(event.text) + levels[current_sub_level].selected_sprite.rect.left <= 1300:
+                            if type(levels[current_sub_level].selected_sprite) == MovingPlatform:
+                                if levels[current_sub_level].selected_sprite.end_pos[0] + int(event.text) >= 1300:
+                                    error_text.set_text("WIDTH GOES OUT OF BOUNDS!")
+                                    continue
                             levels[current_sub_level].selected_sprite.surf = pygame.Surface(
                                 (int(event.text), levels[current_sub_level].selected_sprite.rect.height))
                             levels[current_sub_level].selected_sprite.rect.width = int(
@@ -495,6 +499,10 @@ def main():
                 if event.ui_element == height_text_entry:
                     if event.text:
                         if int(event.text) > 0 and int(event.text) + levels[current_sub_level].selected_sprite.rect.top <= 1000:
+                            if type(levels[current_sub_level].selected_sprite) == MovingPlatform:
+                                if levels[current_sub_level].selected_sprite.end_pos[1] + int(event.text) >= 1000:
+                                    error_text.set_text("HEIGHT GOES OUT OF BOUNDS!")
+                                    continue
                             levels[current_sub_level].selected_sprite.surf = pygame.Surface(
                                 (levels[current_sub_level].selected_sprite.rect.width, int(event.text)))
                             levels[current_sub_level].selected_sprite.rect.height = int(
@@ -502,6 +510,30 @@ def main():
                             error_text.set_text("")
                         else:
                             error_text.set_text("HEIGHT GOES OUT OF BOUNDS!")
+                if event.ui_element == pos_x2_text_entry:
+                    if event.text:
+                        if int(event.text) >= 0 and int(event.text) + levels[current_sub_level].selected_sprite.rect.width <= 1000:
+                            levels[current_sub_level].selected_sprite.end_pos = int(
+                                event.text) + 300, levels[current_sub_level].selected_sprite.end_pos[1]
+                            error_text.set_text("")
+                        else:
+                            error_text.set_text("POS X2 IS OUT OF BOUNDS!")
+                if event.ui_element == pos_y2_text_entry:
+                    if event.text:
+                        if int(event.text) >= 0 and int(event.text) + levels[current_sub_level].selected_sprite.rect.height <= 1000:
+                            levels[current_sub_level].selected_sprite.end_pos = levels[current_sub_level].selected_sprite.end_pos[0], int(
+                                event.text)
+                            error_text.set_text("")
+                        else:
+                            error_text.set_text("POS Y2 IS OUT OF BOUNDS!")
+                if event.ui_element == speed_text_entry:
+                    if event.text:
+                        if int(event.text) > 0 and int(event.text) <= 65536:
+                            levels[current_sub_level].selected_sprite.speed = int(
+                                event.text)
+                            error_text.set_text("")
+                        else:
+                            error_text.set_text("SPEED IS INVALID!")
 
             manager.process_events(event)
 
