@@ -585,7 +585,7 @@ def main():
 
                                 levels[current_sub_level].current_sprite = MovingPlatform(mouse_pos[0], mouse_pos[1],
                                                                                           mouse_pos[0], mouse_pos[1],
-                                                                                          1,
+                                                                                          60,
                                                                                           1, 1,
                                                                                           current_selected_color,
                                                                                           levels[current_sub_level].id_count,
