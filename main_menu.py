@@ -143,6 +143,7 @@ def settings_screen(screen):
     config = settings.get_settings()
     temp_config = config.copy()
 
+    # This is used to get the "path" in the json to where the value we want to change is found, it's the ui_object_id to string path
     textentry_to_text = {
         "general_panel.#screen_width_text_entry": "WIDTH",
         "general_panel.#screen_height_text_entry": "HEIGHT"
