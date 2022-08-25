@@ -1,0 +1,141 @@
+{
+    "panel": {
+        "colours": {
+            "dark_bg": "#032e42",
+            "normal_border": "#ffffff"
+        }
+    },
+    "horizontal_scroll_bar": {
+        "colours": {
+            "dark_bg": "#032e42"
+        }
+    },
+    "label": {
+        "font": {
+            "name": "PixeloidSans",
+            "size": "50",
+            "regular_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSans.ttf"
+            },
+            "bold_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSansBold.ttf"
+            }
+        },
+        "misc": {
+            "text_horiz_alignment": "right"
+        }
+    },
+    "text_entry_line": {
+        "colours": {
+            "dark_bg": "#032736",
+            "normal_text": "#ffffff"
+        },
+        "font": {
+            "name": "PixeloidSans",
+            "size": "50",
+            "regular_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSans.ttf"
+            }
+        }
+    },
+    "button": {
+        "colours": {
+            "normal_bg": "#032736",
+            "hovered_bg": "#032331",
+            "disabled_bg": "#25292e",
+            "selected_bg": "#1c3d4a",
+            "active_bg": "#1c3d4a",
+            "normal_text": "#ffffff",
+            "hovered_text": "#ffffff",
+            "selected_text": "#ffffff",
+            "disabled_text": "#999999",
+            "active_text": "#ffffff",
+            "normal_border": "#ffffff",
+            "hovered_border": "#ffffff",
+            "disabled_border": "#999999",
+            "selected_border": "#ffffff",
+            "active_border": "#ffffff"
+        },
+        "font": {
+            "name": "PixeloidSans",
+            "size": "50",
+            "regular_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSans.ttf"
+            },
+            "bold_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSansBold.ttf"
+            }
+        },
+        "misc": {
+            "border_width": "1"
+        }
+    },
+    "@tab_button": {
+        "font": {
+            "name": "PixeloidSans",
+            "size": "36",
+            "regular_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSans.ttf"
+            },
+            "bold_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSansBold.ttf"
+            }
+        }
+    },
+    "#confirmation_dialog": {
+        "colours": {
+            "dark_bg": "#1c3d4a",
+            "normal_border": "#ffffff"
+        },
+        "misc": {
+            "border_width": "1",
+            "enable_title_bar": "0"
+        }
+    },
+    "#confirmation_dialog.text_box": {
+        "colours": {
+            "dark_bg": "#032736",
+            "normal_border": "#ffffff"
+        },
+        "misc": {
+            "border_width": "1",
+            "text_horiz_alignment": "left",
+            "text_vert_alignment": "top"
+        }
+    },
+    "#confirmation_dialog.#confirm_button": {
+        "font": {
+            "name": "PixeloidSans",
+            "size": "24",
+            "regular_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSans.ttf"
+            },
+            "bold_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSansBold.ttf"
+            }
+        }
+    },
+    "#confirmation_dialog.#cancel_button": {
+        "font": {
+            "name": "PixeloidSans",
+            "size": "24",
+            "regular_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSans.ttf"
+            },
+            "bold_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSansBold.ttf"
+            }
+        }
+    }
+}

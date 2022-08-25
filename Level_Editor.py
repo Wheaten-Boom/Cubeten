@@ -182,8 +182,7 @@ def main():
 
     global displaysurface
     displaysurface = pygame.display.set_mode((1600, 1000))
-    manager = pygame_gui.UIManager((1600, 1000), PackageResource(
-        "assets.themes", "editor_theme.json"))
+    manager = pygame_gui.UIManager((1600, 1000), PackageResource("assets.themes", "level_editor.json"))
 
     left_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(0, 0, 300, 1000),
                                              starting_layer_height=0,

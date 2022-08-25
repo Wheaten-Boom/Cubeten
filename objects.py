@@ -1,8 +1,6 @@
 import pygame
 from pygame.locals import *
-from main import *
-
-config = load_configuration()
+from settings import config
 
 
 class Platform(pygame.sprite.Sprite):
@@ -474,6 +472,8 @@ class Player(pygame.sprite.Sprite):
 
         self.rect.topleft = self.pos
 
+    # !: This sometimes fixes the player's position, but it sometimes fixes it with a sprite and not with another
+    # !: (which makes it just skip the collision???)
     def update(self, collision_group):
         """
         Checks whether the player is collding with any other objects and updates the player accordingly

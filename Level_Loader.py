@@ -38,7 +38,7 @@ class Sub_Level():
 
         # Goes through the level properties and creates the objects and adds them to the appropriate groups.
         for data in level_properties:
-            
+
             if (data == "BG_COLOR"):
                 self.bg_color = level_properties["BG_COLOR"]
 
