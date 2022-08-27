@@ -200,20 +200,67 @@
         },
         "misc": {
          "shape": "rounded_rectangle",
-         "title_bar_height": "35"
+         "title_bar_height": "40",
+         "enable_close_button": "0"
       }
     },
-    "#COMMAND_CONFIGURATION_WINDOW.#close_button" : {
+    "#COMMAND_CONFIGURATION_WINDOW.#SAVE_COMMAND_BUTTON" : {
+        "colours": {
+            "normal_bg": "#0C7027",
+            "hovered_bg": "#0C7027"
+        }
+    },
+    "#COMMAND_CONFIGURATION_WINDOW.#CLOSE_COMMAND_CONFIGURATOR" : {
         "colours": {
             "normal_bg": "#B00909",
             "hovered_bg": "#B00909"
         }
     },
+    "#AVAILABLE_COMMANDS.#selected_option": {
+        "font": {
+            "name": "PixeloidSans",
+            "size": "18",
+            "bold": "1",
+            "regular_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSans.ttf"
+            },
+            "bold_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSansBold.ttf"
+            }
+        }
+    },
 
-    "#COMMAND_CONFIGURATION_WINDOW.#SAVE_COMMAND_BUTTON" : {
-        "colours": {
-            "normal_bg": "#0C7027",
-            "hovered_bg": "#0C7027"
+    "#CREATE_COMPLEMENTARY_COMMAND": {
+        "font": {
+            "name": "PixeloidSans",
+            "size": "22",
+            "bold": "1",
+            "regular_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSans.ttf"
+            },
+            "bold_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSansBold.ttf"
+            }
+        }
+    },
+
+    "#RUNNING_CONDITION_BUTTON.#selected_option": {
+        "font": {
+            "name": "PixeloidSans",
+            "size": "22",
+            "bold": "1",
+            "regular_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSans.ttf"
+            },
+            "bold_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSansBold.ttf"
+            }
         }
     }
 }

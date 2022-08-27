@@ -1,0 +1,120 @@
+{
+    "SUB_LEVELS": [
+        "SUB_LEVEL_0"
+    ],
+    "SUB_LEVEL_0": {
+        "BG_COLOR": "0xAFDEEF",
+        "PLATFORMS": [
+            {
+                "POS_X": 2,
+                "POS_Y": 933,
+                "WIDTH": 998,
+                "HEIGHT": 63,
+                "COLOR": "0x005e00",
+                "ID": 0,
+                "DRAW_LAYER": 0
+            },
+            {
+                "POS_X": 35,
+                "POS_Y": 788,
+                "WIDTH": 338,
+                "HEIGHT": 24,
+                "COLOR": "0xf1f6ff",
+                "ID": 2,
+                "DRAW_LAYER": 0
+            }
+        ],
+        "MOVING_PLATFORMS": [
+            {
+                "X1": 454,
+                "Y1": 750,
+                "X2": 464,
+                "Y2": 489,
+                "SPEED": 60,
+                "WIDTH": 245,
+                "HEIGHT": 18,
+                "COLOR": "0xf1f6ff",
+                "IS_ACTIVE": true,
+                "ID": 3,
+                "DRAW_LAYER": 0
+            },
+            {
+                "X1": 384,
+                "Y1": 480,
+                "X2": 263,
+                "Y2": 167,
+                "SPEED": 60,
+                "WIDTH": 130,
+                "HEIGHT": 24,
+                "COLOR": "0xf1f6ff",
+                "IS_ACTIVE": true,
+                "ID": 4,
+                "DRAW_LAYER": 0
+            },
+            {
+                "X1": 409,
+                "Y1": 164,
+                "X2": 682,
+                "Y2": 162,
+                "SPEED": 60,
+                "WIDTH": 168,
+                "HEIGHT": 25,
+                "COLOR": "0xf1f6ff",
+                "IS_ACTIVE": true,
+                "ID": 5,
+                "DRAW_LAYER": 0
+            },
+            {
+                "X1": 856,
+                "Y1": 12,
+                "X2": 866,
+                "Y2": 10,
+                "SPEED": 60,
+                "WIDTH": 124,
+                "HEIGHT": 119,
+                "COLOR": "0xf1f600",
+                "IS_ACTIVE": true,
+                "ID": 6,
+                "DRAW_LAYER": 0
+            }
+        ],
+        "BUTTONS": [
+            {
+                "POS_X": 154,
+                "POS_Y": 865,
+                "WIDTH": 25,
+                "HEIGHT": 75,
+                "COLOR": "0x6bc54f",
+                "ACTIVATE_COLOR": "0x701010",
+                "ACTIVATE_ACTION": [
+                    "",
+                    0,
+                    1,
+                    "",
+                    0,
+                    1,
+                    "",
+                    0,
+                    1,
+                    "",
+                    0,
+                    1
+                ],
+                "DEACTIVATE_ACTION": [],
+                "IS_ACTIVE": false,
+                "MODE": "BUTTON",
+                "ID": 7,
+                "DRAW_LAYER": 0
+            }
+        ],
+        "PLAYER": {
+            "POS_X": 808,
+            "POS_Y": 858,
+            "WIDTH": 75,
+            "HEIGHT": 75,
+            "COLOR": "0x3692b5",
+            "ID": 1,
+            "DRAW_LAYER": 1
+        }
+    }
+}
