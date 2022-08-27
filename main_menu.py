@@ -5,12 +5,12 @@ import pygame_gui
 from pygame_gui import *
 from pygame_gui.core import *
 import settings
-from settings import config
 import level_loader
 
 
 def main_menu():
     pygame.init()
+    config = settings.get_settings()
     clock = pygame.time.Clock()
     screen = pygame.display.set_mode(
         (config["WIDTH"], config["HEIGHT"]))
@@ -78,6 +78,7 @@ def main_menu():
 
 def level_select(screen):
     pygame.init()
+    config = settings.get_settings()
     clock = pygame.time.Clock()
 
     manager = pygame_gui.UIManager((config["WIDTH"], config["HEIGHT"]),
@@ -135,18 +136,27 @@ def level_select(screen):
         manager.update(delta_time)
         pygame.display.update()
 
+# !: Currently for some strange reason when we use the set_value() for the new class the "config" changes along with it 
+# !: Like it's somehow connected by reference, check it out and try to fix it
+
 
 def settings_screen(screen):
     pygame.init()
     clock = pygame.time.Clock()
     settings_changed = False
     config = settings.get_settings()
-    temp_config = config.copy()
+    temp_config = DynamicAccessNestedDict(config.copy())
 
     # This is used to get the "path" in the json to where the value we want to change is found, it's the ui_object_id to string path
-    textentry_to_text = {
-        "general_panel.#screen_width_text_entry": "WIDTH",
-        "general_panel.#screen_height_text_entry": "HEIGHT"
+    textentry_to_path = {
+        "#general_panel.#screen_width_text_entry": ["WIDTH"],
+        "#general_panel.#screen_height_text_entry": ["HEIGHT"],
+        "#physics_panel.#game_gravity_text_entry": ["PHYSICS", "GRAVITY"],
+        "#physics_panel.#game_acceleration_text_entry": ["PHYSICS", "ACCELERATION"],
+        "#physics_panel.#game_jump_power_text_entry": ["PHYSICS", "JUMP_POWER"],
+        "#physics_panel.#game_short_jump_power_text_entry": ["PHYSICS", "SHORT_JUMP_POWER"],
+        "#physics_panel.#game_friction_text_entry": ["PHYSICS", "FRICTION"],
+
     }
 
     manager = pygame_gui.UIManager((config["WIDTH"], config["HEIGHT"]),
@@ -196,48 +206,138 @@ def settings_screen(screen):
                                                 manager=manager,
                                                 object_id="#general_panel")
 
-    screen_width_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0, 25, 250, 100),
-                                                    text="*WIDTH:",
+    screen_width_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0, 25, 425, 100),
+                                                    text="WIDTH:",
                                                     manager=manager,
                                                     container=general_panel,
                                                     object_id="#screen_width_text")
 
-    screen_width_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(275, 25, 200, 100),
+    screen_width_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(450, 25, 200, 100),
                                                                   manager=manager,
                                                                   container=general_panel,
                                                                   object_id="#screen_width_text_entry")
-    screen_width_text_entry.set_text(str(temp_config["WIDTH"]))
+    screen_width_text_entry.set_text(str(temp_config.get_value(["WIDTH"])))
     screen_width_text_entry.set_allowed_characters("numbers")
-    screen_width_text_entry.set_text_length_limit(4)
+    screen_width_text_entry.set_text_length_limit(6)
 
-    screen_height_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0, 150, 250, 100),
-                                                     text="*HEIGHT:",
+    screen_height_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0, 150, 425, 100),
+                                                     text="HEIGHT:",
                                                      manager=manager,
                                                      container=general_panel,
                                                      object_id="#screen_height_text")
 
-    screen_height_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(275, 150, 200, 100),
+    screen_height_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(450, 150, 200, 100),
                                                                    manager=manager,
                                                                    container=general_panel,
                                                                    object_id="#screen_height_text_entry")
-    screen_height_text_entry.set_text(str(temp_config["HEIGHT"]))
+    screen_height_text_entry.set_text(str(temp_config.get_value(["HEIGHT"])))
     screen_height_text_entry.set_allowed_characters("numbers")
-    screen_height_text_entry.set_text_length_limit(4)
+    screen_height_text_entry.set_text_length_limit(6)
 
     physics_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(25, 175, 950, 650),
                                                 starting_layer_height=1,
                                                 manager=manager,
                                                 object_id="#physics_panel")
 
+    game_gravity_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0, 25, 425, 100),
+                                                    text="GRAVITY:",
+                                                    manager=manager,
+                                                    container=physics_panel,
+                                                    object_id="#game_gravity_text")
+
+    game_gravity_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(450, 25, 200, 100),
+                                                                  manager=manager,
+                                                                  container=physics_panel,
+                                                                  object_id="#game_gravity_text_entry")
+    game_gravity_text_entry.set_text(
+        str(temp_config.get_value(["PHYSICS", "GRAVITY"])))
+    game_gravity_text_entry.set_allowed_characters(
+        ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "-"])
+    game_gravity_text_entry.set_text_length_limit(6)
+
+    game_acceleration_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0, 150, 425, 100),
+                                                         text="ACCELERATION:",
+                                                         manager=manager,
+                                                         container=physics_panel,
+                                                         object_id="#game_acceleration_text")
+
+    game_acceleration_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(450, 150, 200, 100),
+                                                                       manager=manager,
+                                                                       container=physics_panel,
+                                                                       object_id="#game_acceleration_text_entry")
+    game_acceleration_text_entry.set_text(
+        str(temp_config.get_value(["PHYSICS", "ACCELERATION"])))
+    game_acceleration_text_entry.set_allowed_characters(
+        ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "-"])
+    game_acceleration_text_entry.set_text_length_limit(6)
+
+    game_jump_power_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0, 275, 425, 100),
+                                                       text="JUMP:",
+                                                       manager=manager,
+                                                       container=physics_panel,
+                                                       object_id="#game_jump_power_text")
+
+    game_jump_power_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(450, 275, 200, 100),
+                                                                     manager=manager,
+                                                                     container=physics_panel,
+                                                                     object_id="#game_jump_power_text_entry")
+    game_jump_power_text_entry.set_text(
+        str(temp_config.get_value(["PHYSICS", "JUMP_POWER"])))
+    game_jump_power_text_entry.set_allowed_characters(
+        ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "-"])
+    game_jump_power_text_entry.set_text_length_limit(6)
+
+    game_short_jump_power_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0, 400, 425, 100),
+                                                             text="SHORT JUMP:",
+                                                             manager=manager,
+                                                             container=physics_panel,
+                                                             object_id="#game_short_jump_power_text")
+
+    game_short_jump_power_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(450, 400, 200, 100),
+                                                                           manager=manager,
+                                                                           container=physics_panel,
+                                                                           object_id="#game_short_jump_power_text_entry")
+    game_short_jump_power_text_entry.set_text(
+        str(temp_config.get_value(["PHYSICS", "SHORT_JUMP_POWER"])))
+    game_short_jump_power_text_entry.set_allowed_characters(
+        ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "-"])
+    game_short_jump_power_text_entry.set_text_length_limit(6)
+
+    game_friction_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(0, 525, 425, 100),
+                                                     text="FRICTION:",
+                                                     manager=manager,
+                                                     container=physics_panel,
+                                                     object_id="#game_friction_text")
+
+    game_friction_text_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(450, 525, 200, 100),
+                                                                   manager=manager,
+                                                                   container=physics_panel,
+                                                                   object_id="#game_friction_text_entry")
+    game_friction_text_entry.set_text(
+        str(temp_config.get_value(["PHYSICS", "FRICTION"])))
+    game_friction_text_entry.set_allowed_characters(
+        ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "-"])
+    game_friction_text_entry.set_text_length_limit(6)
+
+    physics_panel.hide()
+
     graphics_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(25, 175, 950, 650),
                                                  starting_layer_height=1,
                                                  manager=manager,
                                                  object_id="#graphics_panel")
 
+    graphics_coming_soon_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(225, 275, 425, 100),
+                                                            text="COMING NEVER",
+                                                            manager=manager,
+                                                            container=graphics_panel,
+                                                            object_id="#graphics_coming_soon_text")
+
+    graphics_panel.hide()
+
     while True:
         delta_time = clock.tick(60) / 1000
 
-        settings_changed = (config != temp_config)
+        settings_changed = (config != temp_config.copy())
 
         events = pygame.event.poll()
 
@@ -255,10 +355,11 @@ def settings_screen(screen):
                     config_file.write(temp)
 
             if "#default_button" in events.ui_object_id:
-                temp_config = config.copy()
+                temp_config.set_dict(config.copy())
                 settings_changed = False
-                screen_width_text_entry.set_text(str(temp_config["WIDTH"]))
-                screen_height_text_entry.set_text(str(temp_config["HEIGHT"]))
+                for text_entry in [text_entry for text_entry in manager.get_sprite_group() if type(text_entry) is pygame_gui.elements.UITextEntryLine]:
+                    text_entry.set_text(
+                        str(temp_config.get_value(textentry_to_path[text_entry.most_specific_combined_id])))
 
             if "#back_button" in events.ui_object_id:
                 if settings_changed:
@@ -271,9 +372,35 @@ def settings_screen(screen):
                 else:
                     return settings_changed
 
+            if "#general_tab_button" in events.ui_object_id:
+                general_panel.show()
+                physics_panel.hide()
+                graphics_panel.hide()
+
+            if "#physics_tab_button" in events.ui_object_id:
+                general_panel.hide()
+                physics_panel.show()
+                graphics_panel.hide()
+
+            if "#graphics_tab_button" in events.ui_object_id:
+                general_panel.hide()
+                physics_panel.hide()
+                graphics_panel.show()
+
         if events.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
-            temp_config[textentry_to_text[events.ui_object_id[1:]]] = int(
-                events.text)
+            if events.text == "":
+                temp_config.set_value(textentry_to_path[events.ui_object_id],
+                                      0)
+            else:
+                try:
+                    if "." in events.text:
+                        temp_config.set_value(textentry_to_path[events.ui_object_id],
+                                              float(events.text))
+                    else:
+                        temp_config.set_value(textentry_to_path[events.ui_object_id],
+                                              int(events.text))
+                except ValueError:
+                    pass
 
         if events.type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
             if "#confirmation_dialog" in events.ui_object_id:
@@ -285,3 +412,45 @@ def settings_screen(screen):
         manager.draw_ui(screen)
         manager.update(delta_time)
         pygame.display.update()
+
+
+class DynamicAccessNestedDict:
+    # Blatantly copied from https://stackoverflow.com/a/56930261, thank you
+    """
+    A class used to wrap a dict in order to dynamically get/set nested dictionary keys of "data" dict
+    """
+
+    def __init__(self, data: dict):
+        self.data = data
+
+    def get_value(self, keys) -> any:
+        """
+        Returns the value at the end of the list of keys, the format of the keys is ("a", "b", "c", etc...)
+
+        :param - keys: a list of string keys
+        """
+        data = self.data
+
+        for k in keys:
+            data = data[k]
+        return data
+
+    def set_value(self, keys, val) -> None:
+        """
+        Sets the value at the end of the list of keys, the format of the keys is ("a", "b", "c", etc...)
+
+        :param - keys: a list of string keys
+        :param - val: the new value
+        """
+        data = self.data
+        lastkey = keys[-1]
+        for k in keys[:-1]:  # when assigning drill down to *second* last key
+            data = data[k]
+        data[lastkey] = val
+        return None
+
+    def set_dict(self, data: dict):
+        self.data = data
+
+    def copy(self):
+        return self.data
