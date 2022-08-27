@@ -98,8 +98,10 @@ def rgb_to_hex(rgb):
     return "%02x%02x%02x" % rgb
 
 
-# !: This currently doesn't allow changing the text entrys manually, since it overwrites our input with the set_text().
-# !: Fix this future me please. ;-;
+def calculate_complementary_color(rgb):
+    return (255 - rgb[0], 255 - rgb[1], 255 - rgb[2])
+
+
 def update_selected_sprite(sprite, color):
     # If we do have a sprite selected, draw an outline around it
     if sprite is not None:
@@ -112,10 +114,12 @@ def update_selected_sprite(sprite, color):
                                         sprite.rect.width,
                                         sprite.rect.height,
                                         sprite.color,
-                                        sprite.ID,
+                                        -1,
                                         sprite.draw_layer)
 
             update_selected_sprite(selection_sprite, "0xFFFFFF")
+
+            # Updated the UI to prevent the recursion from giving the update_UI func a platform type.
 
             if not (pygame.mouse.get_pos()[0] > 1300):
                 sprite.end_pos = selection_sprite.rect.topleft
@@ -123,20 +127,13 @@ def update_selected_sprite(sprite, color):
                 pos_y2_text_entry.set_text(str(sprite.end_pos[1]))
                 speed_text_entry.set_text(str(sprite.speed))
 
-            pos_x2_text.visible = True
-            pos_x2_text_entry.visible = True
-            pos_y2_text.visible = True
-            pos_y2_text_entry.visible = True
-            speed_text.visible = True
-            speed_text_entry.visible = True
+        elif type(sprite) is Button:
+            sprite.mode = button_mode_text.text  # update the button's mode
 
-        else:
-            pos_x2_text.visible = False
-            pos_x2_text_entry.visible = False
-            pos_y2_text.visible = False
-            pos_y2_text_entry.visible = False
-            speed_text.visible = False
-            speed_text_entry.visible = False
+            if (button_state_text.text == "ACTIVE"):  # update the button's state (isActive)
+                sprite.isActive = True
+            else:
+                sprite.isActive = False
 
         if (pygame.mouse.get_pressed()[0]
                 and sprite.rect.collidepoint(pygame.mouse.get_pos())):
@@ -176,19 +173,51 @@ def update_selected_sprite(sprite, color):
         speed_text_entry.set_text("")
 
 
-def main():
-    pygame.init()
-    clock = pygame.time.Clock()
+def update_UI(sprite):
+    if sprite is None:
+        return
 
-    global displaysurface
-    displaysurface = pygame.display.set_mode((1600, 1000))
-    manager = pygame_gui.UIManager((1600, 1000), PackageResource(
-        "assets.themes", "editor_theme.json"))
+    pos_x2_text.hide()
+    pos_x2_text_entry.hide()
+    pos_y2_text.hide()
+    pos_y2_text_entry.hide()
+    speed_text.hide()
+    speed_text_entry.hide()
+    change_button_mode.hide()
+    button_mode_text.hide()
+    change_button_state.hide()
+    button_state_text.hide()
+    commands_panel.hide()
+    create_command.hide()
+    delete_command.hide()
 
+    if type(sprite) is MovingPlatform or sprite.ID == -1:
+        pos_x2_text.show()
+        pos_x2_text_entry.show()
+        pos_y2_text.show()
+        pos_y2_text_entry.show()
+        speed_text.show()
+        speed_text_entry.show()
+
+    if type(sprite) is Button:
+        change_button_mode.show()
+        button_mode_text.show()
+        change_button_state.show()
+        button_state_text.show()
+        commands_panel.show()
+        create_command.show()
+        delete_command.show()
+        commands_panel.show()
+
+
+def initiate_UI(manager):
+
+    global left_panel
     left_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(0, 0, 300, 1000),
                                              starting_layer_height=0,
                                              manager=manager)
 
+    global previous_level_button
     previous_level_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(50, 0, 100, 50),
                                                          text="PREV",
                                                          manager=manager,
@@ -196,52 +225,68 @@ def main():
                                                          object_id="prev_level_button")
     previous_level_button.disable()
 
+    global next_level_button
     next_level_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(150, 0, 100, 50),
                                                      text="NEXT",
                                                      manager=manager,
                                                      container=left_panel,
                                                      object_id="next_level_button")
 
+    global create_platform_button
     create_platform_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(50, 100, 200, 50),
                                                           text="PLAT",
                                                           manager=manager,
                                                           container=left_panel,
                                                           object_id="#PLATFORM_BUTTON")
 
+    global create_moving_platform_button
     create_moving_platform_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(50, 180, 200, 50),
                                                                  text="MOV PLAT",
                                                                  manager=manager,
                                                                  container=left_panel,
                                                                  object_id="#MOVING_PLATFORM_BUTTON")
 
+    global create_player_button
     create_player_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(50, 260, 200, 50),
                                                         text="PLAYER",
                                                         manager=manager,
                                                         container=left_panel,
                                                         object_id="#PLAYER_BUTTON")
 
+    global create_button_button
+    create_button_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(50, 340, 200, 50),
+                                                        text="BUTTON",
+                                                        manager=manager,
+                                                        container=left_panel,
+                                                        object_id="#BUTTON_BUTTON")
+
+    global right_panel
     right_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(1300, 0, 300, 1000),
                                               starting_layer_height=0,
-                                              manager=manager)
 
+                                              manager=manager)
+    global clear_button
     clear_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(15, 900, 125, 75),
                                                 text="CLEAR",
                                                 manager=manager,
                                                 container=right_panel,
                                                 object_id="#CLEAR_BUTTON")
 
+    global save_button
     save_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(155, 900, 125, 75),
                                                text="SAVE",
                                                manager=manager,
                                                container=right_panel,
                                                object_id="#SAVE_BUTTON")
 
+    global delete_button
     delete_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(85, 800, 125, 75),
                                                  text="DELETE",
                                                  manager=manager,
                                                  container=right_panel,
                                                  object_id="#DELETE_BUTTON")
 
+    global red_slider
     red_slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect(40, 25, 250, 30),
                                                         start_value=0,
                                                         value_range=(0, 255),
@@ -249,12 +294,14 @@ def main():
                                                         container=right_panel,
                                                         object_id="#RED_COLOR_SLIDER")
 
+    global red__rgb_text
     red__rgb_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 20, -1, -1),
                                                 text="R:",
                                                 manager=manager,
                                                 container=right_panel,
                                                 object_id="#RGB_TEXT")
 
+    global green_slider
     green_slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect(40, 70, 250, 30),
                                                           start_value=0,
                                                           value_range=(0, 255),
@@ -262,12 +309,14 @@ def main():
                                                           container=right_panel,
                                                           object_id="#GREEN_COLOR_SLIDER")
 
+    global green__rgb_text
     green__rgb_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 65, -1, -1),
                                                   text="G:",
                                                   manager=manager,
                                                   container=right_panel,
                                                   object_id="#RGB_TEXT")
 
+    global blue_slider
     blue_slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect(40, 115, 250, 30),
                                                          start_value=0,
                                                          value_range=(0, 255),
@@ -275,6 +324,7 @@ def main():
                                                          container=right_panel,
                                                          object_id="#BLUE_COLOR_SLIDER")
 
+    global blue__rgb_text
     blue__rgb_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 110, -1, -1),
                                                  text="B:",
                                                  manager=manager,
@@ -392,12 +442,232 @@ def main():
     speed_text_entry.set_allowed_characters("numbers")
     speed_text_entry.set_text_length_limit(4)
 
+    global button_mode_text
+    button_mode_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(10, 310, -1, -1),
+                                                   text="M:",
+                                                   manager=manager,
+                                                   container=right_panel,
+                                                   object_id="#BUTTON_MODE_TEXT",
+                                                   visible=False)
+
+    global change_button_mode
+    change_button_mode = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(40, 310, 150, 55),
+                                                      text="BUTTON",
+                                                      manager=manager,
+                                                      container=right_panel,
+                                                      object_id="#BUTTON_MODE",
+                                                      visible=False)
+
+    global button_state_text
+    button_state_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(14, 365, -1, -1),
+                                                    text="S:",
+                                                    manager=manager,
+                                                    container=right_panel,
+                                                    object_id="#BUTTON_STATE_TEXT",
+                                                    visible=False)
+
+    global change_button_state
+    change_button_state = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(40, 365, 150, 50),
+                                                       text="ACTIVE",
+                                                       manager=manager,
+                                                       container=right_panel,
+                                                       object_id="#BUTTON_STATE",
+                                                       visible=False)
+
     global error_text
     error_text = pygame_gui.elements.UITextBox(relative_rect=pygame.Rect(45, 700, 200, 100),
                                                html_text="",
                                                manager=manager,
                                                container=right_panel,
                                                object_id="#ERROR_TEXT")
+
+    global commands_panel
+    commands_panel = pygame_gui.elements.UIDropDownMenu([], starting_option="",
+                                                        relative_rect=pygame.Rect(
+        15, 420, 155, 40),
+        manager=manager,
+        container=right_panel,
+        object_id="#COMMANDS",
+        visible=False)
+
+    global create_command
+    create_command = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(175, 420, 40, 40),
+                                                  text="+",
+                                                  manager=manager,
+                                                  container=right_panel,
+                                                  object_id="#configure_command",
+                                                  visible=False)
+
+    global delete_command
+    delete_command = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(210, 420, 40, 40),
+                                                  text="-",
+                                                  manager=manager,
+                                                  container=right_panel,
+                                                  object_id="#DELETE_COMMAND",
+                                                  visible=False)
+
+    global selection_submit_button
+    selection_submit_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(245, 420, 40, 40),
+                                                           text="V",
+                                                           manager=manager,
+                                                           container=right_panel,
+                                                           object_id="#DELETE_COMMAND",
+                                                           visible=False)
+
+    global command_configuration_menu
+    command_configuration_menu = pygame_gui.elements.UIWindow(rect=pygame.Rect(500, 250, 600, 400),
+                                                              manager=manager,
+                                                              window_display_title="Configure Command",
+                                                              element_id="#COMMAND_CONFIGURATION_WINDOW",
+                                                              resizable=False,
+                                                              visible=False)
+
+    global command_type_text
+    command_type_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 15, -1, -1),
+                                                    text="Command type: ",
+                                                    manager=manager,
+                                                    container=command_configuration_menu,
+                                                    object_id="#COMMAND_TYPE_TEXT")
+
+    global save_command
+    save_command = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(15, 270, 100, 50),
+                                                text="SAVE",
+                                                manager=manager,
+                                                container=command_configuration_menu,
+                                                object_id="#SAVE_COMMAND_BUTTON")
+
+    global running_condition_text
+    running_condition_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 60, -1, -1),
+                                                         text="Run when button is: ",
+                                                         manager=manager,
+                                                         container=command_configuration_menu,
+                                                         object_id="#RUNNING_CONDITION_TEXT")
+
+    global running_condition
+    running_condition = pygame_gui.elements.UIDropDownMenu(["ACTIVE", "INACTIVE"],
+                                                           starting_option="ACTIVE",
+                                                           relative_rect=pygame.Rect(
+                                                               370, 60, 150, 40),
+                                                           manager=manager,
+                                                           container=command_configuration_menu,
+                                                           object_id="#RUNNING_CONDITION_BUTTON")
+
+    global complementary_command_text
+    complementary_command_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 105, -1, -1),
+                                                             text="Complementary command: ",
+                                                             manager=manager,
+                                                             container=command_configuration_menu,
+                                                             object_id="#COMPLEMENTARY_COMMAND_TEXT")
+
+    global create_complementary_command
+    create_complementary_command = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(400, 105, 100, 40),
+                                                                text="TRUE",
+                                                                manager=manager,
+                                                                container=command_configuration_menu,
+                                                                object_id="#CREATE_COMPLEMENTARY_COMMAND")
+
+
+def configure_command(sprite):
+
+    selection_submit_button.show()
+
+    sprite_list = []  # Sprite list for drawing oulines.
+    sprite_ID_list = []  # ID list for actual commands.
+    mouse_click_enabled = True
+    # The phase which the player selects the sprites he want to control.
+    while selection_submit_button.check_pressed() == False:
+        if pygame.mouse.get_pressed()[0] and mouse_click_enabled:
+            mouse_pos = pygame.mouse.get_pos()
+            mouse_click_enabled = False
+            if is_mouse_on_sprite(levels[current_sub_level].all_sprites, mouse_pos):
+                for sprite in levels[current_sub_level].all_sprites:
+                    if sprite.rect.collidepoint(mouse_pos) and not sprite.ID in sprite_ID_list[0::2]:
+                        sprite_ID_list.append(sprite.ID)
+                        sprite_ID_list.append(current_sub_level)
+                        # Add the sprite to a sprite list to later draw an outline around it.
+                        sprite_list.append(sprite)
+
+                    elif sprite.rect.collidepoint(mouse_pos) and sprite in sprite_list:
+                        sprite_list.remove(sprite)
+                        ID_index = sprite_ID_list[0::2].index(sprite.ID)
+                        sprite_ID_list.pop(ID_index)
+                        # After popping the sprite ID, the current sublevel number is in the sprite's ID index.
+                        sprite_ID_list.pop(ID_index)
+
+        # Enable the mouse click again when the user stopped clicking the mouse.
+        elif not pygame.mouse.get_pressed()[0]:
+            mouse_click_enabled = True
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                quit()
+
+            manager.process_events(event)
+
+        displaysurface.fill("0xAFDEEF")
+
+        for entity in levels[current_sub_level].all_sprites:
+            displaysurface.blit(entity.surf, entity.rect)
+
+        for sprite in sprite_list:  # draw oulites for all selected sprites.
+            draw_outline(sprite, "0xF5F97E")
+
+        manager.update(delta_time)
+        manager.draw_ui(displaysurface)
+        pygame.display.update()
+        clock.tick(240) / 1000
+
+    disable_editor()
+
+    command_configuration_menu.show()
+
+    global available_commands
+    available_commands = pygame_gui.elements.UIDropDownMenu(get_available_commands(sprite_list),
+                                                            starting_option="",
+                                                            relative_rect=pygame.Rect(
+                                                                270, 15, 250, 40),
+                                                            manager=manager,
+                                                            container=command_configuration_menu,
+                                                            object_id="#ACTIVE_COMMANDS")
+
+
+def disable_editor():
+    right_panel.disable()
+    left_panel.disable()
+    manager.draw_ui(displaysurface)
+
+    levels[current_sub_level].creation_type = None
+
+
+def get_available_commands(sprite_list):
+    command_requirements = {"ACTIVATE OBJECT": [MovingPlatform],
+                            "DEACTIVATE OBJECT": [MovingPlatform]}
+
+    valid_commands = []
+    for command in command_requirements:
+        valid_commands.append(command)
+
+    for command, valid_sprites in command_requirements.items():
+        for sprite in sprite_list:
+            if not type(sprite) in valid_sprites:
+                valid_commands.remove(command)
+                break
+
+    print(valid_commands)
+    return valid_commands
+
+
+def main():
+    pygame.init()
+
+    global displaysurface, levels, current_sub_level, manager, clock, delta_time
+    clock = pygame.time.Clock()
+    displaysurface = pygame.display.set_mode((1600, 1000))
+    manager = pygame_gui.UIManager((1600, 1000), PackageResource(
+        "assets.themes", "editor_theme.json"))
+
+    initiate_UI(manager)
 
     levels = []
     levels.append(SubLevel(0))
@@ -443,6 +713,25 @@ def main():
                 if event.ui_element == create_player_button:
                     levels[current_sub_level].creation_type = Player
 
+                if event.ui_element == create_button_button:
+                    levels[current_sub_level].creation_type = Button
+
+                if event.ui_element == create_command:
+                    configure_command(
+                        levels[current_sub_level].selected_sprite)
+
+                if event.ui_element == change_button_mode:
+                    if (change_button_mode.text == "BUTTON"):
+                        change_button_mode.set_text("SWITCH")
+                    elif (change_button_mode.text == "SWITCH"):
+                        change_button_mode.set_text("BUTTON")
+
+                if event.ui_element == change_button_state:
+                    if (change_button_state.text == "ACTIVE"):
+                        change_button_state.set_text("INACTIVE")
+                    elif (change_button_state.text == "INACTIVE"):
+                        change_button_state.set_text("ACTIVE")
+
                 if event.ui_element == clear_button:
                     levels[current_sub_level].all_sprites.empty()
                     levels[current_sub_level].id_count = 0
@@ -487,7 +776,8 @@ def main():
                         if int(event.text) > 0 and int(event.text) + levels[current_sub_level].selected_sprite.rect.left <= 1300:
                             if type(levels[current_sub_level].selected_sprite) == MovingPlatform:
                                 if levels[current_sub_level].selected_sprite.end_pos[0] + int(event.text) >= 1300:
-                                    error_text.set_text("WIDTH GOES OUT OF BOUNDS!")
+                                    error_text.set_text(
+                                        "WIDTH GOES OUT OF BOUNDS!")
                                     continue
                             levels[current_sub_level].selected_sprite.surf = pygame.Surface(
                                 (int(event.text), levels[current_sub_level].selected_sprite.rect.height))
@@ -501,7 +791,8 @@ def main():
                         if int(event.text) > 0 and int(event.text) + levels[current_sub_level].selected_sprite.rect.top <= 1000:
                             if type(levels[current_sub_level].selected_sprite) == MovingPlatform:
                                 if levels[current_sub_level].selected_sprite.end_pos[1] + int(event.text) >= 1000:
-                                    error_text.set_text("HEIGHT GOES OUT OF BOUNDS!")
+                                    error_text.set_text(
+                                        "HEIGHT GOES OUT OF BOUNDS!")
                                     continue
                             levels[current_sub_level].selected_sprite.surf = pygame.Surface(
                                 (levels[current_sub_level].selected_sprite.rect.width, int(event.text)))
@@ -566,6 +857,9 @@ def main():
                                 height_text_entry.set_text(str(
                                     levels[current_sub_level].selected_sprite.rect.height))
 
+                                update_UI(
+                                    levels[current_sub_level].selected_sprite)
+
                     else:
                         if levels[current_sub_level].creation_type is not None and levels[current_sub_level].selected_sprite is None:
                             levels[current_sub_level].creating_sprite = True
@@ -586,13 +880,29 @@ def main():
                                 levels[current_sub_level].current_sprite = MovingPlatform(mouse_pos[0], mouse_pos[1],
                                                                                           mouse_pos[0], mouse_pos[1],
                                                                                           60,
-                                                                                          1, 1,
+                                                                                          1,
+                                                                                          1,
                                                                                           current_selected_color,
                                                                                           levels[current_sub_level].id_count,
                                                                                           0,
                                                                                           True)
                                 levels[current_sub_level].original_draw_pos = (mouse_pos[0],
                                                                                mouse_pos[1])
+
+                            if levels[current_sub_level].creation_type == Button:
+                                levels[current_sub_level].current_sprite = Button(mouse_pos[0],
+                                                                                  mouse_pos[1],
+                                                                                  25,
+                                                                                  75,
+                                                                                  current_selected_color,
+                                                                                  rgb_to_hex(calculate_complementary_color(
+                                                                                      current_selected_color)),
+                                                                                  [],
+                                                                                  [],
+                                                                                  "BUTTON",
+                                                                                  levels[current_sub_level].id_count,
+                                                                                  0,
+                                                                                  isActive=False)
 
                             if levels[current_sub_level].creation_type == Player:
                                 levels[current_sub_level].current_sprite = Player(mouse_pos[0],
@@ -609,8 +919,10 @@ def main():
 
                                 levels[current_sub_level].creation_type = None
 
+                        update_UI(levels[current_sub_level].current_sprite)
+
                 # If we did create one, update the sprite
-                elif (type(levels[current_sub_level].current_sprite) is not Player):
+                elif (type(levels[current_sub_level].current_sprite) is not Player and type(levels[current_sub_level].current_sprite) is not Button):
                     levels[current_sub_level].current_sprite.rect.left = min(levels[current_sub_level].original_draw_pos[0],
                                                                              mouse_pos[0])
                     levels[current_sub_level].current_sprite.rect.top = min(levels[current_sub_level].original_draw_pos[1],
