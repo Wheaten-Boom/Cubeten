@@ -137,9 +137,6 @@ def level_select(screen):
         manager.update(delta_time)
         pygame.display.update()
 
-# !: Currently for some strange reason when we use the set_value() for the new class the "config" changes along with it 
-# !: Like it's somehow connected by reference, check it out and try to fix it
-
 
 def settings_screen(screen):
     pygame.init()
