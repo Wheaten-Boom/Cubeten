@@ -1,3 +1,4 @@
+import copy
 import json
 import pygame
 from pygame import *
@@ -145,7 +146,7 @@ def settings_screen(screen):
     clock = pygame.time.Clock()
     settings_changed = False
     config = settings.get_settings()
-    temp_config = DynamicAccessNestedDict(config.copy())
+    temp_config = DynamicAccessNestedDict(copy.deepcopy(config))
 
     # This is used to get the "path" in the json to where the value we want to change is found, it's the ui_object_id to string path
     textentry_to_path = {
@@ -348,14 +349,14 @@ def settings_screen(screen):
 
         if events.type == pygame_gui.UI_BUTTON_PRESSED:
             if "#apply_button" in events.ui_object_id:
-                config = temp_config.copy()
+                config = copy.deepcopy(temp_config.copy())
                 settings.set_settings(config)
                 with open("settings.json", "w") as config_file:
                     temp = json.dumps(config, indent=4)
                     config_file.write(temp)
 
             if "#default_button" in events.ui_object_id:
-                temp_config.set_dict(config.copy())
+                temp_config.set_dict(copy.deepcopy(config))
                 settings_changed = False
                 for text_entry in [text_entry for text_entry in manager.get_sprite_group() if type(text_entry) is pygame_gui.elements.UITextEntryLine]:
                     text_entry.set_text(
