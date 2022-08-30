@@ -85,6 +85,14 @@ class Sub_Level():
                     self.all_sprites.add(new_panel)
                     self.switching_panels.add(new_panel)
 
+            if (data == "FINISH_GOALS"):
+                for goal in level_properties["FINISH_GOALS"]:
+                    new_goal = objects.FinishGoal(goal["POS_X"], goal["POS_Y"],
+                                                  goal["WIDTH"], goal["HEIGHT"],
+                                                  goal["COLOR"], goal["ID"], goal["DRAW_LAYER"])
+
+                    self.all_sprites.add(new_goal)
+
             if (data == "CUBES"):
                 for cube in level_properties["CUBES"]:
                     new_cube = objects.Cube(cube["POS_X"], cube["POS_Y"], cube["WIDTH"],

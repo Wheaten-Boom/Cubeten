@@ -116,7 +116,7 @@ class MovingPlatform(pygame.sprite.Sprite):
             elif self.direction_y == -1:
                 if self.pos.y <= self.start_pos.y:
                     self.direction_y = 1
-                    
+
             self.rect.topleft = self.pos
 
 
@@ -309,6 +309,42 @@ class SwitchingPanel(pygame.sprite.Sprite):
         if (self.rect.centerx - player.rect.width < player.rect.centerx and player.rect.centerx < self.rect.centerx + player.rect.width
                 and player.rect.bottom >= self.rect.bottom and player.rect.bottom < self.rect.bottom + player.rect.height):
             level[-1] = self.level_ID
+
+
+class FinishGoal(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height, color, ID, draw_layer):
+        """
+        FinishGoal constructor
+
+        Parameters:
+            x (int): x position of the FinishGoal (left)
+            y (int): y position of the FinishGoal (top)
+            width (int): width of the FinishGoal
+            height (int): height of the FinishGoal
+            color (hex-color): color of the FinishGoal
+            ID (int): ID of the FinishGoal
+            draw_layer (int): draw layer of the FinishGoal
+        """
+        super().__init__()
+        self.surf = pygame.Surface((width, height))
+        self.surf.fill(color)
+        self.color = color
+        self.rect = self.surf.get_rect()
+        self.pos = pygame.math.Vector2(x, y)
+        self.ID = ID
+        self.draw_layer = draw_layer
+        self.rect.topleft = self.pos
+
+    def update(self, collision_group):
+        collides = pygame.sprite.spritecollide(self, collision_group, False)
+        for sprite in collides:
+            if type(sprite) == Player:
+                if self.rect.contains(sprite.rect):
+                    return True
+
+                return False
+
+        return False
 
 
 class Cube(pygame.sprite.Sprite):

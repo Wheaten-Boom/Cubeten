@@ -63,19 +63,6 @@
                 "IS_ACTIVE": true,
                 "ID": 5,
                 "DRAW_LAYER": 0
-            },
-            {
-                "X1": 856,
-                "Y1": 12,
-                "X2": 866,
-                "Y2": 10,
-                "SPEED": 60,
-                "WIDTH": 124,
-                "HEIGHT": 119,
-                "COLOR": "0xf1f600",
-                "IS_ACTIVE": true,
-                "ID": 6,
-                "DRAW_LAYER": 0
             }
         ],
         "BUTTONS": [
@@ -104,6 +91,17 @@
                 "IS_ACTIVE": false,
                 "MODE": "BUTTON",
                 "ID": 7,
+                "DRAW_LAYER": 0
+            }
+        ],
+        "FINISH_GOALS": [
+            {
+                "POS_X": 856,
+                "POS_Y": 700,
+                "WIDTH": 124,
+                "HEIGHT": 119,
+                "COLOR": "0xf1f600",
+                "ID": 6,
                 "DRAW_LAYER": 0
             }
         ],
