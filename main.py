@@ -1,9 +1,5 @@
-import json
-import pygame
-from pygame.locals import *
-import os
-import level_loader
-
+import level_runner
+import main_menu
 
 if __name__ == "__main__":
     level, screen = main_menu.main_menu()

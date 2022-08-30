@@ -1,5 +1,5 @@
-import os
 import json
+import os
 
 with open(os.path.join(os.path.dirname(__file__), 'settings.json')) as config_file:
     config = json.load(config_file)

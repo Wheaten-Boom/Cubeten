@@ -1,13 +1,15 @@
 import copy
-import os
 import json
+import os
+
 import pygame
-from pygame import *
 import pygame_gui
+from pygame import *
 from pygame_gui import *
 from pygame_gui.core import *
-import settings
+
 import level_loader
+import settings
 
 
 def main_menu():
