@@ -1,9 +1,7 @@
-import json
 import os
-
+import json
 import pygame
 from pygame.locals import *
-
 import objects
 
 
