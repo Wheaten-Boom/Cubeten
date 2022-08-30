@@ -182,7 +182,8 @@ def main():
 
     global displaysurface
     displaysurface = pygame.display.set_mode((1600, 1000))
-    manager = pygame_gui.UIManager((1600, 1000), PackageResource("assets.themes", "level_editor.json"))
+    manager = pygame_gui.UIManager((1600, 1000), PackageResource("assets.themes",
+                                                                 "level_editor.json"))
 
     left_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(0, 0, 300, 1000),
                                              starting_layer_height=0,
@@ -486,7 +487,8 @@ def main():
                         if int(event.text) > 0 and int(event.text) + levels[current_sub_level].selected_sprite.rect.left <= 1300:
                             if type(levels[current_sub_level].selected_sprite) == MovingPlatform:
                                 if levels[current_sub_level].selected_sprite.end_pos[0] + int(event.text) >= 1300:
-                                    error_text.set_text("WIDTH GOES OUT OF BOUNDS!")
+                                    error_text.set_text(
+                                        "WIDTH GOES OUT OF BOUNDS!")
                                     continue
                             levels[current_sub_level].selected_sprite.surf = pygame.Surface(
                                 (int(event.text), levels[current_sub_level].selected_sprite.rect.height))
@@ -500,7 +502,8 @@ def main():
                         if int(event.text) > 0 and int(event.text) + levels[current_sub_level].selected_sprite.rect.top <= 1000:
                             if type(levels[current_sub_level].selected_sprite) == MovingPlatform:
                                 if levels[current_sub_level].selected_sprite.end_pos[1] + int(event.text) >= 1000:
-                                    error_text.set_text("HEIGHT GOES OUT OF BOUNDS!")
+                                    error_text.set_text(
+                                        "HEIGHT GOES OUT OF BOUNDS!")
                                     continue
                             levels[current_sub_level].selected_sprite.surf = pygame.Surface(
                                 (levels[current_sub_level].selected_sprite.rect.width, int(event.text)))

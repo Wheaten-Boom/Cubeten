@@ -17,6 +17,11 @@
             "selected_border": "#ffffff",
             "active_border": "#ffffff"
         },
+        "misc": {
+            "border_width": "1"
+        }
+    },
+    "@regular_button": {
         "font": {
             "name": "PixeloidSans",
             "size": "60",
@@ -28,15 +33,59 @@
                 "package": "assets.fonts",
                 "resource": "PixeloidSansBold.ttf"
             }
-        },
-        "misc": {
-            "border_width": "1"
         }
     },
     "@level_button": {
         "font": {
             "name": "PixeloidSans",
             "size": "60",
+            "regular_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSans.ttf"
+            },
+            "bold_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSansBold.ttf"
+            }
+        }
+    },
+    "#file_dialog_window.button": {
+        "font": {
+            "name": "PixeloidSans",
+            "size": "24",
+            "regular_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSans.ttf"
+            },
+            "bold_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSansBold.ttf"
+            }
+        }
+    },
+    "#file_dialog_window.#file_path_text_line": {
+        "font": {
+            "name": "PixeloidSans",
+            "size": "20",
+            "regular_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSans.ttf"
+            },
+            "bold_resource": {
+                "package": "assets.fonts",
+                "resource": "PixeloidSansBold.ttf"
+            }
+        }
+    },
+    "#file_dialog_window.#file_display_list": {
+        "misc": {
+            "list_item_height": "36"
+        }
+    },
+    "#file_dialog_window.#file_display_list.@selection_list_item": {
+        "font": {
+            "name": "PixeloidSans",
+            "size": "20",
             "regular_resource": {
                 "package": "assets.fonts",
                 "resource": "PixeloidSans.ttf"

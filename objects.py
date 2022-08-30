@@ -114,7 +114,7 @@ class MovingPlatform(pygame.sprite.Sprite):
             elif self.direction_y == -1:
                 if self.pos.y <= self.start_pos.y:
                     self.direction_y = 1
-                    
+
             self.rect.topleft = self.pos
 
 

@@ -1,4 +1,5 @@
 import copy
+import os
 import json
 import pygame
 from pygame import *
@@ -88,7 +89,8 @@ def level_select(screen):
     button_panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(250, 100, 500, 500),
                                                manager=manager,
                                                starting_layer_height=0,
-                                               object_id="#button_panel")
+                                               object_id=ObjectID(class_id="@regular_button",
+                                                                  object_id="#button_panel"))
 
     for x in range(3):
         for y in range(3):
@@ -103,12 +105,14 @@ def level_select(screen):
     custom_level_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(225, 700, 550, 100),
                                                        manager=manager,
                                                        text="CUSTOM LEVEL",
-                                                       object_id="#custom_level_button")
+                                                       object_id=ObjectID(class_id="@regular_button",
+                                                                          object_id="#custom_level_button"))
 
     back_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(150, 850, 200, 100),
                                                manager=manager,
                                                text="BACK",
-                                               object_id="#back_button")
+                                               object_id=ObjectID(class_id="@regular_button",
+                                                                  object_id="#back_button"))
 
     while True:
         delta_time = clock.tick(60) / 1000
@@ -127,8 +131,26 @@ def level_select(screen):
             if "#level_2_button" in events.ui_object_id:
                 return level_loader.Load("LEVEL_1")
 
+            if "#custom_level_button" in events.ui_object_id:
+                window = pygame_gui.windows.UIFileDialog(rect=pygame.Rect(200, 100, 600, 600),
+                                                         manager=manager,
+                                                         window_title="Choose a custom level",
+                                                         initial_file_path=os.path.join(
+                                                             os.path.dirname(__file__), "levels"),
+                                                         object_id="#file_dialog_window")
+
             if "#back_button" in events.ui_object_id:
                 return None
+
+        if events.type == pygame_gui.UI_FILE_DIALOG_PATH_PICKED:
+            path = events.text
+            print(path)
+            if path.endswith(".json"):
+                return level_loader.Load(
+                    path.split("/")[-1].removesuffix(".json")
+                )
+            else:
+                print('What the fuck did you just fucking say about me, you little bitch? I’ll have you know I graduated top of my class in the Navy Seals, and I’ve been involved in numerous secret raids on Al-Quaeda, and I have over 300 confirmed kills.\nI am trained in gorilla warfare and I’m the top sniper in the entire US armed forces. You are nothing to me but just another target. I will wipe you the fuck out with precision the likes of which has never been seen before on this Earth, mark my fucking words.\nYou think you can get away with saying that shit to me over the Internet? Think again, fucker. As we speak I am contacting my secret network of spies across the USA and your IP is being traced right now so you better prepare for the storm, maggot. The storm that wipes out the pathetic little thing you call your life. You’re fucking dead, kid. I can be anywhere, anytime, and I can kill you in over seven hundred ways, and that’s just with my bare hands.\nNot only am I extensively trained in unarmed combat, but I have access to the entire arsenal of the United States Marine Corps and I will use it to its full extent to wipe your miserable ass off the face of the continent, you little shit. If only you could have known what unholy retribution your little “clever” comment was about to bring down upon you, maybe you would have held your fucking tongue.\nBut you couldn’t, you didn’t, and now you’re paying the price, you goddamn idiot. I will shit fury all over you and you will drown in it.\nYou’re fucking dead, kiddo.')
 
         screen.fill("0x57AFAF")
 
@@ -153,8 +175,7 @@ def settings_screen(screen):
         "#physics_panel.#game_acceleration_text_entry": ["PHYSICS", "ACCELERATION"],
         "#physics_panel.#game_jump_power_text_entry": ["PHYSICS", "JUMP_POWER"],
         "#physics_panel.#game_short_jump_power_text_entry": ["PHYSICS", "SHORT_JUMP_POWER"],
-        "#physics_panel.#game_friction_text_entry": ["PHYSICS", "FRICTION"],
-
+        "#physics_panel.#game_friction_text_entry": ["PHYSICS", "FRICTION"]
     }
 
     manager = pygame_gui.UIManager((config["WIDTH"], config["HEIGHT"]),
