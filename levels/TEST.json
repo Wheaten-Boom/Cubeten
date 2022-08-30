@@ -1,0 +1,52 @@
+{
+    "SUB_LEVELS": [
+        "SUB_LEVEL_0"
+    ],
+    "SUB_LEVEL_0": {
+        "BG_COLOR": "0xAFDEEF",
+        "PLATFORMS": [
+            {
+                "POS_X": 0,
+                "POS_Y": 900,
+                "WIDTH": 1000,
+                "HEIGHT": 100,
+                "COLOR": "0x715192",
+                "ID": 0,
+                "DRAW_LAYER": 0
+            },
+            {
+                "POS_X": 300,
+                "POS_Y": 690,
+                "WIDTH": 500,
+                "HEIGHT": 22,
+                "COLOR": "0x0087cf",
+                "ID": 2,
+                "DRAW_LAYER": 0
+            }
+        ],
+        "MOVING_PLATFORMS": [
+            {
+                "X1": 350,
+                "Y1": 500,
+                "X2": 350,
+                "Y2": 800,
+                "SPEED": 120,
+                "WIDTH": 150,
+                "HEIGHT": 30,
+                "COLOR": "0x00c731",
+                "IS_ACTIVE": true,
+                "ID": 1,
+                "DRAW_LAYER": 0
+            }
+        ],
+        "PLAYER": {
+            "POS_X": 500,
+            "POS_Y": 597,
+            "WIDTH": 75,
+            "HEIGHT": 75,
+            "COLOR": "0xff9025",
+            "ID": 3,
+            "DRAW_LAYER": 1
+        }
+    }
+}

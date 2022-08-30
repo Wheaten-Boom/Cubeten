@@ -1,8 +1,6 @@
 import pygame
 from pygame.locals import *
-from main import *
-
-config = load_configuration()
+from settings import config
 
 
 class Platform(pygame.sprite.Sprite):
@@ -11,13 +9,14 @@ class Platform(pygame.sprite.Sprite):
 
     Used for floors, walls, etc, and for collision detection.
     """
+
     def __init__(self, x, y, width, height, color, ID, draw_layer):
         """
         Platform constructor
 
         Parameters:
-            x (int): x position of the platform (center)
-            y (int): y position of the platform (bottom)
+            x (int): x position of the platform (left)
+            y (int): y position of the platform (top)
             width (int): width of the platform
             height (int): height of the platform
             color (hex-color): color of the platform
@@ -27,17 +26,18 @@ class Platform(pygame.sprite.Sprite):
         super().__init__()
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
+        self.color = color
         self.rect = self.surf.get_rect()
         self.pos = pygame.math.Vector2(x, y)
         self.ID = ID
         self.draw_layer = draw_layer
-        self.rect.midbottom = self.pos
+        self.rect.topleft = self.pos
 
 
 class MovingPlatform(pygame.sprite.Sprite):
     """
     A class that represents a moving platform.
-    
+
     Used to create movable platforms that can be used to move the player around the map.
     """
 
@@ -46,10 +46,10 @@ class MovingPlatform(pygame.sprite.Sprite):
         MovingPlatform constructor
 
         Parameters:
-            x1 (int): starting x position of the platform (center)
-            y1 (int): starting y position of the platform (bottom)
-            x2 (int): ending x position of the platform (center)
-            y2 (int): ending y position of the platform (bottom)
+            x1 (int): starting x position of the platform (left)
+            y1 (int): starting y position of the platform (top)
+            x2 (int): ending x position of the platform (left)
+            y2 (int): ending y position of the platform (top)
             speed (int): number of frames it takes to reach goal
             width (int): width of the platform
             height (int): height of the platform
@@ -61,13 +61,15 @@ class MovingPlatform(pygame.sprite.Sprite):
         super().__init__()
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
+        self.color = color
         self.rect = self.surf.get_rect()
         self.start_pos = pygame.math.Vector2(min(x1, x2), min(y1, y2))
         self.end_pos = pygame.math.Vector2(max(x1, x2), max(y1, y2))
         self.pos = pygame.math.Vector2(x1, y1)
-        self.rect.midbottom = self.pos
+        self.rect.topleft = self.pos
         self.speed = speed
-        self.direction = 1
+        self.direction_x = 1
+        self.direction_y = 1
         self.isActive = isActive
         self.ID = ID
         self.draw_layer = draw_layer
@@ -83,9 +85,9 @@ class MovingPlatform(pygame.sprite.Sprite):
             # Moves the platform towards the goal by
             # the distance of the points divided by the speed multiplied by the direction
             # in order to get the distance-per-frame with direction
-            self.pos.x += self.direction * \
+            self.pos.x += self.direction_x * \
                 abs(self.end_pos.x - self.start_pos.x) / self.speed
-            self.pos.y += self.direction * \
+            self.pos.y += self.direction_y * \
                 abs(self.end_pos.y - self.start_pos.y) / self.speed
 
             # Moves all entities on the platform along with it
@@ -93,20 +95,27 @@ class MovingPlatform(pygame.sprite.Sprite):
                 self, collision_group, False)
             for entity in collides:
                 if entity.rect.bottom == self.rect.top + 1:
-                    entity.pos.x += self.direction * \
+                    entity.pos.x += self.direction_x * \
                         abs(self.end_pos.x - self.start_pos.x) / self.speed
-                    entity.pos.y += self.direction * \
+                    entity.pos.y += self.direction_y * \
                         abs(self.end_pos.y - self.start_pos.y) / self.speed
-                    entity.rect.midbottom = entity.pos
+                    entity.rect.topleft = entity.pos
 
             # If the platform reaches the goal, it switches direction
-            if self.direction == 1:
-                if self.pos.x >= self.end_pos.x and self.pos.y >= self.end_pos.y:
-                    self.direction = -1
-            else:
-                if self.pos.x <= self.start_pos.x and self.pos.y <= self.start_pos.y:
-                    self.direction = 1
-            self.rect.midbottom = self.pos
+            if self.direction_x == 1:
+                if self.pos.x >= self.end_pos.x:
+                    self.direction_x = -1
+            elif self.direction_x == -1:
+                if self.pos.x <= self.start_pos.x:
+                    self.direction_x = 1
+            if self.direction_y == 1:
+                if self.pos.y >= self.end_pos.y:
+                    self.direction_y = -1
+            elif self.direction_y == -1:
+                if self.pos.y <= self.start_pos.y:
+                    self.direction_y = 1
+
+            self.rect.topleft = self.pos
 
 
 class Button(pygame.sprite.Sprite):
@@ -115,13 +124,14 @@ class Button(pygame.sprite.Sprite):
 
     Used to create buttons that can be used to trigger events, such as activating a moving platform.
     """
+
     def __init__(self, x, y, width, height, color, activate_color, activate_actions, deactivate_actions, mode, ID, draw_layer, isActive=False):
         """
         Button constructor
 
         Parameters:
-            x (int): x position of the button (center)
-            y (int): y position of the button (bottom)
+            x (int): x position of the button (left)
+            y (int): y position of the button (top)
             width (int): width of the button
             height (int): height of the button
             color (hex-color): color of the button
@@ -136,6 +146,7 @@ class Button(pygame.sprite.Sprite):
         super().__init__()
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
+        self.color = color
         self.rect = self.surf.get_rect()
         self.color = color
         self.activate_color = activate_color
@@ -146,9 +157,9 @@ class Button(pygame.sprite.Sprite):
         self.mode = mode
         self.ID = ID
         self.draw_layer = draw_layer
-        self.rect.midbottom = self.pos
+        self.rect.topleft = self.pos
 
-    def update(self, collision_group, level, player):
+    def update(self, collision_group, player, level):
         """
         Checks whther the button needs to change states (activated or deactivated) and calls the appropriate actions if necessary
 
@@ -180,16 +191,16 @@ class Button(pygame.sprite.Sprite):
         elif self.mode == "SWITCH":
             if not self.isActive:
                 # Checks if the player is in range to activate the switch
-                if (self.pos.x - player.rect.width < player.pos.x and player.pos.x < self.pos.x + player.rect.width
-                        and player.pos.y >= self.pos.y and player.pos.y < self.pos.y + player.rect.height):
+                if (self.rect.centerx - player.rect.width < player.rect.centerx and player.rect.centerx < self.rect.centerx + player.rect.width
+                        and player.rect.bottom >= self.rect.bottom and player.rect.bottom < self.rect.bottom + player.rect.height):
                     self.isActive = True
                     self.surf.fill(self.activate_color)
                     self.activate_button(level)
 
             else:
                 # Checks if the player is in range to deactivate the switch
-                if (self.pos.x - player.rect.width < player.pos.x and player.pos.x < self.pos.x + player.rect.width
-                        and player.pos.y >= self.pos.y and player.pos.y < self.pos.y + player.rect.height):
+                if (self.rect.centerx - player.rect.width < player.rect.centerx and player.rect.centerx < self.rect.centerx + player.rect.width
+                        and player.rect.bottom >= self.rect.bottom and player.rect.bottom < self.rect.bottom + player.rect.height):
                     self.isActive = False
                     self.surf.fill(self.color)
                     self.deactivate_button(level)
@@ -259,16 +270,17 @@ class SwitchingPanel(pygame.sprite.Sprite):
 
     Used to switch between sublevels, allowing the player to move between them.
     """
+
     def __init__(self, x, y, width, height, color, level_ID, ID, draw_layer):
         """
         SwitchingPanel constructor
 
         Parameters:
-            x (int): x position of the switchingPanel (center)
-            y (int): y position of the switchingPanel (bottom)
+            x (int): x position of the switchingPanel (left)
+            y (int): y position of the switchingPanel (top)
             width (int): width of the switchingPanel
             height (int): height of the switchingPanel
-            color (hex-color): color of the switchingPanel 
+            color (hex-color): color of the switchingPanel
             level_ID (int): ID of the sublevel to switch to once the panel is activated
             ID (int): ID of the switchingPanel
             draw_layer (int): draw layer of the switchingPanel
@@ -276,11 +288,12 @@ class SwitchingPanel(pygame.sprite.Sprite):
         super().__init__()
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
+        self.color = color
         self.rect = self.surf.get_rect()
         self.pos = pygame.math.Vector2(x, y)
         self.ID = ID
         self.draw_layer = draw_layer
-        self.rect.midbottom = self.pos
+        self.rect.topleft = self.pos
         self.level_ID = level_ID
 
     def switch_level(self, player, level):
@@ -291,8 +304,8 @@ class SwitchingPanel(pygame.sprite.Sprite):
             player (Player): the player object, used to get player position
             level (dict): the current level object, used to store the level's ID
         """
-        if (self.pos.x - player.rect.width < player.pos.x and player.pos.x < self.pos.x + player.rect.width
-                and player.pos.y >= self.pos.y and player.pos.y < self.pos.y + player.rect.height):
+        if (self.rect.centerx - player.rect.width < player.rect.centerx and player.rect.centerx < self.rect.centerx + player.rect.width
+                and player.rect.bottom >= self.rect.bottom and player.rect.bottom < self.rect.bottom + player.rect.height):
             level[-1] = self.level_ID
 
 
@@ -302,13 +315,14 @@ class Cube(pygame.sprite.Sprite):
 
     Used as a holdable object, allowing the player to step on it, pick it up, and drop it.
     """
+
     def __init__(self, x, y, width, height, color, ID, draw_layer):
         """
         Cube constructor
 
         Parameters:
-            x (int): x position of the cube (center)
-            y (int): y position of the cube (bottom)
+            x (int): x position of the cube (left)
+            y (int): y position of the cube (top)
             width (int): width of the cube
             height (int): height of the cube
             color (hex-color): color of the cube
@@ -318,6 +332,7 @@ class Cube(pygame.sprite.Sprite):
         super().__init__()
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
+        self.color = color
         self.rect = self.surf.get_rect()
         self.pos = pygame.math.Vector2(x, y)
         self.vel = pygame.math.Vector2(0, 0)
@@ -325,7 +340,7 @@ class Cube(pygame.sprite.Sprite):
         self.is_held = False
         self.ID = ID
         self.draw_layer = draw_layer
-        self.rect.midbottom = self.pos
+        self.rect.topleft = self.pos
 
     def move(self, collision_group):
         """
@@ -355,7 +370,7 @@ class Cube(pygame.sprite.Sprite):
         if self.pos.x < 0 + self.rect.width / 2:
             self.pos.x = 0 + self.rect.width / 2
 
-        self.rect.midbottom = self.pos
+        self.rect.topleft = self.pos
 
     def update(self, collision_group):
         """
@@ -381,17 +396,17 @@ class Cube(pygame.sprite.Sprite):
                     if abs(gap_x) > abs(gap_y):
                         self.vel.y = 0
                         if delta_y < 0:
-                            self.pos.y = entity.rect.bottom + self.rect.height
+                            self.pos.y = entity.rect.bottom
                         else:
-                            self.pos.y = entity.rect.top + 1
+                            self.pos.y = entity.rect.top - self.rect.height + 1
                             self.is_jumping = False
                     else:
                         self.vel.x = 0
                         if delta_x < 0:
-                            self.pos.x = entity.rect.right + self.rect.width / 2
+                            self.pos.x = entity.rect.right
                         else:
-                            self.pos.x = entity.rect.left - self.rect.width / 2
-                    self.rect.midbottom = self.pos
+                            self.pos.x = entity.rect.left - self.rect.width
+                    self.rect.topleft = self.pos
 
 
 class Player(pygame.sprite.Sprite):
@@ -400,13 +415,14 @@ class Player(pygame.sprite.Sprite):
 
     Used as the main object that the player controls.
     """
+
     def __init__(self, x, y, width, height, color, ID, draw_layer):
         """
         Player Constructor
 
         Parameters:
-            x (int): x position of the player (center)
-            y (int): y position of the player (center)
+            x (int): x position of the player (left)
+            y (int): y position of the player (left)
             width (int): width of the player
             height (int): height of the player
             color (hex-color): color of the player
@@ -416,6 +432,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
+        self.color = color
         self.rect = self.surf.get_rect()
         self.pos = pygame.math.Vector2(x, y)
         self.vel = pygame.math.Vector2(0, 0)
@@ -426,7 +443,7 @@ class Player(pygame.sprite.Sprite):
         self.held_object = None
         self.ID = ID
         self.draw_layer = draw_layer
-        self.rect.midbottom = self.pos
+        self.rect.topleft = self.pos
 
     def move(self):
         """
@@ -448,13 +465,15 @@ class Player(pygame.sprite.Sprite):
         self.pos += self.vel + config['PHYSICS']['FRICTION'] * self.acc
 
         # If the player is out of the screen, it's updated back into the screen
-        if self.pos.x > config['WIDTH'] - self.rect.width / 2:
-            self.pos.x = config['WIDTH'] - self.rect.width / 2
-        if self.pos.x < 0 + self.rect.width / 2:
-            self.pos.x = 0 + self.rect.width / 2
+        if self.pos.x + self.rect.width > config['WIDTH']:
+            self.pos.x = config['WIDTH'] - self.rect.width
+        if self.pos.x < 0:
+            self.pos.x = 0
 
-        self.rect.midbottom = self.pos
+        self.rect.topleft = self.pos
 
+    # !: This sometimes fixes the player's position, but it sometimes fixes it with a sprite and not with another
+    # !: (which makes it just skip the collision???)
     def update(self, collision_group):
         """
         Checks whether the player is collding with any other objects and updates the player accordingly
@@ -477,17 +496,17 @@ class Player(pygame.sprite.Sprite):
                 if abs(gap_x) > abs(gap_y):
                     self.vel.y = 0
                     if delta_y < 0:
-                        self.pos.y = entity.rect.bottom + self.rect.height
+                        self.pos.y = entity.rect.bottom
                     else:
-                        self.pos.y = entity.rect.top + 1
+                        self.pos.y = entity.rect.top - self.rect.height + 1
                         self.is_jumping = False
                 else:
                     self.vel.x = 0
                     if delta_x < 0:
-                        self.pos.x = entity.rect.right + self.rect.width / 2
+                        self.pos.x = entity.rect.right
                     else:
-                        self.pos.x = entity.rect.left - self.rect.width / 2
-                self.rect.midbottom = self.pos
+                        self.pos.x = entity.rect.left - self.rect.width
+                self.rect.topleft = self.pos
         if self.vel.x > 0:
             self.direction = 1
         elif self.vel.x < 0:
@@ -543,16 +562,16 @@ class Player(pygame.sprite.Sprite):
                     # if the player is colliding with something, we can't drop the object there so we return False
                     return False
                 else:
-                    self.held_object.pos = collision_sprite.rect.midbottom
-                    self.held_object.rect.midbottom = self.held_object.pos
+                    self.held_object.pos = collision_sprite.rect.topleft
+                    self.held_object.rect.topleft = self.held_object.pos
                     self.held_object.vel = self.vel.copy()
                     self.held_object.acc = self.acc.copy()
                     self.is_holding = False
                     self.held_object.is_held = False
                     return True
             else:
-                self.held_object.pos = collision_sprite.rect.midbottom
-                self.held_object.rect.midbottom = self.held_object.pos
+                self.held_object.pos = collision_sprite.rect.topleft
+                self.held_object.rect.topleft = self.held_object.pos
                 self.held_object.vel = self.vel.copy()
                 self.held_object.acc = self.acc.copy()
                 self.is_holding = False
