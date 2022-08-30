@@ -67,8 +67,8 @@ def Data_Assembler(levels):
 
             elif type(sprite) == Button:
                 new_button = {
-                    "POS_X": int(sprite.pos[0]) - 300,
-                    "POS_Y": int(sprite.pos[1]),
+                    "POS_X": int(sprite.rect.left) - 300,
+                    "POS_Y": int(sprite.rect.top),
                     "WIDTH": int(sprite.rect.width),
                     "HEIGHT": int(sprite.rect.height),
                     "COLOR": "0x" + rgb_to_hex(sprite.color),
@@ -207,6 +207,7 @@ def update_UI(sprite):
     commands_panel.hide()
     create_command.hide()
     delete_command.hide()
+    selection_submit_button.hide()
 
     if type(sprite) is MovingPlatform or sprite.ID == -1:
         pos_x2_text.show()
@@ -469,7 +470,7 @@ def initiate_UI(manager):
 
     global change_button_mode
     change_button_mode = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(40, 310, 150, 55),
-                                                      text="BUTTON",
+                                                      text="SWITCH",
                                                       manager=manager,
                                                       container=right_panel,
                                                       object_id="#BUTTON_MODE",
@@ -609,8 +610,8 @@ def configure_command(selected_button):
             if is_mouse_on_sprite(levels[current_sub_level].all_sprites, mouse_pos):
                 for sprite in levels[current_sub_level].all_sprites:
                     if sprite.rect.collidepoint(mouse_pos) and not sprite.ID in sprite_ID_list[0::2]:
-                        sprite_ID_list.append(current_sub_level)
                         sprite_ID_list.append(sprite.ID)
+                        sprite_ID_list.append(current_sub_level)
                         # Add the sprite to a sprite list to later draw an outline around it.
                         sprite_list.append(sprite)
 
@@ -644,6 +645,8 @@ def configure_command(selected_button):
         manager.draw_ui(displaysurface)
         pygame.display.update()
         clock.tick(240) / 1000
+
+    print(sprite_ID_list)
 
     disable_editor()
 
@@ -679,6 +682,14 @@ def configure_command(selected_button):
         if save_command.check_pressed() == True:
             load_command(selected_button, available_commands.selected_option, sprite_ID_list,
                          running_condition.selected_option, create_complementary_command)  # Add the commend to the selected button.
+
+            if available_commands.selected_option == "ACTIVATE_OBJECT" or available_commands.selected_option == "DEACTIVATE_OBJECT":
+                for sprite in sprite_list:
+                    if running_condition.selected_option == "ACTIVE":
+                        sprite.isActive = False
+
+                    else:
+                        sprite.isActive = True
 
             command_configuration_menu.hide()
             enable_editor()
@@ -741,16 +752,40 @@ def get_available_commands(sprite_list):
 def load_command(selected_button, command_type, sprite_ID_list, running_condition, create_complementary_command=False):
 
     if running_condition == "ACTIVE":
-        for sprite_ID in sprite_ID_list[0::2]:
+        for index, sprite_ID in enumerate(sprite_ID_list[0::2]):
             selected_button.activate_actions.append(command_type)
-            selected_button.activate_actions.append(sprite_ID)
-            selected_button.activate_actions.append(sprite_ID + 1)
+            selected_button.activate_actions.append(sprite_ID_list[index + 1])
+            selected_button.activate_actions.append(sprite_ID) 
 
+            if create_complementary_command:
+                if command_type == "ACTIVATE_OBJECT":
+                    selected_button.deactivate_actions.append("DEACTIVATE_OBJECT")
+                    selected_button.deactivate_actions.append(sprite_ID_list[index + 1])
+                    selected_button.deactivate_actions.append(sprite_ID)
+
+                elif command_type == "DEACTIVATE_OBJECT":
+                    selected_button.deactivate_actions.append("ACTIVATE_OBJECT")
+                    selected_button.deactivate_actions.append(sprite_ID_list[index + 1])
+                    selected_button.deactivate_actions.append(sprite_ID)
     else:
-        for sprite_ID in sprite_ID_list[0::2]:
+        for index, sprite_ID in enumerate(sprite_ID_list[0::2]):
             selected_button.deactivate_actions.append(command_type)
+            selected_button.deactivate_actions.append(sprite_ID_list[index + 1])
             selected_button.deactivate_actions.append(sprite_ID)
-            selected_button.deactivate_actions.append(sprite_ID + 1)
+
+            if create_complementary_command:
+                if command_type == "ACTIVATE_OBJECT":
+                    selected_button.activate_actions.append("DEACTIVATE_OBJECT")
+                    selected_button.activate_actions.append(sprite_ID_list[index + 1])
+                    selected_button.activate_actions.append(sprite_ID)
+
+                elif command_type == "DEACTIVATE_OBJECT":
+                    selected_button.activate_actions.append("ACTIVATE_OBJECT")
+                    selected_button.activate_actions.append(sprite_ID_list[index + 1])
+                    selected_button.activate_actions.append(sprite_ID)
+
+    
+        
 
 
 def main():

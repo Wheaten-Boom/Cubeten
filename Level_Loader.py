@@ -68,6 +68,7 @@ class Sub_Level():
                     new_button = objects.Button(button["POS_X"], button["POS_Y"], button["WIDTH"],
                                                 button["HEIGHT"], button["COLOR"], button["ACTIVATE_COLOR"], button["ACTIVATE_ACTION"], button["DEACTIVATE_ACTION"], button["MODE"], button["ID"], button["DRAW_LAYER"], button["IS_ACTIVE"])
 
+
                     self.all_sprites.add(new_button)
                     self.buttons.add(new_button)
 
