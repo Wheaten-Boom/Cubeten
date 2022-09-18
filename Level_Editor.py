@@ -66,6 +66,17 @@ def Data_Assembler(levels):
                 data[sub_level]["MOVING_PLATFORMS"].append(new_moving_platform)
 
             elif type(sprite) == Button:
+
+                final_active_command = []
+                for command in sprite.activate_actions.values():
+                    for element in command:
+                        final_active_command.append(element)
+
+                final_inactive_command = []
+                for command in sprite.deactivate_actions.values():
+                    for element in command:
+                        final_inactive_command.append(element)
+
                 new_button = {
                     "POS_X": int(sprite.rect.left) - 300,
                     "POS_Y": int(sprite.rect.top),
@@ -73,8 +84,8 @@ def Data_Assembler(levels):
                     "HEIGHT": int(sprite.rect.height),
                     "COLOR": "0x" + rgb_to_hex(sprite.color),
                     "ACTIVATE_COLOR": "0x701010",
-                    "ACTIVATE_ACTION": sprite.activate_actions,
-                    "DEACTIVATE_ACTION": sprite.deactivate_actions,
+                    "ACTIVATE_ACTION": final_active_command,
+                    "DEACTIVATE_ACTION": final_inactive_command,
                     "IS_ACTIVE": sprite.isActive,
                     "MODE": change_button_mode.text,
                     "ID": sprite.ID,
@@ -153,6 +164,7 @@ def update_selected_sprite(sprite, color):
                 sprite.isActive = False
 
             global commands_panel
+            print(sprite.activate_actions)
             if commands_panel.options_list != sprite.activate_actions.keys():
                 commands_panel.kill()
                 commands_panel = pygame_gui.elements.UIDropDownMenu(sprite.activate_actions.keys(), starting_option="",
@@ -162,7 +174,6 @@ def update_selected_sprite(sprite, color):
                                                                     container=right_panel,
                                                                     object_id="#COMMANDS",
                                                                     visible=True)
-
 
         if (pygame.mouse.get_pressed()[0]
                 and sprite.rect.collidepoint(pygame.mouse.get_pos())):
@@ -237,7 +248,6 @@ def update_UI(sprite):
         commands_panel.show()
         create_command.show()
         delete_command.show()
-
 
 
 def initiate_UI(manager):
@@ -803,6 +813,7 @@ def load_command(selected_button, command_name, command_type, sprite_ID_list, ru
                     selected_button.activate_actions[command_name] = [
                         "DEACTIVATE_OBJECT", sprite_ID_list[index + 1], sprite_ID]
 
+    print(selected_button.activate_actions)
 
 def main():
     pygame.init()
@@ -868,7 +879,8 @@ def main():
 
                 if event.ui_element == delete_command and type(levels[current_sub_level].selected_sprite) == Button:
                     if commands_panel.selected_option in levels[current_sub_level].selected_sprite.activate_actions.keys():
-                        levels[current_sub_level].selected_sprite.activate_actions.pop(commands_panel.selected_option)
+                        levels[current_sub_level].selected_sprite.activate_actions.pop(
+                            commands_panel.selected_option)
 
                     commands_panel.selected_option = ""
 
@@ -894,25 +906,6 @@ def main():
                     create_player_button.enable()
 
                 if event.ui_element == save_button:
-
-                    for button in [sprite for sprite in levels[current_sub_level].all_sprites if type(sprite) == Button]:
-                        final_command = []
-                        print(button.activate_actions.values())
-                        for command in button.activate_actions.values():
-                            for element in command:
-                                final_command.append(element)
-
-                        button.activate_actions = final_command
-                        print(button.activate_actions)
-
-                    final_command = []
-                    for button in [sprite for sprite in levels[current_sub_level].all_sprites if type(sprite) == Button]:
-                        final_command = []
-                        for command in button.deactivate_actions.values():
-                            for element in command:
-                                final_command.append(element)
-
-                        button.deactivate_actions = final_command
 
                     data = Data_Assembler(levels)
                     Create_Level_File(data, "TEST.json")

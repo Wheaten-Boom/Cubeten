@@ -7,36 +7,23 @@
         "PLATFORMS": [],
         "MOVING_PLATFORMS": [
             {
-                "X1": 19,
-                "Y1": 143,
-                "X2": 19,
-                "Y2": 143,
+                "X1": 295,
+                "Y1": 255,
+                "X2": 479,
+                "Y2": 255,
                 "SPEED": 60,
-                "WIDTH": 324,
-                "HEIGHT": 140,
+                "WIDTH": 142,
+                "HEIGHT": 121,
                 "COLOR": "0x000000",
                 "IS_ACTIVE": false,
                 "ID": 0,
-                "DRAW_LAYER": 0
-            },
-            {
-                "X1": 643,
-                "Y1": 149,
-                "X2": 643,
-                "Y2": 149,
-                "SPEED": 60,
-                "WIDTH": 172,
-                "HEIGHT": 211,
-                "COLOR": "0x000000",
-                "IS_ACTIVE": false,
-                "ID": 1,
                 "DRAW_LAYER": 0
             }
         ],
         "BUTTONS": [
             {
-                "POS_X": 191,
-                "POS_Y": 432,
+                "POS_X": 465,
+                "POS_Y": 547,
                 "WIDTH": 25,
                 "HEIGHT": 75,
                 "COLOR": "0x000000",
@@ -53,7 +40,7 @@
                 ],
                 "IS_ACTIVE": false,
                 "MODE": "SWITCH",
-                "ID": 2,
+                "ID": 1,
                 "DRAW_LAYER": 0
             }
         ],
