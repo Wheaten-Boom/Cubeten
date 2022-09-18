@@ -152,6 +152,18 @@ def update_selected_sprite(sprite, color):
             else:
                 sprite.isActive = False
 
+            global commands_panel
+            if commands_panel.options_list != sprite.activate_actions.keys():
+                commands_panel.kill()
+                commands_panel = pygame_gui.elements.UIDropDownMenu(sprite.activate_actions.keys(), starting_option="",
+                                                                    relative_rect=pygame.Rect(
+                                                                    15, 420, 155, 40),
+                                                                    manager=manager,
+                                                                    container=right_panel,
+                                                                    object_id="#COMMANDS",
+                                                                    visible=True)
+
+
         if (pygame.mouse.get_pressed()[0]
                 and sprite.rect.collidepoint(pygame.mouse.get_pos())):
             # Adds pygame.mouse.get_rel() to the sprite's position (drags it)
@@ -217,7 +229,7 @@ def update_UI(sprite):
         speed_text.show()
         speed_text_entry.show()
 
-    if type(sprite) is Button:
+    elif type(sprite) is Button:
         change_button_mode.show()
         button_mode_text.show()
         change_button_state.show()
@@ -225,7 +237,7 @@ def update_UI(sprite):
         commands_panel.show()
         create_command.show()
         delete_command.show()
-        commands_panel.show()
+
 
 
 def initiate_UI(manager):
@@ -541,7 +553,7 @@ def initiate_UI(manager):
                                                               visible=False)
 
     global command_type_text
-    command_type_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 15, -1, -1),
+    command_type_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 60, -1, -1),
                                                     text="Command type: ",
                                                     manager=manager,
                                                     container=command_configuration_menu,
@@ -555,7 +567,7 @@ def initiate_UI(manager):
                                                 object_id="#SAVE_COMMAND_BUTTON")
 
     global running_condition_text
-    running_condition_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 60, -1, -1),
+    running_condition_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 105, -1, -1),
                                                          text="Run when button is: ",
                                                          manager=manager,
                                                          container=command_configuration_menu,
@@ -565,13 +577,13 @@ def initiate_UI(manager):
     running_condition = pygame_gui.elements.UIDropDownMenu(["ACTIVE", "INACTIVE"],
                                                            starting_option="ACTIVE",
                                                            relative_rect=pygame.Rect(
-                                                               370, 60, 150, 40),
+                                                               370, 105, 150, 40),
                                                            manager=manager,
                                                            container=command_configuration_menu,
                                                            object_id="#RUNNING_CONDITION_BUTTON")
 
     global complementary_command_text
-    complementary_command_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 105, -1, -1),
+    complementary_command_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 150, -1, -1),
                                                              text="Complementary command: ",
                                                              manager=manager,
                                                              container=command_configuration_menu,
@@ -579,7 +591,7 @@ def initiate_UI(manager):
                                                              visible=False)
 
     global create_complementary_command
-    create_complementary_command = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(400, 105, 100, 40),
+    create_complementary_command = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(400, 150, 100, 40),
                                                                 text="TRUE",
                                                                 manager=manager,
                                                                 container=command_configuration_menu,
@@ -593,6 +605,21 @@ def initiate_UI(manager):
                                                               container=command_configuration_menu,
                                                               object_id="#CLOSE_COMMAND_CONFIGURATOR",
                                                               visible=True)
+
+    global command_name_text
+    command_name_text = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(15, 15, -1, -1),
+                                                    text="Command name: ",
+                                                    manager=manager,
+                                                    container=command_configuration_menu,
+                                                    object_id="#COMMAND_NAME_TEXT")
+
+    global command_name_entry
+    command_name_entry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect(250, 15, 250, 40),
+                                                             manager=manager,
+                                                             container=command_configuration_menu,
+                                                             object_id="#COMMAND_NAME_ENTRY",
+                                                             visible=True)
+    command_name_entry.set_text_length_limit(20)
 
 
 def configure_command(selected_button):
@@ -646,8 +673,6 @@ def configure_command(selected_button):
         pygame.display.update()
         clock.tick(240) / 1000
 
-    print(sprite_ID_list)
-
     disable_editor()
 
     command_configuration_menu.show()
@@ -656,7 +681,7 @@ def configure_command(selected_button):
     available_commands = pygame_gui.elements.UIDropDownMenu(get_available_commands(sprite_list),
                                                             starting_option="",
                                                             relative_rect=pygame.Rect(
-                                                                270, 15, 250, 40),
+                                                                270, 60, 250, 40),
                                                             manager=manager,
                                                             container=command_configuration_menu,
                                                             object_id="#AVAILABLE_COMMANDS")
@@ -680,7 +705,7 @@ def configure_command(selected_button):
                 create_complementary_command.set_text("TRUE")
 
         if save_command.check_pressed() == True:
-            load_command(selected_button, available_commands.selected_option, sprite_ID_list,
+            load_command(selected_button, command_name_entry.get_text(), available_commands.selected_option, sprite_ID_list,
                          running_condition.selected_option, create_complementary_command)  # Add the commend to the selected button.
 
             if available_commands.selected_option == "ACTIVATE_OBJECT" or available_commands.selected_option == "DEACTIVATE_OBJECT":
@@ -749,43 +774,34 @@ def get_available_commands(sprite_list):
     return valid_commands
 
 
-def load_command(selected_button, command_type, sprite_ID_list, running_condition, create_complementary_command=False):
+def load_command(selected_button, command_name, command_type, sprite_ID_list, running_condition, create_complementary_command=False):
 
     if running_condition == "ACTIVE":
         for index, sprite_ID in enumerate(sprite_ID_list[0::2]):
-            selected_button.activate_actions.append(command_type)
-            selected_button.activate_actions.append(sprite_ID_list[index + 1])
-            selected_button.activate_actions.append(sprite_ID) 
+            selected_button.activate_actions[command_name] = [
+                command_type, sprite_ID_list[index + 1], sprite_ID]
 
             if create_complementary_command:
                 if command_type == "ACTIVATE_OBJECT":
-                    selected_button.deactivate_actions.append("DEACTIVATE_OBJECT")
-                    selected_button.deactivate_actions.append(sprite_ID_list[index + 1])
-                    selected_button.deactivate_actions.append(sprite_ID)
+                    selected_button.deactivate_actions[command_name] = [
+                        "DEACTIVATE_OBJECT", sprite_ID_list[index + 1], sprite_ID]
 
                 elif command_type == "DEACTIVATE_OBJECT":
-                    selected_button.deactivate_actions.append("ACTIVATE_OBJECT")
-                    selected_button.deactivate_actions.append(sprite_ID_list[index + 1])
-                    selected_button.deactivate_actions.append(sprite_ID)
+                    selected_button.deactivate_actions[command_name] = [
+                        "ACTIVATE_OBJECT", sprite_ID_list[index + 1], sprite_ID]
     else:
         for index, sprite_ID in enumerate(sprite_ID_list[0::2]):
-            selected_button.deactivate_actions.append(command_type)
-            selected_button.deactivate_actions.append(sprite_ID_list[index + 1])
-            selected_button.deactivate_actions.append(sprite_ID)
+            selected_button.deactivate_actions[command_name] = [
+                command_type, sprite_ID_list[index + 1], sprite_ID]
 
             if create_complementary_command:
                 if command_type == "ACTIVATE_OBJECT":
-                    selected_button.activate_actions.append("DEACTIVATE_OBJECT")
-                    selected_button.activate_actions.append(sprite_ID_list[index + 1])
-                    selected_button.activate_actions.append(sprite_ID)
+                    selected_button.activate_actions[command_name] = [
+                        "DEACTIVATE_OBJECT", sprite_ID_list[index + 1], sprite_ID]
 
                 elif command_type == "DEACTIVATE_OBJECT":
-                    selected_button.activate_actions.append("ACTIVATE_OBJECT")
-                    selected_button.activate_actions.append(sprite_ID_list[index + 1])
-                    selected_button.activate_actions.append(sprite_ID)
-
-    
-        
+                    selected_button.activate_actions[command_name] = [
+                        "DEACTIVATE_OBJECT", sprite_ID_list[index + 1], sprite_ID]
 
 
 def main():
@@ -850,6 +866,12 @@ def main():
                     configure_command(
                         levels[current_sub_level].selected_sprite)
 
+                if event.ui_element == delete_command and type(levels[current_sub_level].selected_sprite) == Button:
+                    if commands_panel.selected_option in levels[current_sub_level].selected_sprite.activate_actions.keys():
+                        levels[current_sub_level].selected_sprite.activate_actions.pop(commands_panel.selected_option)
+
+                    commands_panel.selected_option = ""
+
                 if event.ui_element == change_button_mode:
                     if (change_button_mode.text == "BUTTON"):
                         change_button_mode.set_text("SWITCH")
@@ -872,8 +894,29 @@ def main():
                     create_player_button.enable()
 
                 if event.ui_element == save_button:
+
+                    for button in [sprite for sprite in levels[current_sub_level].all_sprites if type(sprite) == Button]:
+                        final_command = []
+                        print(button.activate_actions.values())
+                        for command in button.activate_actions.values():
+                            for element in command:
+                                final_command.append(element)
+
+                        button.activate_actions = final_command
+                        print(button.activate_actions)
+
+                    final_command = []
+                    for button in [sprite for sprite in levels[current_sub_level].all_sprites if type(sprite) == Button]:
+                        final_command = []
+                        for command in button.deactivate_actions.values():
+                            for element in command:
+                                final_command.append(element)
+
+                        button.deactivate_actions = final_command
+
                     data = Data_Assembler(levels)
                     Create_Level_File(data, "TEST.json")
+                    break
 
                 if event.ui_element == delete_button:
                     if levels[current_sub_level].selected_sprite is not None:
@@ -1027,8 +1070,8 @@ def main():
                                                                                   current_selected_color,
                                                                                   rgb_to_hex(calculate_complementary_color(
                                                                                       current_selected_color)),
-                                                                                  [],
-                                                                                  [],
+                                                                                  {},
+                                                                                  {},
                                                                                   "BUTTON",
                                                                                   levels[current_sub_level].id_count,
                                                                                   0,

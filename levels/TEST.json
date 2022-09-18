@@ -4,115 +4,59 @@
     ],
     "SUB_LEVEL_0": {
         "BG_COLOR": "0xAFDEEF",
-        "PLATFORMS": [
+        "PLATFORMS": [],
+        "MOVING_PLATFORMS": [
             {
-                "POS_X": 2,
-                "POS_Y": 933,
-                "WIDTH": 998,
-                "HEIGHT": 63,
-                "COLOR": "0x005e00",
+                "X1": 19,
+                "Y1": 143,
+                "X2": 19,
+                "Y2": 143,
+                "SPEED": 60,
+                "WIDTH": 324,
+                "HEIGHT": 140,
+                "COLOR": "0x000000",
+                "IS_ACTIVE": false,
                 "ID": 0,
                 "DRAW_LAYER": 0
             },
             {
-                "POS_X": 35,
-                "POS_Y": 788,
-                "WIDTH": 338,
-                "HEIGHT": 24,
-                "COLOR": "0xf1f6ff",
-                "ID": 2,
-                "DRAW_LAYER": 0
-            }
-        ],
-        "MOVING_PLATFORMS": [
-            {
-                "X1": 454,
-                "Y1": 750,
-                "X2": 464,
-                "Y2": 489,
+                "X1": 643,
+                "Y1": 149,
+                "X2": 643,
+                "Y2": 149,
                 "SPEED": 60,
-                "WIDTH": 245,
-                "HEIGHT": 18,
-                "COLOR": "0xf1f6ff",
-                "IS_ACTIVE": true,
-                "ID": 3,
-                "DRAW_LAYER": 0
-            },
-            {
-                "X1": 384,
-                "Y1": 480,
-                "X2": 263,
-                "Y2": 167,
-                "SPEED": 60,
-                "WIDTH": 130,
-                "HEIGHT": 24,
-                "COLOR": "0xf1f6ff",
-                "IS_ACTIVE": true,
-                "ID": 4,
-                "DRAW_LAYER": 0
-            },
-            {
-                "X1": 409,
-                "Y1": 164,
-                "X2": 682,
-                "Y2": 162,
-                "SPEED": 60,
-                "WIDTH": 168,
-                "HEIGHT": 25,
-                "COLOR": "0xf1f6ff",
-                "IS_ACTIVE": true,
-                "ID": 5,
+                "WIDTH": 172,
+                "HEIGHT": 211,
+                "COLOR": "0x000000",
+                "IS_ACTIVE": false,
+                "ID": 1,
                 "DRAW_LAYER": 0
             }
         ],
         "BUTTONS": [
             {
-                "POS_X": 154,
-                "POS_Y": 865,
+                "POS_X": 191,
+                "POS_Y": 432,
                 "WIDTH": 25,
                 "HEIGHT": 75,
-                "COLOR": "0x6bc54f",
+                "COLOR": "0x000000",
                 "ACTIVATE_COLOR": "0x701010",
                 "ACTIVATE_ACTION": [
-                    "",
+                    "ACTIVATE_OBJECT",
                     0,
-                    1,
-                    "",
-                    0,
-                    1,
-                    "",
-                    0,
-                    1,
-                    "",
-                    0,
-                    1
+                    0
                 ],
-                "DEACTIVATE_ACTION": [],
+                "DEACTIVATE_ACTION": [
+                    "DEACTIVATE_OBJECT",
+                    0,
+                    0
+                ],
                 "IS_ACTIVE": false,
-                "MODE": "BUTTON",
-                "ID": 7,
+                "MODE": "SWITCH",
+                "ID": 2,
                 "DRAW_LAYER": 0
             }
         ],
-        "FINISH_GOALS": [
-            {
-                "POS_X": 856,
-                "POS_Y": 700,
-                "WIDTH": 124,
-                "HEIGHT": 119,
-                "COLOR": "0xf1f600",
-                "ID": 6,
-                "DRAW_LAYER": 0
-            }
-        ],
-        "PLAYER": {
-            "POS_X": 808,
-            "POS_Y": 858,
-            "WIDTH": 75,
-            "HEIGHT": 75,
-            "COLOR": "0x3692b5",
-            "ID": 1,
-            "DRAW_LAYER": 1
-        }
+        "PLAYER": {}
     }
 }
