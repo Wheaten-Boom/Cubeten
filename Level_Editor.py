@@ -854,7 +854,7 @@ def main():
             pygame.quit()
             quit()
 
-        for event in pygame.event.get():
+        for event in pygame.event.get(): # Update the editor based on the button's states.
             if event.type == QUIT:
                 pygame.quit()
                 quit()
@@ -1152,8 +1152,10 @@ def main():
         # Checks whether we have a player sprite created, if so then disable the create player button, else enable it
         if any(isinstance(x, Player) for x in levels[current_sub_level].all_sprites):
             create_player_button.disable()
+            save_button.enable()
         else:
             create_player_button.enable()
+            save_button.disable()
 
         update_selected_sprite(levels[current_sub_level].selected_sprite,
                                current_selected_color)
