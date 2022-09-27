@@ -163,10 +163,16 @@ def update_selected_sprite(sprite, color):
                 sprite.rect.height = 25 # Update the button's dimensions based on his state. 
                 sprite.surf = pygame.Surface((sprite.rect.width, sprite.rect.height))
 
+                sprite.color = color
+                sprite.surf.fill(sprite.color) # Refill the surf with the selected color.
+
             elif sprite.mode == "SWITCH":
                 sprite.rect.width = 25
                 sprite.rect.height = 75 # Update the button's dimensions based on his state. 
                 sprite.surf = pygame.Surface((sprite.rect.width, sprite.rect.height))
+
+                sprite.color = color
+                sprite.surf.fill(sprite.color)# Refill the surf with the selected color.
 
             if (button_state_text.text == "ACTIVE"):  # update the button's state (isActive)
                 sprite.isActive = True

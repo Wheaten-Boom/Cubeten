@@ -4,46 +4,64 @@
     ],
     "SUB_LEVEL_0": {
         "BG_COLOR": "0xAFDEEF",
-        "PLATFORMS": [],
+        "PLATFORMS": [
+            {
+                "POS_X": 67,
+                "POS_Y": 851,
+                "WIDTH": 819,
+                "HEIGHT": 47,
+                "COLOR": "0x000000",
+                "ID": 0,
+                "DRAW_LAYER": 0
+            }
+        ],
         "MOVING_PLATFORMS": [
             {
-                "X1": 295,
-                "Y1": 255,
-                "X2": 479,
-                "Y2": 255,
+                "X1": 147,
+                "Y1": 332,
+                "X2": 719,
+                "Y2": 336,
                 "SPEED": 60,
-                "WIDTH": 142,
-                "HEIGHT": 121,
-                "COLOR": "0x000000",
+                "WIDTH": 28,
+                "HEIGHT": 216,
+                "COLOR": "0x00b671",
                 "IS_ACTIVE": false,
-                "ID": 0,
+                "ID": 3,
                 "DRAW_LAYER": 0
             }
         ],
         "BUTTONS": [
             {
-                "POS_X": 465,
-                "POS_Y": 547,
-                "WIDTH": 25,
-                "HEIGHT": 75,
-                "COLOR": "0x000000",
+                "POS_X": 262,
+                "POS_Y": 827,
+                "WIDTH": 75,
+                "HEIGHT": 25,
+                "COLOR": "0xbdb600",
                 "ACTIVATE_COLOR": "0x701010",
                 "ACTIVATE_ACTION": [
                     "ACTIVATE_OBJECT",
                     0,
-                    0
+                    3
                 ],
                 "DEACTIVATE_ACTION": [
                     "DEACTIVATE_OBJECT",
                     0,
-                    0
+                    3
                 ],
                 "IS_ACTIVE": false,
-                "MODE": "SWITCH",
+                "MODE": "BUTTON",
                 "ID": 1,
                 "DRAW_LAYER": 0
             }
         ],
-        "PLAYER": {}
+        "PLAYER": {
+            "POS_X": 714,
+            "POS_Y": 776,
+            "WIDTH": 75,
+            "HEIGHT": 75,
+            "COLOR": "0xbdb6bd",
+            "ID": 4,
+            "DRAW_LAYER": 1
+        }
     }
 }
