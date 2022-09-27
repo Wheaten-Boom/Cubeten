@@ -1,4 +1,3 @@
-from faulthandler import disable
 import os
 import json
 import pygame
@@ -160,20 +159,26 @@ def update_selected_sprite(sprite, color):
             sprite.mode = change_button_mode.text  # update the button's mode
 
             if sprite.mode == "BUTTON":
+                # Update the button's dimensions based on his state.
                 sprite.rect.width = 75
-                sprite.rect.height = 25 # Update the button's dimensions based on his state. 
-                sprite.surf = pygame.Surface((sprite.rect.width, sprite.rect.height))
+                sprite.rect.height = 25
+                sprite.surf = pygame.Surface(
+                    (sprite.rect.width, sprite.rect.height))
 
+                # Refill the surf with the selected color.
                 sprite.color = color
-                sprite.surf.fill(sprite.color) # Refill the surf with the selected color.
+                sprite.surf.fill(sprite.color)
 
             elif sprite.mode == "SWITCH":
+                # Update the button's dimensions based on his state.
                 sprite.rect.width = 25
-                sprite.rect.height = 75 # Update the button's dimensions based on his state. 
-                sprite.surf = pygame.Surface((sprite.rect.width, sprite.rect.height))
+                sprite.rect.height = 75
+                sprite.surf = pygame.Surface(
+                    (sprite.rect.width, sprite.rect.height))
 
+                # Refill the surf with the selected color.
                 sprite.color = color
-                sprite.surf.fill(sprite.color)# Refill the surf with the selected color.
+                sprite.surf.fill(sprite.color)
 
             if (button_state_text.text == "ACTIVE"):  # update the button's state (isActive)
                 sprite.isActive = True
@@ -831,6 +836,7 @@ def load_command(selected_button, command_name, command_type, sprite_ID_list, ru
 
     print(selected_button.activate_actions)
 
+
 def main():
     pygame.init()
     ROOT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
@@ -838,7 +844,8 @@ def main():
     global displaysurface, levels, current_sub_level, manager, clock, delta_time
     clock = pygame.time.Clock()
     displaysurface = pygame.display.set_mode((1600, 1000))
-    manager = pygame_gui.UIManager((1600, 1000), os.path.join(ROOT_DIRECTORY, "assets", "themes", "editor_theme.json"))
+    manager = pygame_gui.UIManager((1600, 1000), os.path.join(
+        ROOT_DIRECTORY, "assets", "themes", "editor_theme.json"))
 
     initiate_UI(manager)
 
@@ -855,7 +862,7 @@ def main():
             pygame.quit()
             quit()
 
-        for event in pygame.event.get(): # Update the editor based on the button's states.
+        for event in pygame.event.get():  # Update the editor based on the button's states.
             if event.type == QUIT:
                 pygame.quit()
                 quit()
@@ -1156,13 +1163,12 @@ def main():
         else:
             create_player_button.enable()
 
-        save_button.enable() # Enable the save button only if all of the sublevels contain a player.
+        save_button.enable()
         clean_levels = [level for level in levels if level.all_sprites]
-        for sublevel in clean_levels:
-            if not any(isinstance(x, Player) for x in sublevel.all_sprites):
-                save_button.disable()
 
-            
+        # Enable the save button only if all of the sublevels contain a player.
+        if not any(isinstance(x, Player) for x in [sublevel.all_sprites for sublevel in clean_levels]):
+            save_button.disable()
 
         update_selected_sprite(levels[current_sub_level].selected_sprite,
                                current_selected_color)
