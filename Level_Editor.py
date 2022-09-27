@@ -817,12 +817,12 @@ def load_command(selected_button, command_name, command_type, sprite_ID_list, ru
 
 def main():
     pygame.init()
+    ROOT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
     global displaysurface, levels, current_sub_level, manager, clock, delta_time
     clock = pygame.time.Clock()
     displaysurface = pygame.display.set_mode((1600, 1000))
-    manager = pygame_gui.UIManager((1600, 1000), PackageResource(
-        "assets.themes", "editor_theme.json"))
+    manager = pygame_gui.UIManager((1600, 1000), os.path.join(ROOT_DIRECTORY, "assets", "themes", "editor_theme.json"))
 
     initiate_UI(manager)
 
