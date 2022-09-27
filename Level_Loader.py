@@ -115,7 +115,7 @@ class Sub_Level():
 
 def Load(level_name) -> dict:
     """
-    Reads the level file and returns a dictionary of all the sublevels in the level.
+    Reads the level file and returns a list of all the sublevels in the main level (the last item in the list in the current running sublevel).
 
     Parameters:
         level_name (str): The name of the level file.

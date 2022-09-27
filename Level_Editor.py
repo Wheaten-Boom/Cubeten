@@ -1,3 +1,4 @@
+from faulthandler import disable
 import os
 import json
 import pygame
@@ -159,26 +160,20 @@ def update_selected_sprite(sprite, color):
             sprite.mode = change_button_mode.text  # update the button's mode
 
             if sprite.mode == "BUTTON":
-                # Update the button's dimensions based on his state.
                 sprite.rect.width = 75
-                sprite.rect.height = 25
-                sprite.surf = pygame.Surface(
-                    (sprite.rect.width, sprite.rect.height))
+                sprite.rect.height = 25 # Update the button's dimensions based on his state. 
+                sprite.surf = pygame.Surface((sprite.rect.width, sprite.rect.height))
 
-                # Refill the surf with the selected color.
                 sprite.color = color
-                sprite.surf.fill(sprite.color)
+                sprite.surf.fill(sprite.color) # Refill the surf with the selected color.
 
             elif sprite.mode == "SWITCH":
-                # Update the button's dimensions based on his state.
                 sprite.rect.width = 25
-                sprite.rect.height = 75
-                sprite.surf = pygame.Surface(
-                    (sprite.rect.width, sprite.rect.height))
+                sprite.rect.height = 75 # Update the button's dimensions based on his state. 
+                sprite.surf = pygame.Surface((sprite.rect.width, sprite.rect.height))
 
-                # Refill the surf with the selected color.
                 sprite.color = color
-                sprite.surf.fill(sprite.color)
+                sprite.surf.fill(sprite.color)# Refill the surf with the selected color.
 
             if (button_state_text.text == "ACTIVE"):  # update the button's state (isActive)
                 sprite.isActive = True
@@ -653,7 +648,7 @@ def initiate_UI(manager):
     command_name_entry.set_text_length_limit(20)
 
 
-def configure_command(selected_button):
+def configure_command(selected_button, current_sublevel_index):
 
     selection_submit_button.show()
 
@@ -665,11 +660,11 @@ def configure_command(selected_button):
         if pygame.mouse.get_pressed()[0] and mouse_click_enabled:
             mouse_pos = pygame.mouse.get_pos()
             mouse_click_enabled = False
-            if is_mouse_on_sprite(levels[current_sub_level].all_sprites, mouse_pos):
-                for sprite in levels[current_sub_level].all_sprites:
+            if is_mouse_on_sprite(levels[current_sublevel_index].all_sprites, mouse_pos):
+                for sprite in levels[current_sublevel_index].all_sprites:
                     if sprite.rect.collidepoint(mouse_pos) and not sprite.ID in sprite_ID_list[0::2]:
                         sprite_ID_list.append(sprite.ID)
-                        sprite_ID_list.append(current_sub_level)
+                        sprite_ID_list.append(current_sublevel_index)
                         # Add the sprite to a sprite list to later draw an outline around it.
                         sprite_list.append(sprite)
 
@@ -689,11 +684,28 @@ def configure_command(selected_button):
                 pygame.quit()
                 quit()
 
+            if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                if event.ui_element == previous_level_button:
+                    if current_sublevel_index > 0:
+                        current_sublevel_index -= 1
+                        next_level_button.enable()
+                        if current_sublevel_index == 0:
+                            previous_level_button.disable()
+
+                if event.ui_element == next_level_button:
+                    if current_sublevel_index < 256:
+                        current_sublevel_index += 1
+                        previous_level_button.enable()
+                        if current_sublevel_index == 255:
+                            next_level_button.disable()
+                        if current_sublevel_index >= len(levels):
+                            levels.append(SubLevel(current_sublevel_index))
+
             manager.process_events(event)
 
         displaysurface.fill("0xAFDEEF")
 
-        for entity in levels[current_sub_level].all_sprites:
+        for entity in levels[current_sublevel_index].all_sprites:
             displaysurface.blit(entity.surf, entity.rect)
 
         for sprite in sprite_list:  # draw oulites for all selected sprites.
@@ -765,7 +777,7 @@ def configure_command(selected_button):
 
         displaysurface.fill("0xAFDEEF")
 
-        for entity in levels[current_sub_level].all_sprites:
+        for entity in levels[current_sublevel_index].all_sprites:
             displaysurface.blit(entity.surf, entity.rect)
 
         manager.update(delta_time)
@@ -836,7 +848,6 @@ def load_command(selected_button, command_name, command_type, sprite_ID_list, ru
 
     print(selected_button.activate_actions)
 
-
 def main():
     pygame.init()
     ROOT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
@@ -844,8 +855,7 @@ def main():
     global displaysurface, levels, current_sub_level, manager, clock, delta_time
     clock = pygame.time.Clock()
     displaysurface = pygame.display.set_mode((1600, 1000))
-    manager = pygame_gui.UIManager((1600, 1000), os.path.join(
-        ROOT_DIRECTORY, "assets", "themes", "editor_theme.json"))
+    manager = pygame_gui.UIManager((1600, 1000), os.path.join(ROOT_DIRECTORY, "assets", "themes", "editor_theme.json"))
 
     initiate_UI(manager)
 
@@ -862,7 +872,7 @@ def main():
             pygame.quit()
             quit()
 
-        for event in pygame.event.get():  # Update the editor based on the button's states.
+        for event in pygame.event.get(): # Update the editor based on the button's states.
             if event.type == QUIT:
                 pygame.quit()
                 quit()
@@ -898,7 +908,7 @@ def main():
 
                 if event.ui_element == create_command and type(levels[current_sub_level].selected_sprite) == Button:
                     configure_command(
-                        levels[current_sub_level].selected_sprite)
+                        levels[current_sub_level].selected_sprite, current_sub_level)
 
                 if event.ui_element == delete_command and type(levels[current_sub_level].selected_sprite) == Button:
                     if commands_panel.selected_option in levels[current_sub_level].selected_sprite.activate_actions.keys():
@@ -1163,7 +1173,7 @@ def main():
         else:
             create_player_button.enable()
 
-        save_button.enable()
+        save_button.enable() # Enable the save button only if all of the sublevels contain a player.
         clean_levels = [level for level in levels if level.all_sprites]
 
         # Enable the save button only if all of the sublevels contain a player.
@@ -1172,7 +1182,7 @@ def main():
                 save_button.disable()
 
         # Checks an edge case if the clean_levels are empty
-        if len(clean_levels) > 0:
+        if len(clean_levels) == 0:
             save_button.disable()
 
         update_selected_sprite(levels[current_sub_level].selected_sprite,
