@@ -1167,7 +1167,12 @@ def main():
         clean_levels = [level for level in levels if level.all_sprites]
 
         # Enable the save button only if all of the sublevels contain a player.
-        if not any(isinstance(x, Player) for x in [sublevel.all_sprites for sublevel in clean_levels]):
+        for sublevel in clean_levels:
+            if not any(isinstance(x, Player) for x in sublevel.all_sprites):
+                save_button.disable()
+
+        # Checks an edge case if the clean_levels are empty
+        if len(clean_levels) > 0:
             save_button.disable()
 
         update_selected_sprite(levels[current_sub_level].selected_sprite,
