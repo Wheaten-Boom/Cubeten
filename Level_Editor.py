@@ -1,3 +1,4 @@
+from faulthandler import disable
 import os
 import json
 import pygame
@@ -1152,10 +1153,16 @@ def main():
         # Checks whether we have a player sprite created, if so then disable the create player button, else enable it
         if any(isinstance(x, Player) for x in levels[current_sub_level].all_sprites):
             create_player_button.disable()
-            save_button.enable()
         else:
             create_player_button.enable()
-            save_button.disable()
+
+        save_button.enable() # Enable the save button only if all of the sublevels contain a player.
+        clean_levels = [level for level in levels if level.all_sprites]
+        for sublevel in clean_levels:
+            if not any(isinstance(x, Player) for x in sublevel.all_sprites):
+                save_button.disable()
+
+            
 
         update_selected_sprite(levels[current_sub_level].selected_sprite,
                                current_selected_color)
