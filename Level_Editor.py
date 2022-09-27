@@ -156,7 +156,17 @@ def update_selected_sprite(sprite, color):
                 speed_text_entry.set_text(str(sprite.speed))
 
         elif type(sprite) is Button:
-            sprite.mode = button_mode_text.text  # update the button's mode
+            sprite.mode = change_button_mode.text  # update the button's mode
+
+            if sprite.mode == "BUTTON":
+                sprite.rect.width = 75
+                sprite.rect.height = 25 # Update the button's dimensions based on his state. 
+                sprite.surf = pygame.Surface((sprite.rect.width, sprite.rect.height))
+
+            elif sprite.mode == "SWITCH":
+                sprite.rect.width = 25
+                sprite.rect.height = 75 # Update the button's dimensions based on his state. 
+                sprite.surf = pygame.Surface((sprite.rect.width, sprite.rect.height))
 
             if (button_state_text.text == "ACTIVE"):  # update the button's state (isActive)
                 sprite.isActive = True
@@ -164,7 +174,6 @@ def update_selected_sprite(sprite, color):
                 sprite.isActive = False
 
             global commands_panel
-            print(sprite.activate_actions)
             if commands_panel.options_list != sprite.activate_actions.keys():
                 commands_panel.kill()
                 commands_panel = pygame_gui.elements.UIDropDownMenu(sprite.activate_actions.keys(), starting_option="",
