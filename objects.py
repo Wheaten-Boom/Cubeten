@@ -1,5 +1,5 @@
 import pygame
-from pygame.locals import *
+import pygame.locals as pl
 
 from settings import config
 
@@ -28,11 +28,10 @@ class Platform(pygame.sprite.Sprite):
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
         self.color = color
-        self.rect = self.surf.get_rect()
+        self.rect = self.surf.get_rect(topleft=(x, y))
         self.pos = pygame.math.Vector2(x, y)
         self.ID = ID
         self.draw_layer = draw_layer
-        self.rect.topleft = self.pos
 
 
 class MovingPlatform(pygame.sprite.Sprite):
@@ -63,11 +62,10 @@ class MovingPlatform(pygame.sprite.Sprite):
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
         self.color = color
-        self.rect = self.surf.get_rect()
+        self.rect = self.surf.get_rect(topleft=(x1, y1))
         self.start_pos = pygame.math.Vector2(min(x1, x2), min(y1, y2))
         self.end_pos = pygame.math.Vector2(max(x1, x2), max(y1, y2))
         self.pos = pygame.math.Vector2(x1, y1)
-        self.rect.topleft = self.pos
         self.speed = speed
         self.direction_x = 1
         self.direction_y = 1
@@ -116,7 +114,7 @@ class MovingPlatform(pygame.sprite.Sprite):
                 if self.pos.y <= self.start_pos.y:
                     self.direction_y = 1
 
-            self.rect.topleft = self.pos
+            self.rect.topleft = (int(self.pos.x), int(self.pos.y))
 
 
 class Button(pygame.sprite.Sprite):
@@ -148,7 +146,7 @@ class Button(pygame.sprite.Sprite):
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
         self.color = color
-        self.rect = self.surf.get_rect()
+        self.rect = self.surf.get_rect(topleft=(x, y))
         self.color = color
         self.activate_color = activate_color
         self.pos = pygame.math.Vector2(x, y)
@@ -158,7 +156,6 @@ class Button(pygame.sprite.Sprite):
         self.mode = mode
         self.ID = ID
         self.draw_layer = draw_layer
-        self.rect.topleft = self.pos
 
     def update(self, collision_group, player, level):
         """
@@ -290,11 +287,10 @@ class SwitchingPanel(pygame.sprite.Sprite):
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
         self.color = color
-        self.rect = self.surf.get_rect()
+        self.rect = self.surf.get_rect(topleft=(x, y))
         self.pos = pygame.math.Vector2(x, y)
         self.ID = ID
         self.draw_layer = draw_layer
-        self.rect.topleft = self.pos
         self.level_ID = level_ID
 
     def switch_level(self, player, level):
@@ -334,14 +330,13 @@ class Cube(pygame.sprite.Sprite):
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
         self.color = color
-        self.rect = self.surf.get_rect()
+        self.rect = self.surf.get_rect(topleft=(x, y))
         self.pos = pygame.math.Vector2(x, y)
         self.vel = pygame.math.Vector2(0, 0)
         self.acc = pygame.math.Vector2(0, 0)
         self.is_held = False
         self.ID = ID
         self.draw_layer = draw_layer
-        self.rect.topleft = self.pos
 
     def move(self, collision_group):
         """
@@ -407,7 +402,7 @@ class Cube(pygame.sprite.Sprite):
                             self.pos.x = entity.rect.right
                         else:
                             self.pos.x = entity.rect.left - self.rect.width
-                    self.rect.topleft = self.pos
+                    self.rect.topleft = (int(self.pos.x), int(self.pos.y))
 
 
 class Player(pygame.sprite.Sprite):
@@ -434,7 +429,7 @@ class Player(pygame.sprite.Sprite):
         self.surf = pygame.Surface((width, height))
         self.surf.fill(color)
         self.color = color
-        self.rect = self.surf.get_rect()
+        self.rect = self.surf.get_rect(topleft=(x, y))
         self.pos = pygame.math.Vector2(x, y)
         self.vel = pygame.math.Vector2(0, 0)
         self.acc = pygame.math.Vector2(0, 0)
@@ -444,7 +439,6 @@ class Player(pygame.sprite.Sprite):
         self.held_object = None
         self.ID = ID
         self.draw_layer = draw_layer
-        self.rect.topleft = self.pos
 
     def move(self):
         """
@@ -454,9 +448,9 @@ class Player(pygame.sprite.Sprite):
         self.acc = pygame.math.Vector2(0, config['PHYSICS']['GRAVITY'])
         # Checks whether the player is holding left or right, and adds acceleration to that direction
         pressed_keys = pygame.key.get_pressed()
-        if pressed_keys[K_LEFT]:
+        if pressed_keys[pl.K_LEFT]:
             self.acc.x += -config['PHYSICS']['ACCELERATION']
-        if pressed_keys[K_RIGHT]:
+        if pressed_keys[pl.K_RIGHT]:
             self.acc.x += config['PHYSICS']['ACCELERATION']
 
         # Gives the x acceleration the value of the velocity decreased by the friction (which is negative)
@@ -507,13 +501,13 @@ class Player(pygame.sprite.Sprite):
                         self.pos.x = entity.rect.right
                     else:
                         self.pos.x = entity.rect.left - self.rect.width
-                self.rect.topleft = self.pos
+                self.rect.topleft = (int(self.pos.x), int(self.pos.y))
         if self.vel.x > 0:
             self.direction = 1
         elif self.vel.x < 0:
             self.direction = -1
 
-        if self.is_holding:
+        if self.is_holding and self.held_object is not None:
             self.held_object.pos.x = self.pos.x
             self.held_object.pos.y = self.pos.y
             self.held_object.rect.center = self.rect.center
@@ -551,7 +545,7 @@ class Player(pygame.sprite.Sprite):
         Returns:
             bool: Whether the player managed to hold/drop an object
         """
-        if self.is_holding:
+        if self.is_holding and self.held_object is not None:
             # makes a rectangle that is the held object's size and to the right of the player to check whether it can be dropped there
             collision_sprite = pygame.sprite.Sprite()
             collision_sprite.rect = self.held_object.rect.copy()
